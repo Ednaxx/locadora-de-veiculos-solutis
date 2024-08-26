@@ -99,7 +99,7 @@ classDiagram
     Aluguel "1" -- "0..*" Carro : carro
     Aluguel "1" -- "1" ApoliceSeguro : apolice
     Carro "0..*" -- "1" ModeloCarro : modelo
-    Carro "0..*" -- "0..*" Acessorio : acessorios
+    Carro "0..*" -- "0..*" Acessorio : acessorioModels
     ModeloCarro "1" -- "0..*" Fabricante : fabricante
     ModeloCarro "1" -- "1" Categoria : categoria
 
