@@ -1,18 +1,18 @@
-package org.system.repository;
+package org.squad9.vehiclerentalservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.system.entity.Acessorio;
-import org.system.entity.Carro;
-import org.system.entity.ModeloCarro;
+import org.squad9.vehiclerentalservice.model.AcessorioModel;
+import org.squad9.vehiclerentalservice.model.CarroModel;
+import org.squad9.vehiclerentalservice.model.ModeloCarroModel;
 
 import java.util.List;
 
-public interface CarroRepository extends JpaRepository<Carro, Long> {
+public interface CarroRepository extends JpaRepository<CarroModel, Long> {
     boolean existsByPlaca(String placa);
 
     boolean existsByChassi(String chassi);
 
-    List<Carro> findByModeloCarro(ModeloCarro modeloCarroId);
+    List<CarroModel> findByModeloCarro(ModeloCarroModel modeloCarroId);
 
-    List<Carro> findByAcessoriosContaining(Acessorio acessorio);
+    List<CarroModel> findByAcessoriosContaining(AcessorioModel acessorio);
 }

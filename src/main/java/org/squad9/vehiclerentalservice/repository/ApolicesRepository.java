@@ -1,7 +1,7 @@
-package org.system.repository;
+package org.squad9.vehiclerentalservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.system.entity.ApoliceSeguro;
+import org.squad9.vehiclerentalservice.model.ApoliceSeguroModel;
 
-public interface ApolicesRepository extends JpaRepository<ApoliceSeguro, Long> {
+public interface ApolicesRepository extends JpaRepository<ApoliceSeguroModel, Long> {
 }

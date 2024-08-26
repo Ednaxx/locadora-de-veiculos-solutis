@@ -1,4 +1,4 @@
-package org.system.entity;
+package org.squad9.vehiclerentalservice.model.util;
 
 public enum Categoria {
     HATCH_COMPACTO,

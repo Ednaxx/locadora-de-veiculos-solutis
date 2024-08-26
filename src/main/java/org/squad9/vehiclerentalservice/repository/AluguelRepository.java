@@ -1,11 +1,11 @@
-package org.system.repository;
+package org.squad9.vehiclerentalservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.system.entity.Aluguel;
-import org.system.entity.Motorista;
+import org.squad9.vehiclerentalservice.model.AluguelModel;
+import org.squad9.vehiclerentalservice.model.MotoristaModel;
 
 import java.util.List;
 
-public interface AluguelRepository extends JpaRepository<Aluguel, Long> {
-    List<Aluguel> findByMotorista(Motorista motorista);
+public interface AluguelRepository extends JpaRepository<AluguelModel, Long> {
+    List<AluguelModel> findByMotorista(MotoristaModel motorista);
 }

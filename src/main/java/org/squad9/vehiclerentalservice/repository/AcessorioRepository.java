@@ -1,6 +1,6 @@
-package org.system.repository;
+package org.squad9.vehiclerentalservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.system.entity.Acessorio;
+import org.squad9.vehiclerentalservice.model.AcessorioModel;
 
-public interface AcessorioRepository extends JpaRepository<Acessorio, Long> {}
+public interface AcessorioRepository extends JpaRepository<AcessorioModel, Long> {}
