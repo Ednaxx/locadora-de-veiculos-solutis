@@ -1,3 +1,11 @@
 spring:
   application:
     name: "vehicle-rental-service"
+  datasource:
+    url: jdbc:postgresql://${DBHOST}:${DBPORT}/${DBDATABASE}
+    username: ${DBUSER}
+    password: ${DBPASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update

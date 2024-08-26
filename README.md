@@ -2,7 +2,7 @@
 
 ## Sobre o projeto
 
-Este repositório contém a resolução do Desafio da Livraria,
+Este repositório contém a resolução do Desafio da Locadora de Veículos,
 desenvolvido como parte do processo seletivo para o programa Solutis Dev Trail 2024.
 
 ## Pré requisitos
