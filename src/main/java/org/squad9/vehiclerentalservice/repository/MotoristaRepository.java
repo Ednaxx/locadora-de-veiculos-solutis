@@ -1,10 +1,10 @@
-package org.system.repository;
+package org.squad9.vehiclerentalservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.system.entity.Motorista;
+import org.squad9.vehiclerentalservice.model.MotoristaModel;
 
-public interface MotoristaRepository extends JpaRepository<Motorista, Long> {
-    Motorista findByEmail(String email);
-    Motorista findByCpf(String cpf);
-    Motorista findBynumeroCNH(String numeroCNH);
+public interface MotoristaRepository extends JpaRepository<MotoristaModel, Long> {
+    MotoristaModel findByEmail(String email);
+    MotoristaModel findByCpf(String cpf);
+    MotoristaModel findBynumeroCNH(String numeroCNH);
 }
