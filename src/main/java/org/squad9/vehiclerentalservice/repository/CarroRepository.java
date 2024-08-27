@@ -6,8 +6,9 @@ import org.squad9.vehiclerentalservice.model.CarroModel;
 import org.squad9.vehiclerentalservice.model.ModeloCarroModel;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface CarroRepository extends JpaRepository<CarroModel, Long> {
+public interface CarroRepository extends JpaRepository<CarroModel, UUID> {
     boolean existsByPlaca(String placa);
 
     boolean existsByChassi(String chassi);

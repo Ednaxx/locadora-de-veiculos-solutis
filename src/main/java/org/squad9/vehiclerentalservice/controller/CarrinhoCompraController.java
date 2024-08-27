@@ -1,31 +1,33 @@
-package org.system.controller;
+package org.squad9.vehiclerentalservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.system.entity.*;
-import org.system.entity.dto.AdicionarCarrinhoDTO;
-import org.system.entity.dto.DetalhesReservaDTO;
-import org.system.service.*;
+import org.squad9.vehiclerentalservice.dto.AdicionarCarrinhoDTO;
+import org.squad9.vehiclerentalservice.dto.DetalhesReservaDTO;
+import org.squad9.vehiclerentalservice.model.CarrinhoCompraModel;
+import org.squad9.vehiclerentalservice.model.CarroModel;
+import org.squad9.vehiclerentalservice.model.MotoristaModel;
+import org.squad9.vehiclerentalservice.service.CarrinhoCompraServiceImpl;
+import org.squad9.vehiclerentalservice.service.CarroServiceImpl;
+import org.squad9.vehiclerentalservice.service.MotoristaServiceImpl;
+
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/carrinhos-compras")
+@RequiredArgsConstructor
 public class CarrinhoCompraController {
-
-    @Autowired
     private CarrinhoCompraServiceImpl carrinhoCompraService;
-    @Autowired
     private MotoristaServiceImpl motoristaService;
-    @Autowired
     private CarroServiceImpl carroService;
 
-    //Consertar Método
     @GetMapping
     public ResponseEntity<?> findAll(){
         try {
-            List<org.system.entity.CarrinhoCompra> carrinhoCompras = carrinhoCompraService.findAll();
+            List<CarrinhoCompraModel> carrinhoCompras = carrinhoCompraService.findAll();
             return ResponseEntity.ok(carrinhoCompras);
         }catch (Exception e){
             String errorMessage = "Não foi possível encontrar registros de carros em seu carrinho!";
@@ -33,12 +35,11 @@ public class CarrinhoCompraController {
         }
     }
 
-    //método que lista os carros disponíveis no carrinho do cliente
     @GetMapping(value = "/{email}")
     public ResponseEntity<?> findByMotorista(@PathVariable String email){
         try {
-            org.system.entity.Motorista motorista = motoristaService.findByEmail(email);
-            org.system.entity.CarrinhoCompra carrinhoCompra = carrinhoCompraService.findByMotorista(motorista);
+            MotoristaModel motorista = motoristaService.findByEmail(email);
+            CarrinhoCompraModel carrinhoCompra = carrinhoCompraService.findByMotorista(motorista);
 
             return ResponseEntity.ok(carrinhoCompra.getListaCarros());
         } catch (Exception e){
@@ -46,13 +47,12 @@ public class CarrinhoCompraController {
         }
     }
 
-    //Método que pega o email do motorista logado e o id do carro que o cliente quer e adiciona no carrinho
     @PostMapping(value = "/adicionar-carro")
     public ResponseEntity<String> save(@RequestBody AdicionarCarrinhoDTO adicionarCarrinhoDTO){
         try {
-            org.system.entity.Motorista motorista = motoristaService.findByEmail(adicionarCarrinhoDTO.getEmail());
-            org.system.entity.CarrinhoCompra carrinhoCompra = carrinhoCompraService.findByMotorista(motorista);
-            org.system.entity.Carro carro = carroService.findById(adicionarCarrinhoDTO.getId());
+            MotoristaModel motorista = motoristaService.findByEmail(adicionarCarrinhoDTO.getEmail());
+            CarrinhoCompraModel carrinhoCompra = carrinhoCompraService.findByMotorista(motorista);
+            CarroModel carro = carroService.findById(adicionarCarrinhoDTO.getId());
 
             carrinhoCompraService.addCarros(carrinhoCompra, carro);
             return ResponseEntity.ok("Carro adicionado ao carrinho com sucesso");
@@ -61,13 +61,10 @@ public class CarrinhoCompraController {
         }
     }
 
-
-    //Na hora da 1ª confirmação, as informações de motorista logado, carro e as datas da reserva são passadas novamente para
-    // o sistema. Ao recarregar a página, os detalhes serão mostrados junto as informações do carro para a 2ª confirmação
     @GetMapping(value = "/detalhes-reserva")
     public ResponseEntity<?> listarCarrosDisponiveis(@RequestBody DetalhesReservaDTO detalhesReservaDTO) {
         String email = detalhesReservaDTO.getEmailMotorista();
-        org.system.entity.Motorista motorista = motoristaService.findByEmail(email);
+        MotoristaModel motorista = motoristaService.findByEmail(email);
 
         if (motorista == null) {
             return ResponseEntity.notFound().build();
@@ -80,8 +77,8 @@ public class CarrinhoCompraController {
 
     //Mostrar lista de carros salvos em um determinado carrinho de compras
     @GetMapping(value = "/carrinho/{carrinhoId}")
-    public ResponseEntity<?> findByCarros (@PathVariable Long carrinhoId){
-        List<org.system.entity.Carro> carrosNoCarrinho = carrinhoCompraService.getCarrosByCarrinhoId(carrinhoId);
+    public ResponseEntity<?> findByCarros (@PathVariable UUID carrinhoId){
+        List<CarroModel> carrosNoCarrinho = carrinhoCompraService.getCarrosByCarrinhoId(carrinhoId);
 
         if (carrosNoCarrinho.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -92,10 +89,10 @@ public class CarrinhoCompraController {
 
     //Pegar detalhes de um carro em um carrinho específico
     @GetMapping(value = "/carrinho/{carrinhoId}/{carroId}")
-    public ResponseEntity<?> findByCarroId(@PathVariable Long carrinhoId, @PathVariable Long carroId){
+    public ResponseEntity<?> findByCarroId(@PathVariable UUID carrinhoId, @PathVariable UUID carroId){
         try {
-            org.system.entity.Carro carro = carroService.findById(carroId);
-            org.system.entity.CarrinhoCompra carrinhoCompra = carrinhoCompraService.findById(carrinhoId);
+            CarroModel carro = carroService.findById(carroId);
+            CarrinhoCompraModel carrinhoCompra = carrinhoCompraService.findById(carrinhoId);
 
             return ResponseEntity.ok(carrinhoCompraService.findByCarroId(carrinhoCompra, carro));
         } catch (Exception e){
@@ -105,10 +102,10 @@ public class CarrinhoCompraController {
 
     //Remover carro do carrinho de compras
     @DeleteMapping(value = "/carrinho/{carrinhoId}/{carroId}")
-    public ResponseEntity<String> removerCarroDoCarrinho(@PathVariable Long carrinhoId, @PathVariable Long carroId) {
+    public ResponseEntity<String> removerCarroDoCarrinho(@PathVariable UUID carrinhoId, @PathVariable UUID carroId) {
         try {
-            org.system.entity.CarrinhoCompra carrinhoCompra = carrinhoCompraService.findById(carrinhoId);
-            org.system.entity.Carro carro = carroService.findById(carroId);
+            CarrinhoCompraModel carrinhoCompra = carrinhoCompraService.findById(carrinhoId);
+            CarroModel carro = carroService.findById(carroId);
 
             carrinhoCompraService.removerCarro(carrinhoCompra, carro);
             return ResponseEntity.ok("Carro removido do carrinho com sucesso");

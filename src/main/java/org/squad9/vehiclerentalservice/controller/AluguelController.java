@@ -1,11 +1,14 @@
-package org.system.controller;
+package org.squad9.vehiclerentalservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.system.entity.*;
-import org.system.service.*;
+import org.squad9.vehiclerentalservice.model.AluguelModel;
+import org.squad9.vehiclerentalservice.model.MotoristaModel;
+import org.squad9.vehiclerentalservice.service.AluguelServiceImpl;
+import org.squad9.vehiclerentalservice.service.CarroServiceImpl;
+import org.squad9.vehiclerentalservice.service.MotoristaServiceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,20 +16,18 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/alugueis")
+@RequiredArgsConstructor
 public class AluguelController {
 
-    @Autowired
     private AluguelServiceImpl aluguelService;
-    @Autowired
     private CarroServiceImpl carroService;
-    @Autowired
     private MotoristaServiceImpl motoristaService;
 
     @GetMapping(value = "/{email}")
     public ResponseEntity<?> findAlugueisMotorista(@PathVariable String email){
         try {
-            org.system.entity.Motorista motorista = motoristaService.findByEmail(email);
-            List<org.system.entity.Aluguel> aluguel = aluguelService.findAlugueisMotorista(motorista);
+            MotoristaModel motorista = motoristaService.findByEmail(email);
+            List<AluguelModel> aluguel = aluguelService.findAlugueisMotorista(motorista);
 
             return ResponseEntity.ok(aluguel);
         } catch (Exception e){
@@ -35,8 +36,8 @@ public class AluguelController {
     }
 
     @GetMapping
-    public ResponseEntity<List<org.system.entity.Aluguel>> findAll() {
-        List<org.system.entity.Aluguel> alugueis = aluguelService.findAll();
+    public ResponseEntity<List<AluguelModel>> findAll() {
+        List<AluguelModel> alugueis = aluguelService.findAll();
 
         if (alugueis.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -58,7 +59,7 @@ public class AluguelController {
 
     //Após a confirmação de aluguel
     @PostMapping
-    public ResponseEntity<String> insert(@RequestBody org.system.entity.Aluguel aluguel) {
+    public ResponseEntity<String> insert(@RequestBody AluguelModel aluguel) {
         try {
             //Pegar a data atual
             LocalDate dataPedido = LocalDate.now();

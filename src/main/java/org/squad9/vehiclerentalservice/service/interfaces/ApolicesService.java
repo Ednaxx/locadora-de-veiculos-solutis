@@ -1,12 +1,13 @@
-package org.system.service.interfaces;
+package org.squad9.vehiclerentalservice.service.interfaces;
 
-import org.system.entity.ApoliceSeguro;
+import org.squad9.vehiclerentalservice.model.ApoliceSeguroModel;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ApolicesService {
-    ApoliceSeguro findById(Long id);
-    ApoliceSeguro save(ApoliceSeguro apoliceSeguro);
-    List<ApoliceSeguro> findAll();
-    void remove(Long id);
+    ApoliceSeguroModel findById(UUID id);
+    ApoliceSeguroModel save(ApoliceSeguroModel apoliceSeguro);
+    List<ApoliceSeguroModel> findAll();
+    void remove(UUID id);
 }

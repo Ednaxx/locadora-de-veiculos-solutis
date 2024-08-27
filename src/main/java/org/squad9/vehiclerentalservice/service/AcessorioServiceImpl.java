@@ -1,28 +1,29 @@
-package org.system.service;
+package org.squad9.vehiclerentalservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.system.entity.Acessorio;
-import org.system.entity.ApoliceSeguro;
-import org.system.repository.AcessorioRepository;
-import org.system.service.interfaces.AcessorioService;
+import org.squad9.vehiclerentalservice.model.AcessorioModel;
+import org.squad9.vehiclerentalservice.repository.AcessorioRepository;
+import org.squad9.vehiclerentalservice.service.interfaces.AcessorioService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class AcessorioServiceImpl implements AcessorioService {
-    @Autowired
     private AcessorioRepository acessorioRepository;
+
     @Override
-    public List<Acessorio> findAll() {
+    public List<AcessorioModel> findAll() {
         return acessorioRepository.findAll();
     }
 
     @Override
-    public Acessorio findById(Long id){
+    public AcessorioModel findById(UUID id){
         try{
-            Optional<Acessorio> acessorioOptional = acessorioRepository.findById(id);
+            Optional<AcessorioModel> acessorioOptional = acessorioRepository.findById(id);
             if (acessorioOptional.isPresent()){
                 return acessorioOptional.get();
             }
@@ -33,7 +34,7 @@ public class AcessorioServiceImpl implements AcessorioService {
     }
 
     @Override
-    public Acessorio save(Acessorio acessorio) {
+    public AcessorioModel save(AcessorioModel acessorio) {
         try {
             return acessorioRepository.save(acessorio);
         } catch (Exception e) {
@@ -42,7 +43,7 @@ public class AcessorioServiceImpl implements AcessorioService {
     }
 
     @Override
-    public void remove(Long id){
+    public void remove(UUID id){
         if(!acessorioRepository.existsById(id)){
             throw new IllegalArgumentException();
         }

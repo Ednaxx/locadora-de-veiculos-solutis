@@ -1,22 +1,22 @@
-package org.system.service;
+package org.squad9.vehiclerentalservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.system.entity.CarrinhoCompra;
-import org.system.entity.Fabricante;
-import org.system.repository.FabricanteRepository;
-import org.system.service.interfaces.FabricanteService;
+import org.squad9.vehiclerentalservice.model.FabricanteModel;
+import org.squad9.vehiclerentalservice.repository.FabricanteRepository;
+import org.squad9.vehiclerentalservice.service.interfaces.FabricanteService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class FabricanteServiceImpl implements FabricanteService {
-    @Autowired
     private FabricanteRepository fabricanteRepository;
 
     @Override
-    public Fabricante save(Fabricante fabricante) {
+    public FabricanteModel save(FabricanteModel fabricante) {
         try {
             return fabricanteRepository.save(fabricante);
         }catch (Exception e){
@@ -25,7 +25,7 @@ public class FabricanteServiceImpl implements FabricanteService {
     }
 
     @Override
-    public List<Fabricante> findAll() {
+    public List<FabricanteModel> findAll() {
         try {
             return fabricanteRepository.findAll();
         }catch (Exception e) {
@@ -34,11 +34,11 @@ public class FabricanteServiceImpl implements FabricanteService {
     }
 
     @Override
-    public Fabricante findById(Long id){
+    public FabricanteModel findById(UUID id){
         try{
-            Optional<Fabricante> fabricanteOptional = fabricanteRepository.findById(id);
+            Optional<FabricanteModel> fabricanteOptional = fabricanteRepository.findById(id);
             if (fabricanteOptional.isPresent()){
-                Fabricante fabricante = fabricanteOptional.get();
+                FabricanteModel fabricante = fabricanteOptional.get();
                 return fabricante;
             }
         } catch (Exception e) {
@@ -47,7 +47,7 @@ public class FabricanteServiceImpl implements FabricanteService {
         return null;
     }
     @Override
-    public void remove(Long id){
+    public void remove(UUID id){
         try {
             fabricanteRepository.deleteById(id);
         } catch (Exception e) {

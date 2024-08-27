@@ -1,32 +1,30 @@
-package org.system.service;
+package org.squad9.vehiclerentalservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.system.entity.ApoliceSeguro;
-import org.system.repository.ApolicesRepository;
-import org.system.service.interfaces.ApolicesService;
+import org.squad9.vehiclerentalservice.model.ApoliceSeguroModel;
+import org.squad9.vehiclerentalservice.repository.ApolicesRepository;
+import org.squad9.vehiclerentalservice.service.interfaces.ApolicesService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class ApolicesServiceImpl implements ApolicesService {
-    @Autowired
     private ApolicesRepository apolicesRepository;
 
     @Override
-    public List<ApoliceSeguro> findAll() {
+    public List<ApoliceSeguroModel> findAll() {
         return apolicesRepository.findAll();
     }
 
     @Override
-    public ApoliceSeguro findById(Long id) {
+    public ApoliceSeguroModel findById(UUID id) {
         try{
-            Optional<ApoliceSeguro> apoliceSeguroOptional = apolicesRepository.findById(id);
-            if (apoliceSeguroOptional.isPresent()){
-                ApoliceSeguro apoliceSeguro = apoliceSeguroOptional.get();
-                return apoliceSeguro;
-            }
+            Optional<ApoliceSeguroModel> apoliceSeguroOptional = apolicesRepository.findById(id);
+            if (apoliceSeguroOptional.isPresent()) return apoliceSeguroOptional.get();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -34,7 +32,7 @@ public class ApolicesServiceImpl implements ApolicesService {
     }
 
     @Override
-    public ApoliceSeguro save(ApoliceSeguro apoliceSeguro) {
+    public ApoliceSeguroModel save(ApoliceSeguroModel apoliceSeguro) {
         try {
             return apolicesRepository.save(apoliceSeguro);
         } catch (Exception e) {
@@ -43,7 +41,7 @@ public class ApolicesServiceImpl implements ApolicesService {
     }
 
     @Override
-    public void remove(Long id) {
+    public void remove(UUID id) {
         try {
             apolicesRepository.deleteById(id);
         } catch (Exception e) {

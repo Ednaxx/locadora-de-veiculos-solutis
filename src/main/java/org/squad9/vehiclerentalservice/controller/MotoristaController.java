@@ -1,36 +1,37 @@
-package org.system.controller;
+package org.squad9.vehiclerentalservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.system.entity.CarrinhoCompra;
-import org.system.entity.Motorista;
-import org.system.service.CarrinhoCompraServiceImpl;
-import org.system.service.MotoristaServiceImpl;
-import java.util.List;
+import org.squad9.vehiclerentalservice.model.CarrinhoCompraModel;
+import org.squad9.vehiclerentalservice.model.MotoristaModel;
+import org.squad9.vehiclerentalservice.service.CarrinhoCompraServiceImpl;
+import org.squad9.vehiclerentalservice.service.MotoristaServiceImpl;
 
-@RestController // métodos deste controlador retornarão objetos que serão serializados em JSON e enviados como resposta HTTP.
+import java.util.List;
+import java.util.UUID;
+
+@RestController
 @RequestMapping("/motoristas")
+@RequiredArgsConstructor
 public class MotoristaController {
-    @Autowired
     private MotoristaServiceImpl motoristaService;
-    @Autowired
     private CarrinhoCompraServiceImpl carrinhoCompraService;
 
     @GetMapping
-    public List<Motorista> findAll() {
+    public List<MotoristaModel> findAll() {
         return motoristaService.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<String> insert(@RequestBody Motorista motorista) {
+    public ResponseEntity<String> insert(@RequestBody MotoristaModel motorista) {
         try {
-            CarrinhoCompra carrinhoCompra = new CarrinhoCompra();
-            CarrinhoCompra newCarrinhoCompra = carrinhoCompraService.save(carrinhoCompra);
+            CarrinhoCompraModel carrinhoCompra = new CarrinhoCompraModel();
+            CarrinhoCompraModel newCarrinhoCompra = carrinhoCompraService.save(carrinhoCompra);
 
             motorista.setCarrinhoCompra(newCarrinhoCompra);
-            Motorista newMotorista = motoristaService.save(motorista);
+            MotoristaModel newMotorista = motoristaService.save(motorista);
 
             carrinhoCompra.setMotorista(newMotorista);
             carrinhoCompraService.save(carrinhoCompra);
@@ -44,13 +45,13 @@ public class MotoristaController {
 
     @GetMapping(value = "/{email}")
     public ResponseEntity<?> findByEmail(@PathVariable String email) {
-        Motorista motorista = motoristaService.findByEmail(email);
+        MotoristaModel motorista = motoristaService.findByEmail(email);
 
         return motorista == null ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não encontrado!") : ResponseEntity.ok(motorista);
     }
 
     @DeleteMapping("/{motoristaId}")
-    public ResponseEntity<String> removeMotorista(@PathVariable Long motoristaId) {
+    public ResponseEntity<String> removeMotorista(@PathVariable UUID motoristaId) {
         try {
             motoristaService.remove(motoristaId);
             return ResponseEntity.ok("Motorista removido com sucesso");

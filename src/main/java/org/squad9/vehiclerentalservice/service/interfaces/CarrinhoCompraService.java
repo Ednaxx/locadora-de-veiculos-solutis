@@ -1,13 +1,14 @@
-package org.system.service.interfaces;
+package org.squad9.vehiclerentalservice.service.interfaces;
 
-import org.system.entity.CarrinhoCompra;
-import org.system.entity.Carro;
+import org.squad9.vehiclerentalservice.model.CarrinhoCompraModel;
+import org.squad9.vehiclerentalservice.model.CarroModel;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CarrinhoCompraService {
-    CarrinhoCompra save(CarrinhoCompra carrinhoCompra);
-    List<CarrinhoCompra> findAll();
-    CarrinhoCompra findById(Long id);
-    void removerCarro(CarrinhoCompra carrinhoCompra, Carro carro);
+    CarrinhoCompraModel save(CarrinhoCompraModel carrinhoCompra);
+    List<CarrinhoCompraModel> findAll();
+    CarrinhoCompraModel findById(UUID id);
+    void removerCarro(CarrinhoCompraModel carrinhoCompra, CarroModel carro);
 }

@@ -1,50 +1,48 @@
-package org.system.controller;
+package org.squad9.vehiclerentalservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.system.entity.Carro;
-import org.system.entity.Categoria;
-import org.system.entity.Acessorio;
-import org.system.entity.ModeloCarro;
-import org.system.service.CarroServiceImpl;
-import org.system.service.ModeloCarroServiceImpl;
+import org.squad9.vehiclerentalservice.model.AcessorioModel;
+import org.squad9.vehiclerentalservice.model.CarroModel;
+import org.squad9.vehiclerentalservice.model.ModeloCarroModel;
+import org.squad9.vehiclerentalservice.model.util.Categoria;
+import org.squad9.vehiclerentalservice.service.CarroServiceImpl;
+import org.squad9.vehiclerentalservice.service.ModeloCarroServiceImpl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/carros")
+@RequiredArgsConstructor
 public class CarroController {
-
-    @Autowired
     private CarroServiceImpl carroService;
-    @Autowired
     private ModeloCarroServiceImpl modeloCarroService;
 
     @GetMapping
-    public List<Carro> findAll() {
+    public List<CarroModel> findAll() {
         return carroService.findAll();
     }
 
     //Após a adição das datas
     @GetMapping(value = "/disponiveis")
-    public ResponseEntity<List<Carro>> listarCarrosDisponiveis(@RequestParam String dataInicio, @RequestParam String dataDevolucao) {
+    public ResponseEntity<List<CarroModel>> listarCarrosDisponiveis(@RequestParam String dataInicio, @RequestParam String dataDevolucao) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate dataInicioParsed = LocalDate.parse(dataInicio, dateFormatter);
         LocalDate dataDevolucaoParsed = LocalDate.parse(dataDevolucao, dateFormatter);
 
-        List<Carro> carrosDisponiveis = carroService.listarCarrosDisponiveis(dataInicioParsed, dataDevolucaoParsed);
+        List<CarroModel> carrosDisponiveis = carroService.listarCarrosDisponiveis(dataInicioParsed, dataDevolucaoParsed);
 
         return carrosDisponiveis.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(carrosDisponiveis);
     }
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Carro> findById(@PathVariable Long id) {
-        Carro carro = carroService.findById(id);
+    public ResponseEntity<CarroModel> findById(@PathVariable UUID id) {
+        CarroModel carro = carroService.findById(id);
 
         if (carro == null) {
             return ResponseEntity.notFound().build();
@@ -54,13 +52,13 @@ public class CarroController {
     }
 
     @GetMapping(value = "/categoria/{categoria}")
-    public ResponseEntity<List<Carro>> findByCategoria(@PathVariable Categoria categoria) {
-        List<ModeloCarro> modelosCategoria = modeloCarroService.findByCategoria(categoria);
+    public ResponseEntity<List<CarroModel>> findByCategoria(@PathVariable Categoria categoria) {
+        List<ModeloCarroModel> modelosCategoria = modeloCarroService.findByCategoria(categoria);
 
-        List<Carro> listaCarros = new ArrayList<>();
+        List<CarroModel> listaCarros = new ArrayList<>();
 
-        for (ModeloCarro modeloCarro : modelosCategoria) {
-            List<Carro> carrosDoModelo = carroService.findByModeloCarro(modeloCarro);
+        for (ModeloCarroModel modeloCarro : modelosCategoria) {
+            List<CarroModel> carrosDoModelo = carroService.findByModeloCarro(modeloCarro);
             listaCarros.addAll(carrosDoModelo);
         }
 
@@ -72,8 +70,8 @@ public class CarroController {
     }
 
     @GetMapping(value = "/modeloCarro/{modeloCarro}")
-    public ResponseEntity<List<Carro>> findByModeloCarro(@PathVariable ModeloCarro modeloCarro) {
-        List<Carro> carros = carroService.findByModeloCarro(modeloCarro);
+    public ResponseEntity<List<CarroModel>> findByModeloCarro(@PathVariable ModeloCarroModel modeloCarro) {
+        List<CarroModel> carros = carroService.findByModeloCarro(modeloCarro);
 
         if (carros.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -83,8 +81,8 @@ public class CarroController {
     }
 
     @GetMapping(value = "/acessorio/{acessorio}")
-    public ResponseEntity<List<Carro>> findByAcessorios(@PathVariable Acessorio acessorio) {
-        List<Carro> carros = carroService.findByAcessorio(acessorio);
+    public ResponseEntity<List<CarroModel>> findByAcessorios(@PathVariable AcessorioModel acessorio) {
+        List<CarroModel> carros = carroService.findByAcessorio(acessorio);
 
         if (carros.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -94,7 +92,7 @@ public class CarroController {
     }
 
     @PostMapping
-    public ResponseEntity<String> insert(@RequestBody Carro carro) {
+    public ResponseEntity<String> insert(@RequestBody CarroModel carro) {
         try {
             carroService.save(carro);
             return ResponseEntity.ok("Carro cadastrado com sucesso!");
@@ -105,7 +103,7 @@ public class CarroController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id){
         try{
             carroService.remove(id);
             return ResponseEntity.noContent().build();

@@ -1,12 +1,13 @@
-package org.system.service.interfaces;
+package org.squad9.vehiclerentalservice.service.interfaces;
 
-import org.system.entity.Carro;
+import org.squad9.vehiclerentalservice.model.CarroModel;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface CarroService {
-    Carro save(Carro carro);
-    List<Carro> findAll();
-    Carro findById(Long id);
-    void remove(Long id);
+    CarroModel save(CarroModel carro);
+    List<CarroModel> findAll();
+    CarroModel findById(UUID id);
+    void remove(UUID id);
 }

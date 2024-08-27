@@ -1,30 +1,30 @@
-package org.system.service;
+package org.squad9.vehiclerentalservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.system.entity.CarrinhoCompra;
-import org.system.entity.Carro;
-import org.system.entity.Motorista;
-import org.system.repository.CarrinhoCompraRepository;
-import org.system.service.interfaces.CarrinhoCompraService;
+import org.squad9.vehiclerentalservice.model.CarrinhoCompraModel;
+import org.squad9.vehiclerentalservice.model.CarroModel;
+import org.squad9.vehiclerentalservice.model.MotoristaModel;
+import org.squad9.vehiclerentalservice.repository.CarrinhoCompraRepository;
+import org.squad9.vehiclerentalservice.service.interfaces.CarrinhoCompraService;
 
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
-    @Autowired
     private CarrinhoCompraRepository carrinhoCompraRepository;
-    @Autowired
-    private CarroServiceImpl carroService;
+
     @Override
-    public List<CarrinhoCompra> findAll() {
-        List<CarrinhoCompra> carrinho = carrinhoCompraRepository.findAll();
-        if (carrinho.isEmpty()){return null;}
+    public List<CarrinhoCompraModel> findAll() {
+        List<CarrinhoCompraModel> carrinho = carrinhoCompraRepository.findAll();
+        if (carrinho.isEmpty()) return null;
+
         return carrinho;
     }
 
     @Override
-    public CarrinhoCompra save(CarrinhoCompra carrinhoCompra){
+    public CarrinhoCompraModel save(CarrinhoCompraModel carrinhoCompra) {
         try{
             return carrinhoCompraRepository.save(carrinhoCompra);
         } catch (Exception e) {
@@ -32,9 +32,9 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
         }
     }
 
-    public void addCarros(CarrinhoCompra carrinhoCompra, Carro carro){
+    public void addCarros(CarrinhoCompraModel carrinhoCompra, CarroModel carro) {
         try{
-            List<Carro> listaCarros = carrinhoCompra.getListaCarros();
+            List<CarroModel> listaCarros = carrinhoCompra.getListaCarros();
             listaCarros.add(carro);
             carrinhoCompra.setListaCarros(listaCarros);
 
@@ -44,7 +44,7 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
         }
     }
 
-    public CarrinhoCompra findByMotorista(Motorista motorista) {
+    public CarrinhoCompraModel findByMotorista(MotoristaModel motorista) {
         try{
             return carrinhoCompraRepository.findByMotorista(motorista);
         } catch (Exception e) {
@@ -53,12 +53,11 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
     }
 
     @Override
-    public CarrinhoCompra findById(Long carrinhoId) {
+    public CarrinhoCompraModel findById(UUID carrinhoId) {
         try{
-            Optional<CarrinhoCompra> carrinhoOptional = carrinhoCompraRepository.findById(carrinhoId);
+            Optional<CarrinhoCompraModel> carrinhoOptional = carrinhoCompraRepository.findById(carrinhoId);
             if (carrinhoOptional.isPresent()){
-                CarrinhoCompra carrinhoCompra = carrinhoOptional.get();
-                return carrinhoCompra;
+                return carrinhoOptional.get();
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -66,11 +65,11 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
         return null;
     }
 
-    public Carro findByCarroId(CarrinhoCompra carrinhoCompra, Carro carro){
-        Long carroId = carro.getId();
+    public CarroModel findByCarroId(CarrinhoCompraModel carrinhoCompra, CarroModel carro){
+        UUID carroId = carro.getId();
 
-        List<Carro> listaCarros = carrinhoCompra.getListaCarros();
-        for (Carro carroCarrinho : listaCarros) {
+        List<CarroModel> listaCarros = carrinhoCompra.getListaCarros();
+        for (CarroModel carroCarrinho : listaCarros) {
             if (carroCarrinho.getId().equals(carroId)) {
                 return carroCarrinho;
             }
@@ -80,12 +79,12 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
     }
 
     @Override
-    public void removerCarro(CarrinhoCompra carrinhoCompra, Carro carro) {
-        List<Carro> listaCarros = carrinhoCompra.getListaCarros();
-        Iterator<Carro> iterator = listaCarros.iterator();
+    public void removerCarro(CarrinhoCompraModel carrinhoCompra, CarroModel carro) {
+        List<CarroModel> listaCarros = carrinhoCompra.getListaCarros();
+        Iterator<CarroModel> iterator = listaCarros.iterator();
 
         while (iterator.hasNext()) {
-            Carro carroCarrinho = iterator.next();
+            CarroModel carroCarrinho = iterator.next();
             if (carroCarrinho.getId().equals(carro.getId())) {
                 iterator.remove();
                 break;
@@ -95,8 +94,8 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
         save(carrinhoCompra);
     }
 
-    public List<Carro> getCarrosByCarrinhoId(Long carrinhoId) {
-        CarrinhoCompra carrinho = carrinhoCompraRepository.findById(carrinhoId)
+    public List<CarroModel> getCarrosByCarrinhoId(UUID carrinhoId) {
+        CarrinhoCompraModel carrinho = carrinhoCompraRepository.findById(carrinhoId)
                 .orElse(null);
 
         if (carrinho == null) {
@@ -106,7 +105,7 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
         return carrinho.getListaCarros();
     }
 
-    public void removeCarro(CarrinhoCompra carrinhoCompra, Carro carro){
-
+    public void removeCarro(CarrinhoCompraModel carrinhoCompra, CarroModel carro) {
+        // TODO: implement this
     }
 }

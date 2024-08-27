@@ -1,4 +1,4 @@
-package org.system.service.interfaces;
+package org.squad9.vehiclerentalservice.service.interfaces;
 
 import java.util.List;
 

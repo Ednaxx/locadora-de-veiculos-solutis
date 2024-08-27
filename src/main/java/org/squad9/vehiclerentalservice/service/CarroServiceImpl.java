@@ -1,44 +1,43 @@
-package org.system.service;
+package org.squad9.vehiclerentalservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.system.entity.Acessorio;
-import org.system.entity.Carro;
-import org.system.entity.ModeloCarro;
-import org.system.repository.CarroRepository;
-import org.system.service.interfaces.CarroService;
+import org.squad9.vehiclerentalservice.model.AcessorioModel;
+import org.squad9.vehiclerentalservice.model.CarroModel;
+import org.squad9.vehiclerentalservice.model.ModeloCarroModel;
+import org.squad9.vehiclerentalservice.repository.CarroRepository;
+import org.squad9.vehiclerentalservice.service.interfaces.CarroService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class CarroServiceImpl implements CarroService {
-    @Autowired
     private CarroRepository carroRepository;
 
     @Override
-    public Carro save(Carro carro) {
+    public CarroModel save(CarroModel carro) {
         try {
-            if(!isPlacaMercosulValida(carro.getPlaca()) && !isPlacaComumValida(carro.getPlaca())){
+            if(!isPlacaMercosulValida(carro.getPlaca()) && !isPlacaComumValida(carro.getPlaca()))
                 throw new IllegalArgumentException("Placa do carro inválida!");
-            }
 
-            if(!isChassiValido(carro.getChassi())){
+            if(!isChassiValido(carro.getChassi()))
                 throw new IllegalArgumentException("Chassi do carro inválido!");
-            }
 
-            if (carroRepository.existsByPlaca(carro.getPlaca())) {
+            if (carroRepository.existsByPlaca(carro.getPlaca()))
                 throw new IllegalArgumentException("Placa do carro já existente no sistema!");
-            }
-            if (carroRepository.existsByChassi(carro.getChassi())) {
+
+            if (carroRepository.existsByChassi(carro.getChassi()))
                 throw new IllegalArgumentException("Número de chassi já existente no sistema!");
-            }
 
             return carroRepository.save(carro);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException( e.getMessage());
         }
     }
@@ -59,7 +58,7 @@ public class CarroServiceImpl implements CarroService {
         return placa.toUpperCase().matches(placaPadrao);
     }
 
-    public void saveNewDates(Carro carro){
+    public void saveNewDates(CarroModel carro){
         try{
             carroRepository.save(carro);
         } catch (Exception e) {
@@ -67,12 +66,11 @@ public class CarroServiceImpl implements CarroService {
         }
     }
 
-    //Depois do cliente definir as datas, chamar o método para ser mostrado apenas os carros disponíveis naquelas datas
-    public List<Carro> listarCarrosDisponiveis(LocalDate dataInicio, LocalDate dataDevolucao) {
-        List<Carro> carrosDisponiveis = new ArrayList<>();
-        List<Carro> todosCarros = carroRepository.findAll();
+    public List<CarroModel> listarCarrosDisponiveis(LocalDate dataInicio, LocalDate dataDevolucao) {
+        List<CarroModel> carrosDisponiveis = new ArrayList<>();
+        List<CarroModel> todosCarros = carroRepository.findAll();
 
-        for (Carro carro : todosCarros) {
+        for (CarroModel carro : todosCarros) {
             if (carro.isDisponivelParaAluguel(dataInicio, dataDevolucao)) {
                 carrosDisponiveis.add(carro);
             }
@@ -82,21 +80,22 @@ public class CarroServiceImpl implements CarroService {
     }
 
     @Override
-    public List<Carro> findAll() {
+    public List<CarroModel> findAll() {
         try {
             return carroRepository.findAll();
-        }catch (Exception e){
+        }
+        catch (Exception e){
             System.out.println("Não foi possível encontrar registros de carros!");
         }
         return null;
     }
 
     @Override
-    public Carro findById(@PathVariable Long id) {
+    public CarroModel findById(@PathVariable UUID id) {
         try {
-            Optional<Carro> carroOptional = carroRepository.findById(id);
+            Optional<CarroModel> carroOptional = carroRepository.findById(id);
             if (carroOptional.isPresent()) {
-                Carro carro = carroOptional.get();
+                CarroModel carro = carroOptional.get();
                 return carro;
             }
         } catch (Exception e) {
@@ -105,16 +104,16 @@ public class CarroServiceImpl implements CarroService {
         return null;
     }
 
-    public List<Carro> findByModeloCarro(ModeloCarro modeloCarro){
+    public List<CarroModel> findByModeloCarro(ModeloCarroModel modeloCarro){
         return carroRepository.findByModeloCarro(modeloCarro);
     }
 
-    public List<Carro> findByAcessorio(Acessorio acessorio) {
+    public List<CarroModel> findByAcessorio(AcessorioModel acessorio) {
         return carroRepository.findByAcessoriosContaining(acessorio);
     }
 
     @Override
-    public void remove(Long id){
+    public void remove(UUID id){
         try {
             carroRepository.deleteById(id);
         } catch (Exception e) {

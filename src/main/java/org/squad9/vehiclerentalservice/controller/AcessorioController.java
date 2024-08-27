@@ -1,28 +1,28 @@
-package org.system.controller;
+package org.squad9.vehiclerentalservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.system.entity.Acessorio;
-import org.system.service.AcessorioServiceImpl;
+import org.squad9.vehiclerentalservice.model.AcessorioModel;
+import org.squad9.vehiclerentalservice.service.AcessorioServiceImpl;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/acessorios")
+@RequiredArgsConstructor
 public class AcessorioController {
-    @Autowired
     private AcessorioServiceImpl acessorioService;
 
     @GetMapping
-    public ResponseEntity<List<Acessorio>> findAll(){
+    public ResponseEntity<List<AcessorioModel>> findAll(){
         return ResponseEntity.ok(acessorioService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Acessorio> findById(@PathVariable Long id){
+    public ResponseEntity<AcessorioModel> findById(@PathVariable UUID id){
         try {
             return ResponseEntity.ok(acessorioService.findById(id));
         } catch (RuntimeException  e) {
@@ -32,7 +32,7 @@ public class AcessorioController {
     }
 
     @PostMapping
-    public ResponseEntity<String> insert(@RequestBody Acessorio acessorio) {
+    public ResponseEntity<String> insert(@RequestBody AcessorioModel acessorio) {
         try {
             acessorioService.save(acessorio);
             return ResponseEntity.ok("Acessório cadastrado com sucesso!");
@@ -43,7 +43,7 @@ public class AcessorioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id){
         try{
             acessorioService.remove(id);
             return ResponseEntity.noContent().build();

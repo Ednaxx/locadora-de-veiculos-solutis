@@ -1,12 +1,13 @@
-package org.system.service.interfaces;
+package org.squad9.vehiclerentalservice.service.interfaces;
 
-import org.system.entity.Motorista;
+import org.squad9.vehiclerentalservice.model.MotoristaModel;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface MotoristaService {
-    List<Motorista> findAll();
-    Motorista save(Motorista motorista);
-    void remove (Long motorista);
-    Motorista findByEmail(String email);
+    List<MotoristaModel> findAll();
+    MotoristaModel save(MotoristaModel motorista);
+    void remove (UUID motorista);
+    MotoristaModel findByEmail(String email);
 }

@@ -1,24 +1,24 @@
-package org.system.service;
+package org.squad9.vehiclerentalservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.system.entity.Carro;
-import org.system.entity.Categoria;
-import org.system.entity.Fabricante;
-import org.system.entity.ModeloCarro;
-import org.system.repository.ModeloCarroRepository;
-import org.system.service.interfaces.ModeloCarroService;
+import org.squad9.vehiclerentalservice.model.ModeloCarroModel;
+import org.squad9.vehiclerentalservice.model.util.Categoria;
+import org.squad9.vehiclerentalservice.repository.ModeloCarroRepository;
+import org.squad9.vehiclerentalservice.service.interfaces.ModeloCarroService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class ModeloCarroServiceImpl implements ModeloCarroService {
-    @Autowired
     private ModeloCarroRepository modeloCarroRepository;
+
     @Override
-    public ModeloCarro save(ModeloCarro modeloCarro) {
+    public ModeloCarroModel save(ModeloCarroModel modeloCarro) {
         try {
             return modeloCarroRepository.save(modeloCarro);
         }catch (Exception e){
@@ -28,7 +28,7 @@ public class ModeloCarroServiceImpl implements ModeloCarroService {
     }
 
     @Override
-    public List<ModeloCarro> findAll() {
+    public List<ModeloCarroModel> findAll() {
         try {
             return modeloCarroRepository.findAll();
         }catch (Exception e){
@@ -37,7 +37,7 @@ public class ModeloCarroServiceImpl implements ModeloCarroService {
         return null;
     }
 
-    public List<ModeloCarro> findByCategoria(@PathVariable Categoria categoria){
+    public List<ModeloCarroModel> findByCategoria(@PathVariable Categoria categoria){
         try{
             return modeloCarroRepository.findByCategoria(categoria);
         } catch (Exception e){
@@ -46,12 +46,11 @@ public class ModeloCarroServiceImpl implements ModeloCarroService {
     }
 
     @Override
-    public ModeloCarro findById(Long id) {
+    public ModeloCarroModel findById(UUID id) {
         try{
-            Optional<ModeloCarro> modeloCarroOptional = modeloCarroRepository.findById(id);
+            Optional<ModeloCarroModel> modeloCarroOptional = modeloCarroRepository.findById(id);
             if (modeloCarroOptional.isPresent()){
-                ModeloCarro modeloCarro = modeloCarroOptional.get();
-                return modeloCarro;
+                return modeloCarroOptional.get();
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -60,7 +59,7 @@ public class ModeloCarroServiceImpl implements ModeloCarroService {
     }
 
     @Override
-    public void remove(Long id){
+    public void remove(UUID id){
         try {
             modeloCarroRepository.deleteById(id);
         } catch (Exception e) {

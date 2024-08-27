@@ -1,25 +1,23 @@
-package org.system.controller;
+package org.squad9.vehiclerentalservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.system.entity.Acessorio;
-import org.system.entity.ApoliceSeguro;
-import org.system.entity.Carro;
-import org.system.entity.ModeloCarro;
-import org.system.service.ApolicesServiceImpl;
+import org.squad9.vehiclerentalservice.model.ApoliceSeguroModel;
+import org.squad9.vehiclerentalservice.service.ApolicesServiceImpl;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/apolices-seguro")
+@RequiredArgsConstructor
 public class ApoliceSeguroController {
-    @Autowired
     private ApolicesServiceImpl apolicesService;
 
     @GetMapping
-    public ResponseEntity<List<ApoliceSeguro>> findAll(){
+    public ResponseEntity<List<ApoliceSeguroModel>> findAll(){
         try {
             return ResponseEntity.ok(apolicesService.findAll());
         }catch (Exception e){
@@ -29,8 +27,8 @@ public class ApoliceSeguroController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ApoliceSeguro> findById(@PathVariable Long id) {
-        ApoliceSeguro apoliceSeguro = apolicesService.findById(id);
+    public ResponseEntity<ApoliceSeguroModel> findById(@PathVariable UUID id) {
+        ApoliceSeguroModel apoliceSeguro = apolicesService.findById(id);
 
         if (apoliceSeguro == null) {
             return ResponseEntity.notFound().build();
@@ -40,7 +38,7 @@ public class ApoliceSeguroController {
     }
 
     @PostMapping
-    public ResponseEntity<String> insert(@RequestBody ApoliceSeguro apoliceSeguro) {
+    public ResponseEntity<String> insert(@RequestBody ApoliceSeguroModel apoliceSeguro) {
         try {
             apolicesService.save(apoliceSeguro);
             return ResponseEntity.ok("Apólice de seguro cadastrada com sucesso!");
@@ -51,7 +49,7 @@ public class ApoliceSeguroController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id){
         try{
             apolicesService.remove(id);
             return ResponseEntity.noContent().build();

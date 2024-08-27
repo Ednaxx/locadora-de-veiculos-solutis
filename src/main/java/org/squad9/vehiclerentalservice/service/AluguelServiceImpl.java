@@ -1,34 +1,31 @@
-package org.system.service;
+package org.squad9.vehiclerentalservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.system.entity.Aluguel;
-import org.system.entity.CarrinhoCompra;
-import org.system.entity.Carro;
-import org.system.entity.Motorista;
-import org.system.repository.AluguelRepository;
-import org.system.service.interfaces.AluguelService;
+import org.squad9.vehiclerentalservice.model.AluguelModel;
+import org.squad9.vehiclerentalservice.model.CarroModel;
+import org.squad9.vehiclerentalservice.model.MotoristaModel;
+import org.squad9.vehiclerentalservice.repository.AluguelRepository;
+import org.squad9.vehiclerentalservice.service.interfaces.AluguelService;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class AluguelServiceImpl implements AluguelService {
 
-    @Autowired
     private AluguelRepository aluguelRepository;
-    @Autowired
     private CarroServiceImpl carroService;
 
-    public List<Aluguel> findAll() {
+    public List<AluguelModel> findAll() {
         return aluguelRepository.findAll();
     }
 
-    public Aluguel save(Aluguel aluguel) {
+    public AluguelModel save(AluguelModel aluguel) {
         try {
-            Carro carro = aluguel.getCarro();
+            CarroModel carro = aluguel.getCarro();
             carro.bloquearDatas(aluguel.getDataEntrega(), aluguel.getDataDevolucao());
 
             carroService.saveNewDates(carro);
@@ -39,9 +36,7 @@ public class AluguelServiceImpl implements AluguelService {
     }
 
     public boolean processPayment(@RequestParam String cardNumber, @RequestParam String expirationDate, @RequestParam String cvv) {
-        boolean paymentSuccessful = verifyPayment(cardNumber, expirationDate, cvv);
-
-        return paymentSuccessful;
+        return verifyPayment(cardNumber, expirationDate, cvv);
     }
 
     public boolean verifyPayment(String cardNumber, String expirationDate, String cvv){
@@ -77,7 +72,7 @@ public class AluguelServiceImpl implements AluguelService {
         return ((year > currentYear) || (year == currentYear && month >= currentMonth));
     }
 
-    public List<Aluguel> findAlugueisMotorista(Motorista motorista) {
+    public List<AluguelModel> findAlugueisMotorista(MotoristaModel motorista) {
         try{
             return aluguelRepository.findByMotorista(motorista);
         } catch (Exception e) {

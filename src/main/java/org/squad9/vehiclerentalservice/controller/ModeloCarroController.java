@@ -1,26 +1,25 @@
-package org.system.controller;
+package org.squad9.vehiclerentalservice.controller;
 
-import com.mysql.cj.xdevapi.Schema;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.system.entity.Categoria;
-import org.system.entity.Fabricante;
-import org.system.entity.ModeloCarro;
-import org.system.service.ModeloCarroServiceImpl;
+import org.squad9.vehiclerentalservice.model.ModeloCarroModel;
+import org.squad9.vehiclerentalservice.model.util.Categoria;
+import org.squad9.vehiclerentalservice.service.ModeloCarroServiceImpl;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/modelos-carro")
+@RequiredArgsConstructor
 public class ModeloCarroController {
-    @Autowired
     private ModeloCarroServiceImpl modeloCarroService;
 
     @GetMapping
-    public ResponseEntity<List<ModeloCarro>> findAll(){
+    public ResponseEntity<List<ModeloCarroModel>> findAll(){
         try {
-            List<ModeloCarro> modelosCarro = modeloCarroService.findAll();
+            List<ModeloCarroModel> modelosCarro = modeloCarroService.findAll();
             return ResponseEntity.ok(modelosCarro);
         }catch (Exception e){
             System.out.println("Não foi possível encontrar modelos de carro!");
@@ -29,8 +28,8 @@ public class ModeloCarroController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ModeloCarro> findById(@PathVariable Long id) {
-        ModeloCarro modeloCarro = modeloCarroService.findById(id);
+    public ResponseEntity<ModeloCarroModel> findById(@PathVariable UUID id) {
+        ModeloCarroModel modeloCarro = modeloCarroService.findById(id);
 
         if (modeloCarro != null) {
             return ResponseEntity.ok(modeloCarro);
@@ -40,9 +39,9 @@ public class ModeloCarroController {
     }
 
     @GetMapping(value = "/categoria/{categoria}")
-    public ResponseEntity<List<ModeloCarro>> findByCategoria(@PathVariable Categoria categoria){
+    public ResponseEntity<List<ModeloCarroModel>> findByCategoria(@PathVariable Categoria categoria){
         try {
-            List<ModeloCarro> modelosCarro = modeloCarroService.findByCategoria(categoria);
+            List<ModeloCarroModel> modelosCarro = modeloCarroService.findByCategoria(categoria);
             return ResponseEntity.ok(modelosCarro);
         }catch (Exception e){
             return null;
@@ -50,13 +49,13 @@ public class ModeloCarroController {
     }
 
     @PostMapping
-    public ResponseEntity<String> insert(@RequestBody ModeloCarro modeloCarro){
-        ModeloCarro newModeloCarro = modeloCarroService.save(modeloCarro);
+    public ResponseEntity<String> insert(@RequestBody ModeloCarroModel modeloCarro){
+        ModeloCarroModel newModeloCarro = modeloCarroService.save(modeloCarro);
         return ResponseEntity.ok("Modelo de carro cadastrado com sucesso!");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id){
         try{
             modeloCarroService.remove(id);
             return ResponseEntity.noContent().build();

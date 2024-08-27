@@ -1,15 +1,14 @@
-package org.system.service.interfaces;
+package org.squad9.vehiclerentalservice.service.interfaces;
 
-import org.system.entity.Acessorio;
-import org.system.entity.Aluguel;
+import org.squad9.vehiclerentalservice.model.AcessorioModel;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 public interface AcessorioService {
-    Acessorio findById(Long id);
+    AcessorioModel findById(UUID id);
 
-    Acessorio save(Acessorio acessorio);
-    List<Acessorio> findAll();
-    void remove(Long id);
+    AcessorioModel save(AcessorioModel acessorio);
+    List<AcessorioModel> findAll();
+    void remove(UUID id);
 }

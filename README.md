@@ -14,7 +14,7 @@ desenvolvido como parte do processo seletivo para o programa Solutis Dev Trail 2
 ## Como executar o projeto
 
 - Configure o banco de dados local. Pode-se usar um container no docker: 
-```docker run --name postgres-db -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pg_strong_password -e POSTGRES_DB=library_db -d postgres```;
+```docker run --name postgres-db -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=vehicle-rental -d postgres```;
 - Na pasta do código fonte, instale as dependências do Maven: ```mvn install```;
 - Configure suas variáveis de ambiente com as credenciais do seu banco de dados
 (a assinatura das variáveis está disponível em /src/main/resources/application.yml);

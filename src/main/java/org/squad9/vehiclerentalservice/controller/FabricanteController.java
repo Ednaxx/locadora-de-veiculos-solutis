@@ -1,25 +1,25 @@
-package org.system.controller;
+package org.squad9.vehiclerentalservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.system.entity.Carro;
-import org.system.entity.Fabricante;
-import org.system.service.interfaces.FabricanteService;
+import org.squad9.vehiclerentalservice.model.FabricanteModel;
+import org.squad9.vehiclerentalservice.service.interfaces.FabricanteService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/fabricantes")
+@RequiredArgsConstructor
 public class FabricanteController {
-    @Autowired
     private FabricanteService fabricanteService;
 
     @GetMapping
     public ResponseEntity<?> findAll(){
         try {
-            List<Fabricante> fabricantes = fabricanteService.findAll();
+            List<FabricanteModel> fabricantes = fabricanteService.findAll();
             return ResponseEntity.ok(fabricantes);
         }catch (Exception e){
             String errorMessage = "Não foi possível encontrar registros de fabricantes!";
@@ -28,8 +28,8 @@ public class FabricanteController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Fabricante> findById(@PathVariable Long id) {
-        Fabricante fabricante = fabricanteService.findById(id);
+    public ResponseEntity<FabricanteModel> findById(@PathVariable UUID id) {
+        FabricanteModel fabricante = fabricanteService.findById(id);
 
         if (fabricante != null) {
             return ResponseEntity.ok(fabricante);
@@ -39,13 +39,13 @@ public class FabricanteController {
     }
 
     @PostMapping
-    public ResponseEntity<String> insert(@RequestBody Fabricante fabricante){
-        Fabricante newFabricante = fabricanteService.save(fabricante);
+    public ResponseEntity<String> insert(@RequestBody FabricanteModel fabricante){
+        FabricanteModel newFabricante = fabricanteService.save(fabricante);
         return ResponseEntity.ok("Fabricante cadastrado com sucesso!");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id){
         try{
             fabricanteService.remove(id);
             return ResponseEntity.noContent().build();

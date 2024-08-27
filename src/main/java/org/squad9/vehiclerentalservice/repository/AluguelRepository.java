@@ -5,7 +5,8 @@ import org.squad9.vehiclerentalservice.model.AluguelModel;
 import org.squad9.vehiclerentalservice.model.MotoristaModel;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface AluguelRepository extends JpaRepository<AluguelModel, Long> {
+public interface AluguelRepository extends JpaRepository<AluguelModel, UUID> {
     List<AluguelModel> findByMotorista(MotoristaModel motorista);
 }

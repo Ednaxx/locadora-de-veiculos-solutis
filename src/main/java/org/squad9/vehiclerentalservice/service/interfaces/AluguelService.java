@@ -1,11 +1,10 @@
-package org.system.service.interfaces;
+package org.squad9.vehiclerentalservice.service.interfaces;
 
-import org.springframework.stereotype.Service;
-import org.system.entity.Aluguel;
+import org.squad9.vehiclerentalservice.model.AluguelModel;
 
 import java.util.List;
 
 public interface AluguelService {
-    public Aluguel save(Aluguel aluguel);
-    public List<Aluguel> findAll();
+    public AluguelModel save(AluguelModel aluguel);
+    public List<AluguelModel> findAll();
 }
