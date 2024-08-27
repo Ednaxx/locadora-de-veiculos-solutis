@@ -2,10 +2,11 @@ spring:
   application:
     name: "vehicle-rental-service"
   datasource:
-    url: jdbc:postgresql://${DBHOST}:${DBPORT}/${DBDATABASE}
-    username: ${DBUSER}
-    password: ${DBPASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+#      ddl-auto: update
+      ddl-auto: create-drop
