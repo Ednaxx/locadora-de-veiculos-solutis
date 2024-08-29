@@ -29,7 +29,7 @@ public class CarServiceImpl implements CarService {
             if(!isChassiValido(carro.getChassi()))
                 throw new IllegalArgumentException("Chassi do car inválido!");
 
-            if (carRepository.existsByPlaca(carro.getLicensePlate()))
+            if (carRepository.existsByLicensePlate(carro.getLicensePlate()))
                 throw new IllegalArgumentException("Placa do car já existente no sistema!");
 
             if (carRepository.existsByChassi(carro.getChassi()))
@@ -95,8 +95,7 @@ public class CarServiceImpl implements CarService {
         try {
             Optional<CarModel> carroOptional = carRepository.findById(id);
             if (carroOptional.isPresent()) {
-                CarModel carro = carroOptional.get();
-                return carro;
+                return carroOptional.get();
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -105,11 +104,11 @@ public class CarServiceImpl implements CarService {
     }
 
     public List<CarModel> findByModeloCarro(CarModelModel modeloCarro){
-        return carRepository.findByModeloCarro(modeloCarro);
+        return carRepository.findByCarModel(modeloCarro);
     }
 
     public List<CarModel> findByAcessorio(AccessoryModel acessorio) {
-        return carRepository.findByAcessoriosContaining(acessorio);
+        return carRepository.findByAccessoriesContaining(acessorio);
     }
 
     @Override

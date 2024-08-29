@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequestMapping("/acessorios")
 @RequiredArgsConstructor
 public class AccessoryController {
-    private AccessoryServiceImpl accessoryService;
+    private final AccessoryServiceImpl accessoryService;
 
     @GetMapping
     public ResponseEntity<List<AccessoryModel>> findAll(){

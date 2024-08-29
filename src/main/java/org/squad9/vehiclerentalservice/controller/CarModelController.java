@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/modelos-de-carro")
 @RequiredArgsConstructor
 public class CarModelController {
-    private CarModelServiceImpl carModelService;
+    private final CarModelServiceImpl carModelService;
 
     @GetMapping
     public ResponseEntity<List<CarModelModel>> findAll(){

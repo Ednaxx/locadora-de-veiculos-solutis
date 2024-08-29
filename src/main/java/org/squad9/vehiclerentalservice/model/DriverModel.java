@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue("Motorista")
+@DiscriminatorValue("motorista")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class DriverModel extends PersonModel {
-    @Column(name = "numero_CNH", nullable = false, unique = true, length = 11)
-    private String CNH_number;
+    @Column(name = "CNH", nullable = false, unique = true, length = 11)
+    private String CNH;
 
     @OneToOne
     @JoinColumn(name = "carrinho_compra_id")

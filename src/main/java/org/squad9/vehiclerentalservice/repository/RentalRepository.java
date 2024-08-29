@@ -8,5 +8,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RentalRepository extends JpaRepository<RentalModel, UUID> {
-    List<RentalModel> findByMotorista(DriverModel motorista);
+    List<RentalModel> findByDriver(DriverModel motorista);
 }

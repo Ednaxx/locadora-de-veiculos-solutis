@@ -2,9 +2,9 @@ spring:
   application:
     name: "vehicle-rental-service"
   datasource:
-    url: jdbc:postgresql://localhost:5432/vehicle-rental
-    username: user
-    password: password
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
   jpa:
     open-in-view: false
     hibernate:

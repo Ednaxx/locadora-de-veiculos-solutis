@@ -33,7 +33,7 @@ public class DriverServiceImpl implements DriverService {
                 throw new IllegalArgumentException("CPF inválido");
             }
 
-            if (!CNHValidation.isCNH(motorista.getCNH_number())) {
+            if (!CNHValidation.isCNH(motorista.getCNH())) {
                 throw new IllegalArgumentException("CNH inválida");
             }
 
@@ -74,7 +74,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private boolean existCNH(String numeroCNH){
-        return driverRepository.findBynumeroCNH(numeroCNH) != null;
+        return driverRepository.findByCNH(numeroCNH) != null;
     }
 
     private boolean existEmail(String email){

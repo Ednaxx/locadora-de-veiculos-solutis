@@ -14,8 +14,7 @@ import java.util.UUID;
 @RequestMapping("/fabricantes")
 @RequiredArgsConstructor
 public class ManufacturerController {
-
-    private ManufacturerService manufacturerService;
+    private final ManufacturerService manufacturerService;
 
     @GetMapping
     public ResponseEntity<List<ManufacturerModel>> findAll(){

@@ -18,8 +18,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RentalController {
 
-    private RentalServiceImpl rentalService;
-    private DriverServiceImpl driverService;
+    private final RentalServiceImpl rentalService;
+    private final DriverServiceImpl driverService;
 
     @GetMapping(value = "/{email}")
     public ResponseEntity<List<RentalModel>> findRentalsByDriver(@PathVariable String email){

@@ -23,4 +23,3 @@ public class BookingDetailsDTO implements Serializable {
         this.emailMotorista = emailMotorista;
     }
 }
-git add 

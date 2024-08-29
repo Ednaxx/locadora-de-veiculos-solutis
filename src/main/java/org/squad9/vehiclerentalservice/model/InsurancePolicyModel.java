@@ -31,7 +31,7 @@ public class InsurancePolicyModel {
     @Column(name = "protecao_roubo", nullable = false)
     private boolean theftProtection;
 
-    @OneToOne(mappedBy = "apoliceSeguro")
+    @OneToOne(mappedBy = "insurancePolicy")
     @JsonBackReference
     private RentalModel rent;
 }

@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CarRepository extends JpaRepository<CarModel, UUID> {
-    boolean existsByPlaca(String placa);
+    boolean existsByLicensePlate(String placa);
 
     boolean existsByChassi(String chassi);
 
-    List<CarModel> findByModeloCarro(CarModelModel modeloCarroId);
+    List<CarModel> findByCarModel(CarModelModel modeloCarroId);
 
-    List<CarModel> findByAcessoriosContaining(AccessoryModel acessorio);
+    List<CarModel> findByAccessoriesContaining(AccessoryModel acessorio);
 }

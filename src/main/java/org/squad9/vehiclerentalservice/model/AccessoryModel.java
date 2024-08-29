@@ -19,6 +19,6 @@ public class AccessoryModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "descricao",nullable = false)
+    @Column(name = "descricao", nullable = false)
     private String description;
 }

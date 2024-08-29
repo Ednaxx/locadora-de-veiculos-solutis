@@ -16,8 +16,8 @@ import java.util.UUID;
 @RequestMapping("/motoristas")
 @RequiredArgsConstructor
 public class DriverController {
-    private DriverServiceImpl driverService;
-    private ShoppingCartServiceImpl shoppingCartService;
+    private final DriverServiceImpl driverService;
+    private final ShoppingCartServiceImpl shoppingCartService;
 
     @GetMapping
     public ResponseEntity<List<DriverModel>> findAll() {

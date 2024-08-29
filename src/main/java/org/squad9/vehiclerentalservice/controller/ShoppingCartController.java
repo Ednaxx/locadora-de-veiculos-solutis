@@ -21,9 +21,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 //TODO: Terminar essa parte e revisitar essa logica pq ta muito estranha
 public class ShoppingCartController {
-    private ShoppingCartServiceImpl shoppingCartService;
-    private DriverServiceImpl driverService;
-    private CarServiceImpl carService;
+    private final ShoppingCartServiceImpl shoppingCartService;
+    private final DriverServiceImpl driverService;
+    private final CarServiceImpl carService;
 
     @GetMapping
     public ResponseEntity<List<ShoppingCartModel>> findAll(){

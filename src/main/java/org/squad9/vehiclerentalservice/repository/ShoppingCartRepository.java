@@ -7,5 +7,5 @@ import org.squad9.vehiclerentalservice.model.DriverModel;
 import java.util.UUID;
 
 public interface ShoppingCartRepository extends JpaRepository<ShoppingCartModel, UUID> {
-    ShoppingCartModel findByMotorista(DriverModel motorista);
+    ShoppingCartModel findByDriver(DriverModel motorista);
 }

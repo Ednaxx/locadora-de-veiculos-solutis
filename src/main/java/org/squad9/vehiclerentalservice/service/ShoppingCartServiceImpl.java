@@ -46,7 +46,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     public ShoppingCartModel findByMotorista(DriverModel motorista) {
         try{
-            return shoppingCartRepository.findByMotorista(motorista);
+            return shoppingCartRepository.findByDriver(motorista);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

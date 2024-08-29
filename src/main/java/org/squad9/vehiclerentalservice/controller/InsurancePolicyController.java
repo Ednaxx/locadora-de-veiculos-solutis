@@ -13,7 +13,7 @@ import java.util.UUID;
 @RequestMapping("/apolices-seguro")
 @RequiredArgsConstructor
 public class InsurancePolicyController {
-    private InsurancePolicyServiceImpl insurancePolicyService;
+    private final InsurancePolicyServiceImpl insurancePolicyService;
 
     @GetMapping
     public ResponseEntity<List<InsurancePolicyModel>> findAll(){

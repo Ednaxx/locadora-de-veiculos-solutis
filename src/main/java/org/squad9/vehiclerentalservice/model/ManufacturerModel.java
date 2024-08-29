@@ -22,6 +22,6 @@ public class ManufacturerModel {
     @Column(name = "nome", nullable = false, length = 50)
     private String name;
 
-    @OneToMany(mappedBy = "fabricante")
+    @OneToMany(mappedBy = "manufacturer")
     private List<CarModelModel> carModel;
 }

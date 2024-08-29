@@ -40,7 +40,7 @@ public class CarModelServiceImpl implements CarModelService {
     // TODO: Isso eh para estar no service de car
     public List<CarModelModel> findByCategoria(@PathVariable Category category){
         try{
-            return carModelRepository.findByCategoria(category);
+            return carModelRepository.findByCategory(category);
         } catch (Exception e){
             return null;
         }

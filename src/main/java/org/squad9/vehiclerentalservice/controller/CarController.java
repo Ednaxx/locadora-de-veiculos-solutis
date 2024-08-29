@@ -20,8 +20,8 @@ import java.util.UUID;
 @RequestMapping("/carros")
 @RequiredArgsConstructor
 public class CarController {
-    private CarServiceImpl carService;
-    private CarModelServiceImpl carModelService;
+    private final CarServiceImpl carService;
+    private final CarModelServiceImpl carModelService;
 
     @GetMapping
     public ResponseEntity<List<CarModel>> findAll() {

@@ -74,7 +74,7 @@ public class RentalServiceImpl implements RentalService {
 
     public List<RentalModel> findAlugueisMotorista(DriverModel motorista) {
         try{
-            return rentalRepository.findByMotorista(motorista);
+            return rentalRepository.findByDriver(motorista);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
