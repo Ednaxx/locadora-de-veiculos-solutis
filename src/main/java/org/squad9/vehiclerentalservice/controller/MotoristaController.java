@@ -30,10 +30,10 @@ public class MotoristaController {
             CarrinhoCompraModel carrinhoCompra = new CarrinhoCompraModel();
             CarrinhoCompraModel newCarrinhoCompra = carrinhoCompraService.save(carrinhoCompra);
 
-            motorista.setCarrinhoCompra(newCarrinhoCompra);
+            motorista.setShoppingCart(newCarrinhoCompra);
             MotoristaModel newMotorista = motoristaService.save(motorista);
 
-            carrinhoCompra.setMotorista(newMotorista);
+            carrinhoCompra.setDriver(newMotorista);
             carrinhoCompraService.save(carrinhoCompra);
 
             return ResponseEntity.ok("Motorista cadastrado com sucesso!");

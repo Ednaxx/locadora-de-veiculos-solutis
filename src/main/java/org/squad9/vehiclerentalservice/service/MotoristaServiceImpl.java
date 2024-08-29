@@ -33,7 +33,7 @@ public class MotoristaServiceImpl implements MotoristaService {
                 throw new IllegalArgumentException("CPF inválido");
             }
 
-            if (!CNHValidation.isCNH(motorista.getNumeroCNH())) {
+            if (!CNHValidation.isCNH(motorista.getCNH_number())) {
                 throw new IllegalArgumentException("CNH inválida");
             }
 

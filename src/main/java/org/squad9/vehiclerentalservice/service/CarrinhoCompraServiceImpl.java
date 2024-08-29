@@ -34,9 +34,9 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
 
     public void addCarros(CarrinhoCompraModel carrinhoCompra, CarroModel carro) {
         try{
-            List<CarroModel> listaCarros = carrinhoCompra.getListaCarros();
+            List<CarroModel> listaCarros = carrinhoCompra.getCarList();
             listaCarros.add(carro);
-            carrinhoCompra.setListaCarros(listaCarros);
+            carrinhoCompra.setCarList(listaCarros);
 
             carrinhoCompraRepository.save(carrinhoCompra);
         } catch (Exception e) {

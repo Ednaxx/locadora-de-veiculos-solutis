@@ -25,8 +25,8 @@ public class AluguelServiceImpl implements AluguelService {
 
     public AluguelModel save(AluguelModel aluguel) {
         try {
-            CarroModel carro = aluguel.getCarro();
-            carro.bloquearDatas(aluguel.getDataEntrega(), aluguel.getDataDevolucao());
+            CarroModel carro = aluguel.getCar();
+            carro.bloquearDatas(aluguel.getDeliveryDate(), aluguel.getReturnDate());
 
             carroService.saveNewDates(carro);
             return aluguelRepository.save(aluguel);
