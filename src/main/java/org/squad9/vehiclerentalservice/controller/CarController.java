@@ -46,7 +46,7 @@ public class CarController {
 
     @GetMapping(value = "/categoria/{categoria}")
     public ResponseEntity<List<CarModel>> findByCategory(@PathVariable Category categoria) {
-        // TODO: isso eh para estar no service de carro o loop ali eh para estar dentro do metodo, n aqui no controller
+        // TODO: isso eh para estar no service de car o loop ali eh para estar dentro do metodo, n aqui no controller
         List<CarModelModel> carModels = carModelService.findByCategoria(categoria);
         List<CarModel> cars = new ArrayList<>();
 

@@ -12,14 +12,15 @@ import java.io.Serializable;
 public class BookingDetailsDTO implements Serializable {
     private String dataInicio;
     private String dataDevolucao;
-    private CarModel carro;
+    private CarModel car;
     private String emailMotorista;
     private DriverModel motorista;
 
     public BookingDetailsDTO(String dataInicio, String dataDevolucao, CarModel car, String emailMotorista) {
         this.dataInicio = dataInicio;
         this.dataDevolucao = dataDevolucao;
-        this.carro = car;
+        this.car = car;
         this.emailMotorista = emailMotorista;
     }
 }
+git add 

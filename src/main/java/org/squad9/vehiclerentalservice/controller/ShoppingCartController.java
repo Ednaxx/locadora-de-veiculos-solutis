@@ -86,7 +86,7 @@ public class ShoppingCartController {
             shoppingCartService.removerCarro(shoppingCart, carro);
             return ResponseEntity.ok("Carro removido do carrinho com sucesso");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao remover carro do carrinho: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao remover car do carrinho: " + e.getMessage());
         }
     }
 }

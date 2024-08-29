@@ -24,13 +24,13 @@ public class CarServiceImpl implements CarService {
     public CarModel save(CarModel carro) {
         try {
             if(!isPlacaMercosulValida(carro.getLicensePlate()) && !isPlacaComumValida(carro.getLicensePlate()))
-                throw new IllegalArgumentException("Placa do carro inválida!");
+                throw new IllegalArgumentException("Placa do car inválida!");
 
             if(!isChassiValido(carro.getChassi()))
-                throw new IllegalArgumentException("Chassi do carro inválido!");
+                throw new IllegalArgumentException("Chassi do car inválido!");
 
             if (carRepository.existsByPlaca(carro.getLicensePlate()))
-                throw new IllegalArgumentException("Placa do carro já existente no sistema!");
+                throw new IllegalArgumentException("Placa do car já existente no sistema!");
 
             if (carRepository.existsByChassi(carro.getChassi()))
                 throw new IllegalArgumentException("Número de chassi já existente no sistema!");
@@ -117,7 +117,7 @@ public class CarServiceImpl implements CarService {
         try {
             carRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao remover carro: " + e.getMessage());
+            throw new RuntimeException("Erro ao remover car: " + e.getMessage());
         }
     }
 }

@@ -22,7 +22,7 @@ public class CarModelServiceImpl implements CarModelService {
         try {
             return carModelRepository.save(modeloCarro);
         }catch (Exception e){
-            System.out.println("Não foi possível salvar modelo de carro!");
+            System.out.println("Não foi possível salvar modelo de car!");
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -32,12 +32,12 @@ public class CarModelServiceImpl implements CarModelService {
         try {
             return carModelRepository.findAll();
         }catch (Exception e){
-            System.out.println("Não foi possível encontrar registros de modelos de carro!");
+            System.out.println("Não foi possível encontrar registros de modelos de car!");
         }
         return null;
     }
 
-    // TODO: Isso eh para estar no service de carro
+    // TODO: Isso eh para estar no service de car
     public List<CarModelModel> findByCategoria(@PathVariable Category category){
         try{
             return carModelRepository.findByCategoria(category);
@@ -64,7 +64,7 @@ public class CarModelServiceImpl implements CarModelService {
         try {
             carModelRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao remover modelo de carro: " + e.getMessage());
+            throw new RuntimeException("Erro ao remover modelo de car: " + e.getMessage());
         }
     }
 }
