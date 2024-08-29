@@ -68,7 +68,7 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
     public CarroModel findByCarroId(CarrinhoCompraModel carrinhoCompra, CarroModel carro){
         UUID carroId = carro.getId();
 
-        List<CarroModel> listaCarros = carrinhoCompra.getListaCarros();
+        List<CarroModel> listaCarros = carrinhoCompra.getCarList();
         for (CarroModel carroCarrinho : listaCarros) {
             if (carroCarrinho.getId().equals(carroId)) {
                 return carroCarrinho;
@@ -80,7 +80,7 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
 
     @Override
     public void removerCarro(CarrinhoCompraModel carrinhoCompra, CarroModel carro) {
-        List<CarroModel> listaCarros = carrinhoCompra.getListaCarros();
+        List<CarroModel> listaCarros = carrinhoCompra.getCarList();
         Iterator<CarroModel> iterator = listaCarros.iterator();
 
         while (iterator.hasNext()) {
@@ -102,7 +102,7 @@ public class CarrinhoCompraServiceImpl implements CarrinhoCompraService {
             return Collections.emptyList();
         }
 
-        return carrinho.getListaCarros();
+        return carrinho.getCarList();
     }
 
     public void removeCarro(CarrinhoCompraModel carrinhoCompra, CarroModel carro) {
