@@ -1,12 +1,12 @@
 package org.squad9.vehiclerentalservice.model.util;
 
 public enum Category {
-    HATCH_COMPACTO,
-    HATCH_MEDIO,
-    SEDAN_COMPACTO,
-    SEDAN_MEDIO,
-    SEDAN_GRANDE,
+    COMPACT_HATCH,
+    MEDIUM_HATCH,
+    COMPACT_SEDAN,
+    MEDIUM_SEDAN,
+    LARGE_SEDAN,
     MINIVAN,
-    ESPORTIVO,
-    UTILITARIO_COMERCIAL
+    SPORTS_CAR,
+    COMMERCIAL_UTILITY
 }
