@@ -16,10 +16,10 @@ public class BookingDetailsDTO implements Serializable {
     private String emailMotorista;
     private DriverModel motorista;
 
-    public BookingDetailsDTO(String dataInicio, String dataDevolucao, CarModel carro, String emailMotorista) {
+    public BookingDetailsDTO(String dataInicio, String dataDevolucao, CarModel car, String emailMotorista) {
         this.dataInicio = dataInicio;
         this.dataDevolucao = dataDevolucao;
-        this.carro = carro;
+        this.carro = car;
         this.emailMotorista = emailMotorista;
     }
 }
