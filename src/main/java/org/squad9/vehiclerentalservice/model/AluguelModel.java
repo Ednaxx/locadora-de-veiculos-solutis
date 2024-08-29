@@ -19,27 +19,27 @@ public class AluguelModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private LocalDate dataPedido;
+    @Column(name = "data_pedido",nullable = false)
+    private LocalDate orderDate;
 
-    @Column(nullable = false)
-    private LocalDate dataEntrega;
+    @Column(name = "data_entrega", nullable = false)
+    private LocalDate deliveryDate;
 
-    @Column(nullable = false)
-    private LocalDate dataDevolucao;
+    @Column(name = "data_devolucao",nullable = false)
+    private LocalDate returnDate;
 
-    @Column(nullable = false)
-    private BigDecimal valorTotal;
+    @Column(name = "valor_total",nullable = false)
+    private BigDecimal totalValue;
 
     @OneToOne
     @JoinColumn(name = "apolice_seguro_id", nullable = false)
-    private ApoliceSeguroModel apoliceSeguro;
+    private ApoliceSeguroModel insurancePolicy;
 
     @ManyToOne
     @JoinColumn(name = "carro_id", nullable = false)
-    private CarroModel carro;
+    private CarroModel car;
 
     @ManyToOne
     @JoinColumn(name = "motorista_id", nullable = false)
-    private MotoristaModel motorista;
+    private MotoristaModel driver;
 }

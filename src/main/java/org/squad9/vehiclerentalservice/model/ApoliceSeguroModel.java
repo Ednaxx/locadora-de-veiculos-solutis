@@ -19,19 +19,19 @@ public class ApoliceSeguroModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private BigDecimal valorFranquia;
+    @Column(name = "valor_franquia", nullable = false)
+    private BigDecimal franchiseValue;
 
-    @Column(nullable = false)
-    private boolean protecaoTerceiro;
+    @Column(name = "protecao_terceiro", nullable = false)
+    private boolean thirdPartyProtection;
 
-    @Column(nullable = false)
-    private boolean protecaoCausasNaturais;
+    @Column(name = "protecao_causas_naturais", nullable = false)
+    private boolean naturalCausesProtection;
 
-    @Column(nullable = false)
-    private boolean protecaoRoubo;
+    @Column(name = "protecao_roubo", nullable = false)
+    private boolean theftProtection;
 
     @OneToOne(mappedBy = "apoliceSeguro")
     @JsonBackReference
-    private AluguelModel aluguel;
+    private AluguelModel rent;
 }

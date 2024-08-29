@@ -29,7 +29,6 @@ public class CarroController {
         return carroService.findAll();
     }
 
-    //Após a adição das datas
     @GetMapping(value = "/disponiveis")
     public ResponseEntity<List<CarroModel>> listarCarrosDisponiveis(@RequestParam String dataInicio, @RequestParam String dataDevolucao) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

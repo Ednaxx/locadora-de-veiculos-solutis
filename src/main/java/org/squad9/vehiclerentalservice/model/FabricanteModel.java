@@ -19,9 +19,9 @@ public class FabricanteModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, length = 50)
-    private String nome;
+    @Column(name = "nome", nullable = false, length = 50)
+    private String name;
 
     @OneToMany(mappedBy = "fabricante")
-    private List<ModeloCarroModel> modelosCarro;
+    private List<ModeloCarroModel> carModel;
 }

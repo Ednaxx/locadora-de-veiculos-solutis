@@ -41,7 +41,7 @@ public class CarrinhoCompraController {
             MotoristaModel motorista = motoristaService.findByEmail(email);
             CarrinhoCompraModel carrinhoCompra = carrinhoCompraService.findByMotorista(motorista);
 
-            return ResponseEntity.ok(carrinhoCompra.getListaCarros());
+            return ResponseEntity.ok(carrinhoCompra.getCarList());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao buscar carros no carrinho: " + e.getMessage());
         }
@@ -75,7 +75,6 @@ public class CarrinhoCompraController {
         return ResponseEntity.ok(detalhesReservaDTO);
     }
 
-    //Mostrar lista de carros salvos em um determinado carrinho de compras
     @GetMapping(value = "/carrinho/{carrinhoId}")
     public ResponseEntity<?> findByCarros (@PathVariable UUID carrinhoId){
         List<CarroModel> carrosNoCarrinho = carrinhoCompraService.getCarrosByCarrinhoId(carrinhoId);
@@ -87,7 +86,6 @@ public class CarrinhoCompraController {
         return ResponseEntity.ok(carrosNoCarrinho);
     }
 
-    //Pegar detalhes de um carro em um carrinho específico
     @GetMapping(value = "/carrinho/{carrinhoId}/{carroId}")
     public ResponseEntity<?> findByCarroId(@PathVariable UUID carrinhoId, @PathVariable UUID carroId){
         try {
@@ -100,7 +98,6 @@ public class CarrinhoCompraController {
         }
     }
 
-    //Remover carro do carrinho de compras
     @DeleteMapping(value = "/carrinho/{carrinhoId}/{carroId}")
     public ResponseEntity<String> removerCarroDoCarrinho(@PathVariable UUID carrinhoId, @PathVariable UUID carroId) {
         try {

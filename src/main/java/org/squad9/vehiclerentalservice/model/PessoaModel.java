@@ -23,20 +23,20 @@ public class PessoaModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     protected UUID id;
 
-    @Column(nullable = false, length = 50)
-    protected String nome;
+    @Column(name = "nome",nullable = false, length = 50)
+    protected String name;
 
-    @Column(nullable = false)
+    @Column(name = "data_nascimento",nullable = false)
     @Temporal(TemporalType.DATE)
-    protected LocalDate dataNascimento;
+    protected LocalDate dateOfBirth;
 
-    @Column(nullable = false, unique = true, length = 14)
+    @Column(name = "cpf",nullable = false, unique = true, length = 14)
     protected String cpf;
 
-    @Column(nullable = false)
-    protected Sexo sexo;
+    @Column(name = "sexo",nullable = false)
+    protected Sexo sex;
 
-    @Column(nullable = false, unique = true, length = 30)
+    @Column(name = "email",nullable = false, unique = true, length = 30)
     protected String email;
 }
 

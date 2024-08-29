@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "carrinhoCompras")
+@Table(name = "carrinho_compras")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -20,7 +20,7 @@ public class CarrinhoCompraModel {
 
     @OneToOne
     @JoinColumn(name = "motorista_id")
-    private MotoristaModel motorista;
+    private MotoristaModel driver;
 
     @ManyToMany
     @JoinTable(
@@ -28,5 +28,5 @@ public class CarrinhoCompraModel {
             joinColumns = @JoinColumn(name = "carrinho_id"),
             inverseJoinColumns = @JoinColumn(name = "carro_id")
     )
-    private List<CarroModel> listaCarros;
+    private List<CarroModel> carList;
 }

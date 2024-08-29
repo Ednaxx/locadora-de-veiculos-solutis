@@ -20,17 +20,17 @@ public class ModeloCarroModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private String descricao;
+    @Column(name = "descricao",nullable = false)
+    private String description;
 
     @OneToMany
-    private List<CarroModel> carros;
+    private List<CarroModel> car;
 
     @ManyToOne
     @JoinColumn(name = "fabricante_id")
     @JsonBackReference
-    private FabricanteModel fabricante;
+    private FabricanteModel manufacturer;
 
     @Column(nullable = false, length = 22)
-    private Categoria categoria;
+    private Categoria category;
 }

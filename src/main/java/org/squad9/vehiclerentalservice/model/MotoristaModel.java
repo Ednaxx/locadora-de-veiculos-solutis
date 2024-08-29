@@ -13,13 +13,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MotoristaModel extends PessoaModel {
-    @Column(nullable = false, unique = true, length = 11)
-    private String numeroCNH;
+    @Column(name = "numero_CNH", nullable = false, unique = true, length = 11)
+    private String CNH_number;
 
     @OneToOne
     @JoinColumn(name = "carrinho_compra_id")
-    private CarrinhoCompraModel carrinhoCompra;
+    private CarrinhoCompraModel shoppingCart;
 
     @OneToMany
-    private List<AluguelModel> alugueis;
+    private List<AluguelModel> rent;
 }

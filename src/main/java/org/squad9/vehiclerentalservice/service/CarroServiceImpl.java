@@ -23,13 +23,13 @@ public class CarroServiceImpl implements CarroService {
     @Override
     public CarroModel save(CarroModel carro) {
         try {
-            if(!isPlacaMercosulValida(carro.getPlaca()) && !isPlacaComumValida(carro.getPlaca()))
+            if(!isPlacaMercosulValida(carro.getLicensePlate()) && !isPlacaComumValida(carro.getLicensePlate()))
                 throw new IllegalArgumentException("Placa do carro inválida!");
 
             if(!isChassiValido(carro.getChassi()))
                 throw new IllegalArgumentException("Chassi do carro inválido!");
 
-            if (carroRepository.existsByPlaca(carro.getPlaca()))
+            if (carroRepository.existsByPlaca(carro.getLicensePlate()))
                 throw new IllegalArgumentException("Placa do carro já existente no sistema!");
 
             if (carroRepository.existsByChassi(carro.getChassi()))

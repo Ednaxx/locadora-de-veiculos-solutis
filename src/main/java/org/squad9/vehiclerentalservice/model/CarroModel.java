@@ -20,17 +20,17 @@ public class CarroModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true, length = 7)
-    private String placa;
+    @Column(name = "placa", nullable = false, unique = true, length = 7)
+    private String licensePlate;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(name = "chassi", nullable = false, unique = true, length = 20)
     private String chassi;
 
-    @Column(nullable = false, length = 20)
-    private String cor;
+    @Column(name = "cor", nullable = false, length = 20)
+    private String color;
 
-    @Column(nullable = false)
-    private BigDecimal valorDiaria;
+    @Column(name = "valor_diaria", nullable = false)
+    private BigDecimal dailyRate;
 
     @ManyToMany
     @JoinTable(
@@ -38,25 +38,25 @@ public class CarroModel {
             joinColumns = @JoinColumn(name = "carro_id"),
             inverseJoinColumns = @JoinColumn(name = "acessorio_id")
     )
-    private List<AcessorioModel> acessorios;
+    private List<AcessorioModel> acessory;
 
     @ManyToOne
     @JoinColumn(name = "modelo_id")
-    private ModeloCarroModel modeloCarro;
+    private ModeloCarroModel carModel;
 
     @OneToMany
-    private List<AluguelModel> alugueis;
+    private List<AluguelModel> rent;
 
     @ElementCollection
     @CollectionTable(name = "carro_datas_ocupadas", joinColumns = @JoinColumn(name = "carro_id"))
     @Column(name = "data_ocupada")
-    private List<LocalDate> datasOcupadas;
+    private List<LocalDate> occupiedDates;
 
     @Column(nullable = false)
-    private String urlImagem;
+    private String urlImage;
 
     public boolean isDisponivelParaAluguel(LocalDate dataInicio, LocalDate dataDevolucao) {
-        for (LocalDate data : datasOcupadas) {
+        for (LocalDate data : occupiedDates) {
             if (!data.isBefore(dataInicio) && !data.isAfter(dataDevolucao)) return false;
         }
 
@@ -67,7 +67,7 @@ public class CarroModel {
         LocalDate data = dataInicio;
 
         while (!data.isAfter(dataDevolucao)) {
-            datasOcupadas.add(data);
+            occupiedDates.add(data);
             data = data.plusDays(1);
         }
     }

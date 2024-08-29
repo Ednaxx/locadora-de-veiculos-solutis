@@ -57,14 +57,12 @@ public class AluguelController {
         return paymentSuccessful ? "redirect:/resumo-reserva" : "redirect:/pagamento-falhou";
     }
 
-    //Após a confirmação de aluguel
     @PostMapping
     public ResponseEntity<String> insert(@RequestBody AluguelModel aluguel) {
         try {
-            //Pegar a data atual
             LocalDate dataPedido = LocalDate.now();
-            aluguel.setDataPedido(dataPedido);
-            System.out.println(aluguel.getDataPedido());
+            aluguel.setOrderDate(dataPedido);
+            System.out.println(aluguel.getOrderDate());
 
             aluguelService.save(aluguel);
             return ResponseEntity.ok("Aluguel confirmado!");
