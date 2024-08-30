@@ -54,4 +54,18 @@ public class AccessoryServiceImpl implements AccessoryService {
             throw new RuntimeException("Erro ao remover acessório: " + e.getMessage());
         }
     }
+    @Override
+    public AccessoryModel update(UUID id, AccessoryModel accessory){
+        Optional<AccessoryModel> existingAccessoryOptional = accessoryRepository.findById(id);
+        if (existingAccessoryOptional.isPresent()) {
+            AccessoryModel existingAccessory = existingAccessoryOptional.get();
+
+            existingAccessory.setName(accessory.getName());
+            existingAccessory.setDescription(accessory.getDescription());
+
+            return accessoryRepository.save(existingAccessory);
+        } else {
+            throw new RuntimeException("Acessório não encontrado com o ID: " + id);
+        }
+    }
 }
