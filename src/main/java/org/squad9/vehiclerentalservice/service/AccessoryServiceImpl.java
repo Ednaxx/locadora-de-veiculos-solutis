@@ -48,4 +48,18 @@ public class AccessoryServiceImpl implements AccessoryService {
 
         return accessoryRepository.save(existingAccessory);
     }
+    @Override
+    public AccessoryModel update(UUID id, AccessoryModel accessory){
+        Optional<AccessoryModel> existingAccessoryOptional = accessoryRepository.findById(id);
+        if (existingAccessoryOptional.isPresent()) {
+            AccessoryModel existingAccessory = existingAccessoryOptional.get();
+
+            existingAccessory.setName(accessory.getName());
+            existingAccessory.setDescription(accessory.getDescription());
+
+            return accessoryRepository.save(existingAccessory);
+        } else {
+            throw new RuntimeException("Acessório não encontrado com o ID: " + id);
+        }
+    }
 }
