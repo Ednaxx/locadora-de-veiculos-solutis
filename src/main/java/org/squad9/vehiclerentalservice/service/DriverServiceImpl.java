@@ -1,7 +1,10 @@
 package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.squad9.vehiclerentalservice.dto.request.DriverRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.DriverResponseDTO;
 import org.squad9.vehiclerentalservice.model.DriverModel;
 import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
 import org.squad9.vehiclerentalservice.repository.DriverRepository;
@@ -10,6 +13,7 @@ import org.squad9.vehiclerentalservice.service.interfaces.DriverService;
 import org.squad9.vehiclerentalservice.service.util.CPFValidation;
 import org.squad9.vehiclerentalservice.service.util.DriverValidations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,94 +23,83 @@ import java.util.UUID;
 public class DriverServiceImpl implements DriverService {
     private final DriverRepository driverRepository;
     private final ShoppingCartRepository shoppingCartRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<DriverModel> findAll() {
-        try {
-            return driverRepository.findAll();
-        } catch (Exception e) {
-            throw new RuntimeException("Não foi possível encontrar registros de motoristas: " + e.getMessage());
-        }
+    public List<DriverResponseDTO> findAll() {
+        List<DriverModel> drivers = driverRepository.findAll();
+        List<DriverResponseDTO> response = new ArrayList<>();
+
+        drivers.forEach(accessory -> response.add(modelMapper.map(accessory, DriverResponseDTO.class)));
+        return response;
     }
 
     @Override
-    public DriverModel findByEmail(String email) {
-        return driverRepository.findByEmail(email)
+    public DriverResponseDTO findByEmail(String email) {
+        DriverModel driver = driverRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o email: " + email));
+
+        return modelMapper.map(driver, DriverResponseDTO.class);
     }
 
     @Override
-    public DriverModel findById(UUID id) {
-        return driverRepository.findById(id)
+    public DriverResponseDTO findById(UUID id) {
+        DriverModel driver = driverRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
+
+        return modelMapper.map(driver, DriverResponseDTO.class);
     }
 
     @Override
-    public void remove(UUID driverId) {
-        try {
-            if (!driverRepository.existsById(driverId)) {
-                throw new IllegalArgumentException("Motorista não encontrado com o ID: " + driverId);
-            }
-            driverRepository.deleteById(driverId);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao remover motorista: " + e.getMessage());
+    public void remove(UUID id) {
+        if (!driverRepository.existsById(id)) {
+            throw new IllegalArgumentException("Motorista não encontrado com o ID: " + id);
         }
+        driverRepository.deleteById(id);
     }
 
     @Override
-    public DriverModel save(DriverModel driver) {
-        try {
-            if (!CPFValidation.isCPF(driver.getCPF())) {
-                throw new IllegalArgumentException("CPF inválido");
-            }
-            if (!DriverValidations.isCNH(driver.getCNH())) {
-                throw new IllegalArgumentException("CNH inválida");
-            }
+    public DriverResponseDTO save(DriverRequestDTO request) {
+        DriverModel driverToSave = modelMapper.map(request, DriverModel.class);
 
-            if (existCPF(driver.getCPF())) {
-                throw new IllegalArgumentException("CPF já existente no sistema!");
-            }
-            if (existCNH(driver.getCNH())) {
-                throw new IllegalArgumentException("CNH já existente no sistema!");
-            }
-            if (existEmail(driver.getEmail())) {
-                throw new IllegalArgumentException("Email já existente no sistema!");
-            }
-
-            driver.setCPF(CPFValidation.formatCPF(driver.getCPF()));
-
-            DriverModel savedDriver = driverRepository.save(driver);
-
-            ShoppingCartModel shoppingCart = new ShoppingCartModel();
-            shoppingCart.setDriver(savedDriver);
-            shoppingCart = shoppingCartRepository.save(shoppingCart);
-
-            savedDriver.setShoppingCart(shoppingCart);
-            driverRepository.save(savedDriver);
-
-            return savedDriver;
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao salvar motorista: " + e.getMessage());
+        if (!CPFValidation.isCPF(driverToSave.getCPF())) {
+            throw new IllegalArgumentException("CPF inválido");
         }
+        if (!DriverValidations.isCNH(driverToSave.getCNH())) {
+            throw new IllegalArgumentException("CNH inválida");
+        }
+
+        if (existCPF(driverToSave.getCPF())) {
+            throw new IllegalArgumentException("CPF já existente no sistema!");
+        }
+        if (existCNH(driverToSave.getCNH())) {
+            throw new IllegalArgumentException("CNH já existente no sistema!");
+        }
+        if (existEmail(driverToSave.getEmail())) {
+            throw new IllegalArgumentException("Email já existente no sistema!");
+        }
+
+        DriverModel savedDriver = driverRepository.save(driverToSave);
+
+        ShoppingCartModel shoppingCart = new ShoppingCartModel();
+        shoppingCart.setDriver(savedDriver);
+        shoppingCart = shoppingCartRepository.save(shoppingCart);
+
+        savedDriver.setShoppingCart(shoppingCart);
+        driverRepository.save(savedDriver);
+
+        return modelMapper.map(savedDriver, DriverResponseDTO.class);
     }
 
-
     @Override
-    public DriverModel update(UUID id, DriverModel driver) {
-        try {
-            DriverModel existingDriver = driverRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
+    public DriverResponseDTO update(UUID id, DriverRequestDTO request) {
+        driverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
 
-            existingDriver.setName(driver.getName());
-            existingDriver.setCPF(driver.getCPF());
-            existingDriver.setCNH(driver.getCNH());
-            existingDriver.setEmail(driver.getEmail());
-            existingDriver.setShoppingCart(driver.getShoppingCart());
+        DriverModel driverToSave = modelMapper.map(request, DriverModel.class);
+        driverToSave.setId(id);
+        DriverModel updatedDriver = driverRepository.save(driverToSave);
 
-            return driverRepository.save(existingDriver);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao atualizar motorista: " + e.getMessage());
-        }
+        return modelMapper.map(updatedDriver, DriverResponseDTO.class);
     }
 
     private boolean existCPF(String cpf) {

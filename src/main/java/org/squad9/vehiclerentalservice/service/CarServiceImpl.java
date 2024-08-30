@@ -1,15 +1,18 @@
 package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.squad9.vehiclerentalservice.dto.request.CarRequestDTO;
+import org.squad9.vehiclerentalservice.dto.request.DateIntervalRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarService;
 import org.squad9.vehiclerentalservice.service.util.DriverValidations;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,23 +20,26 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<CarModel> findAll() {
-        try {
-            return carRepository.findAll();
-        }
-        catch (Exception e){
-            throw new RuntimeException("Não foi possível encontrar registros de carros!");
-        }
+    public List<CarResponseDTO> findAll() {
+        List<CarModel> cars = carRepository.findAll();
+        List<CarResponseDTO> response = new ArrayList<>();
+
+        cars.forEach(car -> response.add(modelMapper.map(car, CarResponseDTO.class)));
+        return response;
     }
 
     @Override
-    public CarModel findById(UUID id) {
-        return carRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Carro não encontrado"));
+    public CarResponseDTO findById(UUID id) {
+        CarModel car = carRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + id));
+
+        return modelMapper.map(car, CarResponseDTO.class);
     }
 
+    // TODO: Check this later
     public void saveNewDates(CarModel carro){
         try{
             carRepository.save(carro);
@@ -43,75 +49,93 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarModel> findAvailableOnDate(String startDate, String returnDate) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate parsedStartDate = LocalDate.parse(startDate, dateFormatter);
-        LocalDate parsedReturnDate = LocalDate.parse(returnDate, dateFormatter);
+    public List<CarResponseDTO> findAvailableOnDate(DateIntervalRequestDTO dates) {
+        List<CarModel> cars = carRepository.findAvailableOnDate(dates.getStartDate(), dates.getReturnDate());
+        List<CarResponseDTO> response = new ArrayList<>();
 
-        return carRepository.findAvailableOnDate(parsedStartDate, parsedReturnDate);
+        cars.forEach(car -> response.add(modelMapper.map(car, CarResponseDTO.class)));
+        return response;
     }
 
     @Override
-    public List<CarModel> findByCarModel(UUID modelId) {
-        return carRepository.findByCarModelId(modelId);
+    public List<CarResponseDTO> findByCarModel(UUID modelId) {
+        List<CarModel> cars =  carRepository.findByCarModelId(modelId);
+        List<CarResponseDTO> response = new ArrayList<>();
+
+        cars.forEach(car -> response.add(modelMapper.map(car, CarResponseDTO.class)));
+        return response;
     }
 
 
     @Override
-    public List<CarModel> findByCategory(Category category) {
-        return carRepository.findByCategory(category);
+    public List<CarResponseDTO> findByCategory(Category category) {
+        List<CarModel> cars = carRepository.findByCategory(category);
+        List<CarResponseDTO> response = new ArrayList<>();
+
+        cars.forEach(car -> response.add(modelMapper.map(car, CarResponseDTO.class)));
+        return response;
     }
 
     @Override
-    public List<CarModel> findByAcessorio(UUID accessoryId) {
-        return carRepository.findByAccessoriesId(accessoryId);
+    public List<CarResponseDTO> findByAcessorio(UUID accessoryId) {
+        List<CarModel> cars = carRepository.findByAccessoriesId(accessoryId);
+        List<CarResponseDTO> response = new ArrayList<>();
+
+        cars.forEach(car -> response.add(modelMapper.map(car, CarResponseDTO.class)));
+        return response;
     }
 
     @Override
-    public CarModel save(CarModel carro) {
-        try {
-            if(!DriverValidations.isPlacaMercosulValida(carro.getLicensePlate()) && !DriverValidations.isPlacaComumValida(carro.getLicensePlate()))
-                throw new IllegalArgumentException("Placa do car inválida!");
+    public CarResponseDTO save(CarRequestDTO request) {
+        CarModel carToSave = modelMapper.map(request, CarModel.class);
 
-            if(!DriverValidations.isChassiValido(carro.getChassi()))
-                throw new IllegalArgumentException("Chassi do car inválido!");
+        if(!DriverValidations.isPlacaMercosulValida(carToSave.getLicensePlate()) && !DriverValidations.isPlacaComumValida(carToSave.getLicensePlate()))
+            throw new IllegalArgumentException("Placa do car inválida: " + carToSave.getLicensePlate());
 
-            if (carRepository.existsByLicensePlate(carro.getLicensePlate()))
-                throw new IllegalArgumentException("Placa do car já existente no sistema!");
+        if(!DriverValidations.isChassiValido(carToSave.getChassis()))
+            throw new IllegalArgumentException("Chassi do car inválido: " + carToSave.getChassis());
 
-            if (carRepository.existsByChassi(carro.getChassi()))
-                throw new IllegalArgumentException("Número de chassi já existente no sistema!");
+        if (carRepository.existsByLicensePlate(carToSave.getLicensePlate()))
+            throw new IllegalArgumentException("Placa do car já existente no sistema: " +carToSave.getLicensePlate());
 
-            return carRepository.save(carro);
-        }
-        catch (Exception e) {
-            throw new RuntimeException( e.getMessage());
-        }
+        if (carRepository.existsByChassi(carToSave.getChassis()))
+            throw new IllegalArgumentException("Número de chassi já existente no sistema: " + carToSave.getLicensePlate());
+
+        CarModel savedCar = carRepository.save(carToSave);
+        return modelMapper.map(savedCar, CarResponseDTO.class);
     }
 
     @Override
     public void remove(UUID id){
-        try {
-            carRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao remover car: " + e.getMessage());
+        if (!carRepository.existsById(id)) {
+            throw new IllegalArgumentException("Carro não encontrado com o ID: " + id);
         }
+        carRepository.deleteById(id);
     }
 
     @Override
-    public CarModel update(UUID id, CarModel updatedCar) {
-        CarModel existingCar = findById(id);
+    public CarResponseDTO update(UUID id, CarRequestDTO request) {
+        carRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
 
-        existingCar.setLicensePlate(updatedCar.getLicensePlate());
-        existingCar.setChassi(updatedCar.getChassi());
-        existingCar.setColor(updatedCar.getColor());
-        existingCar.setDailyRate(updatedCar.getDailyRate());
-        existingCar.setImageURL(updatedCar.getImageURL());
-        existingCar.setCarModel(updatedCar.getCarModel());
-        existingCar.setAccessories(updatedCar.getAccessories());
-        existingCar.setOccupiedDates(updatedCar.getOccupiedDates());
+        CarModel carToUpdate = modelMapper.map(request, CarModel.class);
 
-        return carRepository.save(existingCar);
+        if(!DriverValidations.isPlacaMercosulValida(carToUpdate.getLicensePlate()) && !DriverValidations.isPlacaComumValida(carToUpdate.getLicensePlate()))
+            throw new IllegalArgumentException("Placa do car inválida: " + carToUpdate.getLicensePlate());
+
+        if(!DriverValidations.isChassiValido(carToUpdate.getChassis()))
+            throw new IllegalArgumentException("Chassi do car inválido: " + carToUpdate.getChassis());
+
+        if (carRepository.existsByLicensePlate(carToUpdate.getLicensePlate()))
+            throw new IllegalArgumentException("Placa do car já existente no sistema: " +carToUpdate.getLicensePlate());
+
+        if (carRepository.existsByChassi(carToUpdate.getChassis()))
+            throw new IllegalArgumentException("Número de chassi já existente no sistema: " + carToUpdate.getLicensePlate());
+
+
+        carToUpdate.setId(id);
+        CarModel updatedCar = carRepository.save(carToUpdate);
+
+        return modelMapper.map(updatedCar, CarResponseDTO.class);
     }
 
 

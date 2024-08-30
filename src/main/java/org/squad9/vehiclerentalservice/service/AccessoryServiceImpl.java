@@ -3,6 +3,7 @@ package org.squad9.vehiclerentalservice.service;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.squad9.vehiclerentalservice.dto.request.AccessoryRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
 import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.repository.AccessoryRepository;
@@ -28,14 +29,19 @@ public class AccessoryServiceImpl implements AccessoryService {
     }
 
     @Override
-    public AccessoryModel findById(UUID id) {
-        return accessoryRepository.findById(id)
+    public AccessoryResponseDTO findById(UUID id) {
+        AccessoryModel accessory = accessoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+
+        return modelMapper.map(accessory, AccessoryResponseDTO.class);
     }
 
     @Override
-    public AccessoryModel save(AccessoryModel accessory) {
-        return accessoryRepository.save(accessory);
+    public AccessoryResponseDTO save(AccessoryRequestDTO request) {
+        AccessoryModel accessoryToSave = modelMapper.map(request, AccessoryModel.class);
+        AccessoryModel accessoryModel = accessoryRepository.save(accessoryToSave);
+
+        return modelMapper.map(accessoryModel, AccessoryResponseDTO.class);
     }
 
     @Override
@@ -47,13 +53,13 @@ public class AccessoryServiceImpl implements AccessoryService {
     }
 
     @Override
-    public AccessoryModel update(UUID id, AccessoryModel accessory) {
-        AccessoryModel existingAccessory = accessoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+    public AccessoryResponseDTO update(UUID id, AccessoryRequestDTO request) {
+        accessoryRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
 
-        existingAccessory.setName(accessory.getName());
-        existingAccessory.setDescription(accessory.getDescription());
+        AccessoryModel accessoryToUpdate = modelMapper.map(request, AccessoryModel.class);
+        accessoryToUpdate.setId(id);
+        AccessoryModel updatedAccessory = accessoryRepository.save(accessoryToUpdate);
 
-        return accessoryRepository.save(existingAccessory);
+        return modelMapper.map(updatedAccessory, AccessoryResponseDTO.class);
     }
 }

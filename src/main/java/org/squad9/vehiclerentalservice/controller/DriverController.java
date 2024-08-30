@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.squad9.vehiclerentalservice.model.DriverModel;
+import org.squad9.vehiclerentalservice.dto.request.DriverRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.DriverResponseDTO;
 import org.squad9.vehiclerentalservice.service.DriverServiceImpl;
 
 import java.util.List;
@@ -17,27 +18,27 @@ public class DriverController {
     private final DriverServiceImpl driverService;
 
     @GetMapping
-    ResponseEntity<List<DriverModel>> findAll() {
-        List<DriverModel> drivers = driverService.findAll();
-        return ResponseEntity.ok(drivers);
+    ResponseEntity<List<DriverResponseDTO>> findAll() {
+        List<DriverResponseDTO> response = driverService.findAll();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/{id}")
-    ResponseEntity<DriverModel> findById(@PathVariable UUID id) {
-        DriverModel driver = driverService.findById(id);
-        return ResponseEntity.ok(driver);
+    ResponseEntity<DriverResponseDTO> findById(@PathVariable UUID id) {
+        DriverResponseDTO response = driverService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/{email}")
-    ResponseEntity<DriverModel> findByEmail(@PathVariable String email) {
-        DriverModel driver = driverService.findByEmail(email);
-        return ResponseEntity.ok(driver);
+    ResponseEntity<DriverResponseDTO> findByEmail(@PathVariable String email) {
+        DriverResponseDTO response = driverService.findByEmail(email);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    ResponseEntity<DriverModel> create(@RequestBody DriverModel driver) {
-        DriverModel createdDriver = driverService.save(driver);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdDriver);
+    ResponseEntity<DriverResponseDTO> create(@RequestBody DriverRequestDTO request) {
+        DriverResponseDTO response = driverService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
@@ -48,8 +49,8 @@ public class DriverController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<DriverModel> update(@PathVariable UUID id, @RequestBody DriverModel driver) {
-        DriverModel driverModel = driverService.update(id, driver);
-        return ResponseEntity.ok(driverModel);
+    ResponseEntity<DriverResponseDTO> update(@PathVariable UUID id, @RequestBody DriverRequestDTO request) {
+        DriverResponseDTO response = driverService.update(id, request);
+        return ResponseEntity.ok(response);
     }
 }

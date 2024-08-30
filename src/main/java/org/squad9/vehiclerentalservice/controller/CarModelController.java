@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.squad9.vehiclerentalservice.model.CarModelModel;
+import org.squad9.vehiclerentalservice.dto.request.CarModelRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.CarModelResponseDTO;
 import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.service.CarModelServiceImpl;
 
@@ -18,27 +19,27 @@ public class CarModelController {
     private final CarModelServiceImpl carModelService;
 
     @GetMapping
-    ResponseEntity<List<CarModelModel>> findAll(){
-        List<CarModelModel> carModels = carModelService.findAll();
-        return ResponseEntity.ok(carModels);
+    ResponseEntity<List<CarModelResponseDTO>> findAll(){
+        List<CarModelResponseDTO> response = carModelService.findAll();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/{id}")
-    ResponseEntity<CarModelModel> findById(@PathVariable UUID id) {
-        CarModelModel carModel = carModelService.findById(id);
-        return ResponseEntity.ok(carModel);
+    ResponseEntity<CarModelResponseDTO> findById(@PathVariable UUID id) {
+        CarModelResponseDTO response = carModelService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/categoria/{categoria}")
-    ResponseEntity<List<CarModelModel>> findByCategory(@PathVariable Category categoria){
-        List<CarModelModel> carModels = carModelService.findByCategoria(categoria);
-        return ResponseEntity.ok(carModels);
+    ResponseEntity<List<CarModelResponseDTO>> findByCategory(@PathVariable Category categoria){
+        List<CarModelResponseDTO> response = carModelService.findByCategoria(categoria);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    ResponseEntity<CarModelModel> create(@RequestBody CarModelModel carModel){
-        CarModelModel newModeloCarro = carModelService.save(carModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newModeloCarro);
+    ResponseEntity<CarModelResponseDTO> create(@RequestBody CarModelRequestDTO request){
+        CarModelResponseDTO response = carModelService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
@@ -48,8 +49,8 @@ public class CarModelController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<CarModelModel> update(@PathVariable UUID id, @RequestBody CarModelModel model) {
-        CarModelModel carModelModel = carModelService.update(id, model);
-        return ResponseEntity.ok(carModelModel);
+    ResponseEntity<CarModelResponseDTO> update(@PathVariable UUID id, @RequestBody CarModelRequestDTO request) {
+        CarModelResponseDTO response = carModelService.update(id, request);
+        return ResponseEntity.ok(response);
     }
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface CarService {
     List<CarResponseDTO> findAll();
-    CarModel findById(UUID id);
+    CarResponseDTO findById(UUID id);
 
     List<CarResponseDTO> findAvailableOnDate(DateIntervalRequestDTO request);
     List<CarResponseDTO> findByCategory(Category category);
