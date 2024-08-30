@@ -29,10 +29,12 @@ public class RentalController {
         return ResponseEntity.ok(rentalModel);
     }
 
-    @GetMapping(value = "/{email}")
-    ResponseEntity<List<RentalModel>> findRentalsByDriver(@PathVariable String email){
-        // TODO: implement this
+    @GetMapping("/motorista/{email}")
+    ResponseEntity<List<RentalModel>> findRentalsByDriver(@PathVariable String email) {
+        List<RentalModel> rentals = rentalService.findByDriverEmail(email);
+        return ResponseEntity.ok(rentals);
     }
+
 
     @PostMapping
     ResponseEntity<RentalModel> create(@RequestBody RentalModel rental) {

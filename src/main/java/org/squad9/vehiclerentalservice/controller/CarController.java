@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.model.CarModel;
+import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.service.CarServiceImpl;
 
 import java.util.List;
@@ -33,9 +34,9 @@ public class CarController {
         return ResponseEntity.ok(availableCars);
     }
 
-    @GetMapping(value = "/categoria/{categoria_id}")
-    ResponseEntity<List<CarModel>> findByCategory(@PathVariable UUID categoria_id) {
-        List<CarModel> cars = carService.findByCategory(categoria_id);
+    @GetMapping(value = "/categoria/{categoria}")
+    ResponseEntity<List<CarModel>> findByCategory(@PathVariable Category categoria) {
+        List<CarModel> cars = carService.findByCategory(categoria);
         return ResponseEntity.ok(cars);
     }
 

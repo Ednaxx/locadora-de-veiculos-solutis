@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.CarModelModel;
+import org.squad9.vehiclerentalservice.model.util.Category;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,8 +16,10 @@ public interface CarRepository extends JpaRepository<CarModel, UUID> {
     boolean existsByLicensePlate(String placa);
     boolean existsByChassi(String chassi);
     List<CarModel> findByCarModelId(UUID modeloCarroId);
-    List<CarModel> findByCategoryId(UUID categoryId);
     List<CarModel> findByAccessoriesId(UUID accessoryId);
+
+    @Query("SELECT c FROM CarModel c WHERE c.carModel.category = :category")
+    List<CarModel> findByCategory(@Param("category") Category category);
 
     @Query("SELECT c FROM CarModel c LEFT JOIN c.occupiedDates d " +
             "WHERE (d IS NULL OR NOT (d BETWEEN :startDate AND :returnDate))")

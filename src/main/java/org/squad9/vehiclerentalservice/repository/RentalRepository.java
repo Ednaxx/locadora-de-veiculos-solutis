@@ -8,5 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RentalRepository extends JpaRepository<RentalModel, UUID> {
-    List<RentalModel> findByDriver(DriverModel motorista);
+    List<RentalModel> findByDriver(DriverModel driver);
+    List<RentalModel> findByDriverEmail(String email);
 }

@@ -33,6 +33,12 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    public List<RentalModel> findByDriverEmail(String email) {
+        return rentalRepository.findByDriverEmail(email);
+    }
+
+
+    @Override
     public RentalModel save(RentalModel rental) {
         try {
             rental.setOrderDate(LocalDate.now());

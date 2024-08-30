@@ -8,6 +8,7 @@ import java.util.UUID;
 public interface RentalService {
     List<RentalModel> findAll();
     RentalModel findById(UUID id);
+    List<RentalModel> findByDriverEmail(String email);
     RentalModel save(RentalModel rental);
     void delete(UUID id);
     RentalModel update(UUID id, RentalModel rental);

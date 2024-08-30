@@ -3,7 +3,7 @@ package org.squad9.vehiclerentalservice.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.model.CarModel;
-import org.squad9.vehiclerentalservice.model.CarModelModel;
+import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarService;
 import org.squad9.vehiclerentalservice.service.util.DriverValidations;
@@ -11,13 +11,12 @@ import org.squad9.vehiclerentalservice.service.util.DriverValidations;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class CarServiceImpl implements CarService {
-    private CarRepository carRepository;
+    private final CarRepository carRepository;
 
     @Override
     public List<CarModel> findAll() {
@@ -52,7 +51,6 @@ public class CarServiceImpl implements CarService {
         return carRepository.findAvailableOnDate(parsedStartDate, parsedReturnDate);
     }
 
-
     @Override
     public List<CarModel> findByCarModel(UUID modelId) {
         return carRepository.findByCarModelId(modelId);
@@ -60,8 +58,8 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    public List<CarModel> findByCategory(UUID categoryId) {
-        return carRepository.findByCategoryId(categoryId);
+    public List<CarModel> findByCategory(Category category) {
+        return carRepository.findByCategory(category);
     }
 
     @Override

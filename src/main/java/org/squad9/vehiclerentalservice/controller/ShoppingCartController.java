@@ -27,15 +27,10 @@ public class ShoppingCartController {
         return ResponseEntity.ok(shoppingCartModel);
     }
 
-    @GetMapping(value = "/{email}")
+    @GetMapping("/motorista/{email}")
     ResponseEntity<ShoppingCartModel> findByDriver(@PathVariable String email) {
-        //TODO: implement this
-    }
-
-    @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteById(@PathVariable UUID id) {
-        shoppingCartService.remove(id);
-        return ResponseEntity.ok().build();
+        ShoppingCartModel shoppingCartModel = shoppingCartService.findByDriver(email);
+        return ResponseEntity.ok(shoppingCartModel);
     }
 
     @PutMapping("/{id}")
