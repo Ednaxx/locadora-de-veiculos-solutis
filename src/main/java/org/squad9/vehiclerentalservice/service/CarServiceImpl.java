@@ -106,7 +106,7 @@ public class CarServiceImpl implements CarService {
         existingCar.setChassi(updatedCar.getChassi());
         existingCar.setColor(updatedCar.getColor());
         existingCar.setDailyRate(updatedCar.getDailyRate());
-        existingCar.setUrlImage(updatedCar.getUrlImage());
+        existingCar.setImageURL(updatedCar.getImageURL());
         existingCar.setCarModel(updatedCar.getCarModel());
         existingCar.setAccessories(updatedCar.getAccessories());
         existingCar.setOccupiedDates(updatedCar.getOccupiedDates());
