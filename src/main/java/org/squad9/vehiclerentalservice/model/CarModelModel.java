@@ -29,11 +29,11 @@ public class CarModelModel {
     private Category category;
 
     @OneToMany(mappedBy = "carModel", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("carModelReference")
     private List<CarModel> cars;
 
     @ManyToOne
     @JoinColumn(name = "fabricante_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("manufacturerReference")
     private ManufacturerModel manufacturer;
 }

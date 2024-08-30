@@ -44,6 +44,10 @@ public class RentalServiceImpl implements RentalService {
             rental.setOrderDate(LocalDate.now());
 
             CarModel car = rental.getCar();
+
+            if (!car.isAvailableToRent(rental.getOrderDate(), rental.getReturnDate()))
+                throw new RuntimeException("Carro indisponível para aluguel nas datas especificadas.");
+
             car.blockDates(rental.getDeliveryDate(), rental.getReturnDate());
 
             carService.saveNewDates(car);

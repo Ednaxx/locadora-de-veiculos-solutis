@@ -22,6 +22,6 @@ public class DriverModel extends PersonModel {
     private ShoppingCartModel shoppingCart;
 
     @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference("driverReference")
     private List<RentalModel> rent;
 }

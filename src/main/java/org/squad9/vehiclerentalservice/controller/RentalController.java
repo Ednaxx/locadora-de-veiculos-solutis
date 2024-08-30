@@ -35,7 +35,6 @@ public class RentalController {
         return ResponseEntity.ok(rentals);
     }
 
-
     @PostMapping
     ResponseEntity<RentalModel> create(@RequestBody RentalModel rental) {
         RentalModel newRental = rentalService.save(rental);

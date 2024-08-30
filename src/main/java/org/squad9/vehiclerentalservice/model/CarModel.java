@@ -47,11 +47,11 @@ public class CarModel {
 
     @ManyToOne
     @JoinColumn(name = "modelo_id")
-    @JsonBackReference
+    @JsonBackReference("carModelReference")
     private CarModelModel carModel;
 
     @OneToMany(mappedBy = "car")
-    @JsonManagedReference
+    @JsonManagedReference("carReference")
     private List<RentalModel> rents;
 
     @ElementCollection
@@ -59,7 +59,6 @@ public class CarModel {
     @Column(name = "data_ocupada")
     private List<LocalDate> occupiedDates;
 
-    // TODO: ver onde usar isso
     public boolean isAvailableToRent(LocalDate startingDate, LocalDate returnDate) {
         for (LocalDate data : occupiedDates)
             if (!data.isBefore(startingDate) && !data.isAfter(returnDate)) return false;
