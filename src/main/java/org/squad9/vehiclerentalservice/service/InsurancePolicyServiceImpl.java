@@ -48,4 +48,9 @@ public class InsurancePolicyServiceImpl implements InsurancePolicyService {
             throw new RuntimeException("Erro ao remover apólice de seguro: " + e.getMessage());
         }
     }
+
+    @Override
+    public InsurancePolicyModel update(UUID id, InsurancePolicyModel insurancePolicy) {
+        // TODO: implement this
+    }
 }

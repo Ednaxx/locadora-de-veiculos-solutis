@@ -1,5 +1,7 @@
 package org.squad9.vehiclerentalservice.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,13 +38,20 @@ public class CarModel {
     private String urlImage;
 
     @ManyToMany
+    @JoinTable(
+            name = "carro_acessorios",
+            joinColumns = @JoinColumn(name = "carro_id"),
+            inverseJoinColumns = @JoinColumn(name = "acessorio_id")
+    )
     private List<AccessoryModel> accessories;
 
     @ManyToOne
     @JoinColumn(name = "modelo_id")
+    @JsonBackReference
     private CarModelModel carModel;
 
     @OneToMany(mappedBy = "car")
+    @JsonManagedReference
     private List<RentalModel> rents;
 
     @ElementCollection
@@ -50,7 +59,7 @@ public class CarModel {
     @Column(name = "data_ocupada")
     private List<LocalDate> occupiedDates;
 
-
+    // TODO: ver onde usar isso
     public boolean isAvailableToRent(LocalDate startingDate, LocalDate returnDate) {
         for (LocalDate data : occupiedDates)
             if (!data.isBefore(startingDate) && !data.isAfter(returnDate)) return false;

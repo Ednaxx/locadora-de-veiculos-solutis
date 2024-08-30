@@ -38,14 +38,14 @@ public class ManufacturerServiceImpl implements ManufacturerService {
         try{
             Optional<ManufacturerModel> fabricanteOptional = manufacturerRepository.findById(id);
             if (fabricanteOptional.isPresent()){
-                ManufacturerModel fabricante = fabricanteOptional.get();
-                return fabricante;
+                return fabricanteOptional.get();
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
         return null;
     }
+
     @Override
     public void remove(UUID id){
         try {
@@ -53,5 +53,10 @@ public class ManufacturerServiceImpl implements ManufacturerService {
         } catch (Exception e) {
             throw new RuntimeException("Erro ao remover fabricante: " + e.getMessage());
         }
+    }
+
+    @Override
+    public ManufacturerModel update(UUID id, ManufacturerModel manufacturer) {
+        // TODO: implement this
     }
 }

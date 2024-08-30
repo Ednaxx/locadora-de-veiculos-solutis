@@ -1,6 +1,7 @@
 package org.squad9.vehiclerentalservice.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,14 +24,16 @@ public class CarModelModel {
     @Column(name = "descricao", nullable = false)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 22)
     private Category category;
 
-    @OneToMany
-    @JoinColumn(name = "carro_id")
-    private List<CarModel> car;
+    @OneToMany(mappedBy = "carModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<CarModel> cars;
 
     @ManyToOne
-    @JoinColumn(name = "fabricante_id")
+    @JoinColumn(name = "fabricante_id", nullable = false)
+    @JsonBackReference
     private ManufacturerModel manufacturer;
 }

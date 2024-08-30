@@ -12,6 +12,7 @@ import org.squad9.vehiclerentalservice.service.interfaces.RentalService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +23,11 @@ public class RentalServiceImpl implements RentalService {
 
     public List<RentalModel> findAll() {
         return rentalRepository.findAll();
+    }
+
+    @Override
+    public RentalModel findById(UUID id) {
+        // TODO: implement this
     }
 
     public RentalModel save(RentalModel rental) {
@@ -36,6 +42,16 @@ public class RentalServiceImpl implements RentalService {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @Override
+    public void delete(UUID id) {
+        // TODO: implement this
+    }
+
+    @Override
+    public RentalModel update(UUID id, RentalModel rental) {
+        // TODO: implement this
     }
 
     public boolean verifyPayment(Map<String, String> payload){

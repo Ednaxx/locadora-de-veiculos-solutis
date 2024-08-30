@@ -1,5 +1,7 @@
 package org.squad9.vehiclerentalservice.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import jakarta.persistence.*;
@@ -33,13 +35,16 @@ public class RentalModel {
 
     @OneToOne
     @JoinColumn(name = "apolice_seguro_id", nullable = false)
+    @JsonManagedReference
     private InsurancePolicyModel insurancePolicy;
 
     @ManyToOne
     @JoinColumn(name = "carro_id", nullable = false)
+    @JsonBackReference
     private CarModel car;
 
     @ManyToOne
     @JoinColumn(name = "motorista_id", nullable = false)
+    @JsonBackReference
     private DriverModel driver;
 }

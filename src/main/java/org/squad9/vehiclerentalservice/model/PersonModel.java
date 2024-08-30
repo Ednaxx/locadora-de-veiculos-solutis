@@ -27,12 +27,12 @@ public class PersonModel {
     protected String name;
 
     @Column(name = "data_nascimento", nullable = false)
-    @Temporal(TemporalType.DATE)
     protected LocalDate birthDate;
 
     @Column(name = "CPF",nullable = false, unique = true, length = 14)
     protected String CPF;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "sexo",nullable = false)
     protected Gender gender;
 
