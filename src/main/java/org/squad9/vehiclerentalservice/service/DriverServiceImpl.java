@@ -59,7 +59,6 @@ public class DriverServiceImpl implements DriverService {
             if (!CPFValidation.isCPF(driver.getCPF())) {
                 throw new IllegalArgumentException("CPF inválido");
             }
-
             if (!DriverValidations.isCNH(driver.getCNH())) {
                 throw new IllegalArgumentException("CNH inválida");
             }
@@ -76,17 +75,21 @@ public class DriverServiceImpl implements DriverService {
 
             driver.setCPF(CPFValidation.formatCPF(driver.getCPF()));
 
+            DriverModel savedDriver = driverRepository.save(driver);
+
             ShoppingCartModel shoppingCart = new ShoppingCartModel();
-            shoppingCart.setDriver(driver);
+            shoppingCart.setDriver(savedDriver);
             shoppingCart = shoppingCartRepository.save(shoppingCart);
 
-            driver.setShoppingCart(shoppingCart);
+            savedDriver.setShoppingCart(shoppingCart);
+            driverRepository.save(savedDriver);
 
-            return driverRepository.save(driver);
+            return savedDriver;
         } catch (Exception e) {
             throw new RuntimeException("Erro ao salvar motorista: " + e.getMessage());
         }
     }
+
 
     @Override
     public DriverModel update(UUID id, DriverModel driver) {

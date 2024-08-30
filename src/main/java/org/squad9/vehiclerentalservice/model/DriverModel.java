@@ -1,6 +1,7 @@
 package org.squad9.vehiclerentalservice.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DriverModel extends PersonModel {
-    @Column(name = "CNH", nullable = false, unique = true, length = 10)
+    @JsonProperty("CNH")
+    @Column(nullable = false, unique = true, length = 10)
     private String CNH;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
