@@ -18,32 +18,38 @@ public class CarModelController {
     private final CarModelServiceImpl carModelService;
 
     @GetMapping
-    public ResponseEntity<List<CarModelModel>> findAll(){
+    ResponseEntity<List<CarModelModel>> findAll(){
         List<CarModelModel> carModels = carModelService.findAll();
         return ResponseEntity.ok(carModels);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<CarModelModel> findById(@PathVariable UUID id) {
+    ResponseEntity<CarModelModel> findById(@PathVariable UUID id) {
         CarModelModel carModel = carModelService.findById(id);
         return ResponseEntity.ok(carModel);
     }
 
     @GetMapping(value = "/categoria/{categoria}")
-    public ResponseEntity<List<CarModelModel>> findByCategory(@PathVariable Category categoria){
+    ResponseEntity<List<CarModelModel>> findByCategory(@PathVariable Category categoria){
         List<CarModelModel> carModels = carModelService.findByCategoria(categoria);
         return ResponseEntity.ok(carModels);
     }
 
     @PostMapping
-    public ResponseEntity<CarModelModel> create(@RequestBody CarModelModel carModel){
+    ResponseEntity<CarModelModel> create(@RequestBody CarModelModel carModel){
         CarModelModel newModeloCarro = carModelService.save(carModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(newModeloCarro);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    ResponseEntity<Void> delete(@PathVariable UUID id){
         carModelService.remove(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<CarModelModel> update(@PathVariable UUID id, @RequestBody CarModelModel model) {
+        CarModelModel carModelModel = carModelService.update(id, model);
+        return ResponseEntity.ok(carModelModel);
     }
 }

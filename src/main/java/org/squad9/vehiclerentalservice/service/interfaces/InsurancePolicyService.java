@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface InsurancePolicyService {
-    InsurancePolicyModel findById(UUID id);
-    InsurancePolicyModel save(InsurancePolicyModel apoliceSeguro);
     List<InsurancePolicyModel> findAll();
+    InsurancePolicyModel findById(UUID id);
+    InsurancePolicyModel save(InsurancePolicyModel insurancePolicy);
     void remove(UUID id);
+    InsurancePolicyModel update(UUID id, InsurancePolicyModel insurancePolicy);
 }

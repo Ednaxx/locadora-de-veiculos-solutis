@@ -26,12 +26,12 @@ public class PersonModel {
     @Column(name = "nome",nullable = false, length = 50)
     protected String name;
 
-    @Column(name = "data_nascimento",nullable = false)
+    @Column(name = "data_nascimento", nullable = false)
     @Temporal(TemporalType.DATE)
-    protected LocalDate dateOfBirth;
+    protected LocalDate birthDate;
 
-    @Column(name = "cpf",nullable = false, unique = true, length = 14)
-    protected String cpf;
+    @Column(name = "CPF",nullable = false, unique = true, length = 14)
+    protected String CPF;
 
     @Column(name = "sexo",nullable = false)
     protected Gender gender;

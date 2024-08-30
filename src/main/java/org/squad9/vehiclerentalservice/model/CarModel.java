@@ -32,41 +32,36 @@ public class CarModel {
     @Column(name = "valor_diaria", nullable = false)
     private BigDecimal dailyRate;
 
+    @Column
+    private String urlImage;
+
     @ManyToMany
-    @JoinTable(
-            name = "carro_acessorio",
-            joinColumns = @JoinColumn(name = "carro_id"),
-            inverseJoinColumns = @JoinColumn(name = "acessorio_id")
-    )
     private List<AccessoryModel> accessories;
 
     @ManyToOne
     @JoinColumn(name = "modelo_id")
     private CarModelModel carModel;
 
-    @OneToMany
-    private List<RentalModel> rent;
+    @OneToMany(mappedBy = "car")
+    private List<RentalModel> rents;
 
     @ElementCollection
     @CollectionTable(name = "carro_datas_ocupadas", joinColumns = @JoinColumn(name = "carro_id"))
     @Column(name = "data_ocupada")
     private List<LocalDate> occupiedDates;
 
-    @Column(nullable = false)
-    private String urlImage;
 
-    public boolean isDisponivelParaAluguel(LocalDate dataInicio, LocalDate dataDevolucao) {
-        for (LocalDate data : occupiedDates) {
-            if (!data.isBefore(dataInicio) && !data.isAfter(dataDevolucao)) return false;
-        }
+    public boolean isAvailableToRent(LocalDate startingDate, LocalDate returnDate) {
+        for (LocalDate data : occupiedDates)
+            if (!data.isBefore(startingDate) && !data.isAfter(returnDate)) return false;
 
         return true;
     }
 
-    public void bloquearDatas(LocalDate dataInicio, LocalDate dataDevolucao) {
-        LocalDate data = dataInicio;
+    public void blockDates(LocalDate startingDate, LocalDate returnDate) {
+        LocalDate data = startingDate;
 
-        while (!data.isAfter(dataDevolucao)) {
+        while (!data.isAfter(returnDate)) {
             occupiedDates.add(data);
             data = data.plusDays(1);
         }

@@ -1,6 +1,7 @@
 package org.squad9.vehiclerentalservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.model.InsurancePolicyModel;
@@ -16,25 +17,31 @@ public class InsurancePolicyController {
     private final InsurancePolicyServiceImpl insurancePolicyService;
 
     @GetMapping
-    public ResponseEntity<List<InsurancePolicyModel>> findAll(){
+    ResponseEntity<List<InsurancePolicyModel>> findAll(){
         return ResponseEntity.ok(insurancePolicyService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<InsurancePolicyModel> findById(@PathVariable UUID id) {
+    ResponseEntity<InsurancePolicyModel> findById(@PathVariable UUID id) {
         InsurancePolicyModel insurancePolicy = insurancePolicyService.findById(id);
         return ResponseEntity.ok(insurancePolicy);
     }
 
     @PostMapping
-    public ResponseEntity<InsurancePolicyModel> create(@RequestBody InsurancePolicyModel insurancePolicy) {
+    ResponseEntity<InsurancePolicyModel> create(@RequestBody InsurancePolicyModel insurancePolicy) {
         InsurancePolicyModel newInsurancePolicy = insurancePolicyService.save(insurancePolicy);
-        return ResponseEntity.ok(newInsurancePolicy);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newInsurancePolicy);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    ResponseEntity<Void> delete(@PathVariable UUID id){
         insurancePolicyService.remove(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<InsurancePolicyModel> update(@PathVariable UUID id, @RequestBody InsurancePolicyModel insurancePolicy) {
+        InsurancePolicyModel insurancePolicyModel = insurancePolicyService.update(id, insurancePolicy);
+        return ResponseEntity.ok(insurancePolicyModel);
     }
 }

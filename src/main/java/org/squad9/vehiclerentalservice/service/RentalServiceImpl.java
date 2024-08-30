@@ -11,6 +11,7 @@ import org.squad9.vehiclerentalservice.service.interfaces.RentalService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -23,36 +24,28 @@ public class RentalServiceImpl implements RentalService {
         return rentalRepository.findAll();
     }
 
-    public RentalModel save(RentalModel aluguel) {
+    public RentalModel save(RentalModel rental) {
         try {
-            CarModel carro = aluguel.getCar();
-            carro.bloquearDatas(aluguel.getDeliveryDate(), aluguel.getReturnDate());
+            rental.setOrderDate(LocalDate.now());
+
+            CarModel carro = rental.getCar();
+            carro.blockDates(rental.getDeliveryDate(), rental.getReturnDate());
 
             carroService.saveNewDates(carro);
-            return rentalRepository.save(aluguel);
+            return rentalRepository.save(rental);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public boolean processPayment(@RequestParam String cardNumber, @RequestParam String expirationDate, @RequestParam String cvv) {
-        return verifyPayment(cardNumber, expirationDate, cvv);
-    }
+    public boolean verifyPayment(Map<String, String> payload){
+        String cardNumber = payload.get("cardNumber");
+        String expirationDate = payload.get("expirationDate");
+        String cvv = payload.get("cvv");
 
-    public boolean verifyPayment(String cardNumber, String expirationDate, String cvv){
-
-        if (!cardNumber.matches("\\d{13,16}")){
-            System.out.println("fui eu: Cartão");
-            return false;
-        }
-        if (!cvv.matches("\\d{3}")){
-            System.out.println("fui eu: cvv");
-            return false;
-        }
-        if (!isExpirationDateValid(expirationDate)){
-            System.out.println("fui eu: Data");
-            return false;
-        }
+        if (!cardNumber.matches("\\d{13,16}")) return false;
+        if (!cvv.matches("\\d{3}")) return false;
+        if (!isExpirationDateValid(expirationDate)) return false;
 
         return true;
     }
@@ -70,13 +63,5 @@ public class RentalServiceImpl implements RentalService {
         System.out.println(year + " / " + currentYear);
 
         return ((year > currentYear) || (year == currentYear && month >= currentMonth));
-    }
-
-    public List<RentalModel> findAlugueisMotorista(DriverModel motorista) {
-        try{
-            return rentalRepository.findByDriver(motorista);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
 }

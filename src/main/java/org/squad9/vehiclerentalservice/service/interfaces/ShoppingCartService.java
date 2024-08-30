@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ShoppingCartService {
-    ShoppingCartModel save(ShoppingCartModel carrinhoCompra);
     List<ShoppingCartModel> findAll();
     ShoppingCartModel findById(UUID id);
-    void removerCarro(ShoppingCartModel carrinhoCompra, CarModel carro);
+    ShoppingCartModel save(ShoppingCartModel shoppingCart);
+    void remove(UUID id);
+    ShoppingCartModel update(UUID id, ShoppingCartModel shoppingCart);
 }

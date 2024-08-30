@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DriverModel extends PersonModel {
-    @Column(name = "CNH", nullable = false, unique = true, length = 11)
+    @Column(name = "CNH", nullable = false, unique = true, length = 10)
     private String CNH;
 
     @OneToOne

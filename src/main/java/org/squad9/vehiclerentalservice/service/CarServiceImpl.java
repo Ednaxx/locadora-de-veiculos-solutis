@@ -10,6 +10,7 @@ import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarService;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,17 +67,11 @@ public class CarServiceImpl implements CarService {
         }
     }
 
-    public List<CarModel> listarCarrosDisponiveis(LocalDate dataInicio, LocalDate dataDevolucao) {
-        List<CarModel> carrosDisponiveis = new ArrayList<>();
-        List<CarModel> todosCarros = carRepository.findAll();
-
-        for (CarModel carro : todosCarros) {
-            if (carro.isDisponivelParaAluguel(dataInicio, dataDevolucao)) {
-                carrosDisponiveis.add(carro);
-            }
-        }
-
-        return carrosDisponiveis;
+    public List<CarModel> findAvailableOnDate(String startDate, String returnDate) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate parsedStartDate = LocalDate.parse(startDate, dateFormatter);
+        LocalDate parsedReturnDate = LocalDate.parse(returnDate, dateFormatter);
+        // TODO: Implement this
     }
 
     @Override
@@ -101,14 +96,6 @@ public class CarServiceImpl implements CarService {
             throw new RuntimeException(e.getMessage());
         }
         return null;
-    }
-
-    public List<CarModel> findByModeloCarro(CarModelModel modeloCarro){
-        return carRepository.findByCarModel(modeloCarro);
-    }
-
-    public List<CarModel> findByAcessorio(AccessoryModel acessorio) {
-        return carRepository.findByAccessoriesContaining(acessorio);
     }
 
     @Override

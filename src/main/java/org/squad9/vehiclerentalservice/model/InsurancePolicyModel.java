@@ -32,6 +32,5 @@ public class InsurancePolicyModel {
     private boolean theftProtection;
 
     @OneToOne(mappedBy = "insurancePolicy")
-    @JsonBackReference
     private RentalModel rent;
 }

@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public interface DriverRepository extends JpaRepository<DriverModel, UUID> {
     DriverModel findByEmail(String email);
-    DriverModel findByCpf(String cpf);
-    DriverModel findByCNH(String numeroCNH);
+    DriverModel findByCPF(String CPF);
+    DriverModel findByCNH(String CNH);
 }

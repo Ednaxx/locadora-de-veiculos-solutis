@@ -17,26 +17,32 @@ public class ManufacturerController {
     private final ManufacturerService manufacturerService;
 
     @GetMapping
-    public ResponseEntity<List<ManufacturerModel>> findAll(){
+    ResponseEntity<List<ManufacturerModel>> findAll(){
         List<ManufacturerModel> manufacturers = manufacturerService.findAll();
         return ResponseEntity.ok(manufacturers);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ManufacturerModel> findById(@PathVariable UUID id) {
+    ResponseEntity<ManufacturerModel> findById(@PathVariable UUID id) {
         ManufacturerModel manufacturer = manufacturerService.findById(id);
         return ResponseEntity.ok(manufacturer);
     }
 
     @PostMapping
-    public ResponseEntity<ManufacturerModel> create(@RequestBody ManufacturerModel manufacturer){
+    ResponseEntity<ManufacturerModel> create(@RequestBody ManufacturerModel manufacturer){
         ManufacturerModel newManufacturer = manufacturerService.save(manufacturer);
         return ResponseEntity.status(HttpStatus.CREATED).body(newManufacturer);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    ResponseEntity<Void> delete(@PathVariable UUID id){
         manufacturerService.remove(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<ManufacturerModel> update(@PathVariable UUID id, @RequestBody ManufacturerModel manufacturer) {
+        ManufacturerModel manufacturerModel = manufacturerService.update(id, manufacturer);
+        return ResponseEntity.ok(manufacturerModel);
     }
 }

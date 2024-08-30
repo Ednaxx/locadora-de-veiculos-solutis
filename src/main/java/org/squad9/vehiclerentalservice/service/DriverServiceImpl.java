@@ -29,7 +29,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverModel save(DriverModel motorista) {
         try {
-            if (!CPFValidation.isCPF(motorista.getCpf())){
+            if (!CPFValidation.isCPF(motorista.getCPF())){
                 throw new IllegalArgumentException("CPF inválido");
             }
 
@@ -37,17 +37,17 @@ public class DriverServiceImpl implements DriverService {
                 throw new IllegalArgumentException("CNH inválida");
             }
 
-            if (existCPF(motorista.getCpf())) {
+            if (existCPF(motorista.getCPF())) {
                 throw new IllegalArgumentException("CPF já existente no sistema!");
             }
-            if (existCNH(motorista.getCpf())) {
+            if (existCNH(motorista.getCPF())) {
                 throw new IllegalArgumentException("CNH já existente no sistema!");
             }
-            if (existEmail(motorista.getCpf())) {
+            if (existEmail(motorista.getCPF())) {
                 throw new IllegalArgumentException("Email já existente no sistema!");
             }
 
-            motorista.setCpf(CPFValidation.formatCPF(motorista.getCpf()));
+            motorista.setCPF(CPFValidation.formatCPF(motorista.getCPF()));
 
             return driverRepository.save(motorista);
         } catch (Exception e) {
@@ -70,7 +70,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private boolean existCPF(String cpf){
-        return driverRepository.findByCpf(cpf) != null;
+        return driverRepository.findByCPF(cpf) != null;
     }
 
     private boolean existCNH(String numeroCNH){

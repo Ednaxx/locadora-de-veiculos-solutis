@@ -23,14 +23,14 @@ public class CarModelModel {
     @Column(name = "descricao", nullable = false)
     private String description;
 
+    @Column(nullable = false, length = 22)
+    private Category category;
+
     @OneToMany
+    @JoinColumn(name = "carro_id")
     private List<CarModel> car;
 
     @ManyToOne
     @JoinColumn(name = "fabricante_id")
-    @JsonBackReference
     private ManufacturerModel manufacturer;
-
-    @Column(nullable = false, length = 22)
-    private Category category;
 }

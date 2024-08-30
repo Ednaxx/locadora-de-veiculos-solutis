@@ -7,7 +7,9 @@ import java.util.UUID;
 
 public interface DriverService {
     List<DriverModel> findAll();
-    DriverModel save(DriverModel motorista);
-    void remove (UUID motorista);
     DriverModel findByEmail(String email);
+    DriverModel findById(UUID id);
+    DriverModel save(DriverModel driver);
+    void remove (UUID id);
+    DriverModel update(UUID id, DriverModel driver);
 }
