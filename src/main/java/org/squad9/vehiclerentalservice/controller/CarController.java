@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.squad9.vehiclerentalservice.dto.request.DateIntervalRequestDTO;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.service.CarServiceImpl;
@@ -29,8 +30,8 @@ public class CarController {
     }
 
     @GetMapping(value = "/disponiveis")
-    ResponseEntity<List<CarModel>> findAvailableOnDate(@RequestParam String startDate, @RequestParam String returnDate) {
-        List<CarModel> availableCars = carService.findAvailableOnDate(startDate, returnDate);
+    ResponseEntity<List<CarModel>> findAvailableOnDate(@RequestBody DateIntervalRequestDTO request) {
+        List<CarModel> availableCars = carService.findAvailableOnDate(request);
         return ResponseEntity.ok(availableCars);
     }
 

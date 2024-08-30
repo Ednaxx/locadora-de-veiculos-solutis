@@ -1,11 +1,14 @@
 package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
 import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.repository.AccessoryRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.AccessoryService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,10 +16,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AccessoryServiceImpl implements AccessoryService {
     private final AccessoryRepository accessoryRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<AccessoryModel> findAll() {
-        return accessoryRepository.findAll();
+    public List<AccessoryResponseDTO> findAll() {
+        List<AccessoryModel> accessoryModels = accessoryRepository.findAll();
+        List<AccessoryResponseDTO> response = new ArrayList<>();
+
+        accessoryModels.forEach(accessory -> response.add(modelMapper.map(accessory, AccessoryResponseDTO.class)));
+        return response;
     }
 
     @Override
