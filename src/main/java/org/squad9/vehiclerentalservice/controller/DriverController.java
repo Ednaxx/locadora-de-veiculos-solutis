@@ -1,6 +1,7 @@
 package org.squad9.vehiclerentalservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.model.DriverModel;
@@ -35,8 +36,10 @@ public class DriverController {
 
     @PostMapping
     ResponseEntity<DriverModel> create(@RequestBody DriverModel driver) {
-        //TODO: implement this
+        DriverModel createdDriver = driverService.save(driver);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDriver);
     }
+
 
     @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(@PathVariable UUID id) {

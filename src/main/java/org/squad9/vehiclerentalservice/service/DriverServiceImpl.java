@@ -30,6 +30,30 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    public DriverModel findByEmail(String email) {
+        return driverRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o email: " + email));
+    }
+
+    @Override
+    public DriverModel findById(UUID id) {
+        return driverRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
+    }
+
+    @Override
+    public void remove(UUID driverId) {
+        try {
+            if (!driverRepository.existsById(driverId)) {
+                throw new IllegalArgumentException("Motorista não encontrado com o ID: " + driverId);
+            }
+            driverRepository.deleteById(driverId);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao remover motorista: " + e.getMessage());
+        }
+    }
+
+    @Override
     public DriverModel save(DriverModel driver) {
         try {
             if (!CPFValidation.isCPF(driver.getCPF())) {
@@ -61,30 +85,6 @@ public class DriverServiceImpl implements DriverService {
             return driverRepository.save(driver);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao salvar motorista: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public DriverModel findByEmail(String email) {
-        return driverRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o email: " + email));
-    }
-
-    @Override
-    public DriverModel findById(UUID id) {
-        return driverRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
-    }
-
-    @Override
-    public void remove(UUID driverId) {
-        try {
-            if (!driverRepository.existsById(driverId)) {
-                throw new IllegalArgumentException("Motorista não encontrado com o ID: " + driverId);
-            }
-            driverRepository.deleteById(driverId);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao remover motorista: " + e.getMessage());
         }
     }
 
