@@ -57,6 +57,16 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     public ManufacturerModel update(UUID id, ManufacturerModel manufacturer) {
-        // TODO: implement this
+        try {
+            ManufacturerModel existingManufacturer = manufacturerRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + id));
+
+            existingManufacturer.setName(manufacturer.getName());
+
+            return manufacturerRepository.save(existingManufacturer);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar fabricante: " + e.getMessage());
+        }
     }
+
 }

@@ -3,16 +3,13 @@ package org.squad9.vehiclerentalservice.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.model.CarModel;
-import org.squad9.vehiclerentalservice.model.CarModelModel;
 import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarService;
 import org.squad9.vehiclerentalservice.service.util.DriverValidations;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -109,6 +106,6 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarModel update(UUID id, CarModel car) {
-        return null;
+        // TODO: implement this
     }
 }

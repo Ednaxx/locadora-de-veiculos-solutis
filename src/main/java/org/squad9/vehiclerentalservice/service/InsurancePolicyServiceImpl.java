@@ -22,13 +22,8 @@ public class InsurancePolicyServiceImpl implements InsurancePolicyService {
 
     @Override
     public InsurancePolicyModel findById(UUID id) {
-        try{
-            Optional<InsurancePolicyModel> apoliceSeguroOptional = insurancePolicyRepository.findById(id);
-            if (apoliceSeguroOptional.isPresent()) return apoliceSeguroOptional.get();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return null;
+        return insurancePolicyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id));
     }
 
     @Override
@@ -51,6 +46,19 @@ public class InsurancePolicyServiceImpl implements InsurancePolicyService {
 
     @Override
     public InsurancePolicyModel update(UUID id, InsurancePolicyModel insurancePolicy) {
-        // TODO: implement this
+        try {
+            InsurancePolicyModel existingPolicy = insurancePolicyRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id));
+
+            existingPolicy.setFranchiseValue(insurancePolicy.getFranchiseValue());
+            existingPolicy.setThirdPartyProtection(insurancePolicy.isThirdPartyProtection());
+            existingPolicy.setNaturalCausesProtection(insurancePolicy.isNaturalCausesProtection());
+            existingPolicy.setTheftProtection(insurancePolicy.isTheftProtection());
+
+            return insurancePolicyRepository.save(existingPolicy);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar apólice de seguro: " + e.getMessage());
+        }
     }
+
 }

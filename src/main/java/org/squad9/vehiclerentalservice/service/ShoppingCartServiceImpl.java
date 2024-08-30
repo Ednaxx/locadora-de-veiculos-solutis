@@ -17,28 +17,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public List<ShoppingCartModel> findAll() {
-        List<ShoppingCartModel> carrinho = shoppingCartRepository.findAll();
-        if (carrinho.isEmpty()) return null;
-
-        return carrinho;
+        List<ShoppingCartModel> cartList = shoppingCartRepository.findAll();
+        return cartList.isEmpty() ? Collections.emptyList() : cartList;
     }
 
     @Override
-    public ShoppingCartModel findById(UUID carrinhoId) {
-        try{
-            Optional<ShoppingCartModel> carrinhoOptional = shoppingCartRepository.findById(carrinhoId);
-            if (carrinhoOptional.isPresent()){
-                return carrinhoOptional.get();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return null;
+    public ShoppingCartModel findById(UUID cartId) {
+        return shoppingCartRepository.findById(cartId)
+                .orElseThrow(() -> new IllegalArgumentException("Carrinho de compras não encontrado com o ID: " + cartId));
     }
 
     @Override
     public ShoppingCartModel findByDriver(String email) {
-        // TODO: implement this
+        return shoppingCartRepository.findByDriverEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Carrinho de compras não encontrado para o motorista com o email: " + email));
     }
 
     @Override
@@ -59,3 +51,4 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
     }
 }
+
