@@ -7,13 +7,12 @@ import org.squad9.vehiclerentalservice.repository.AccessoryRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.AccessoryService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class AccessoryServiceImpl implements AccessoryService {
-    private AccessoryRepository accessoryRepository;
+    private final AccessoryRepository accessoryRepository;
 
     @Override
     public List<AccessoryModel> findAll() {
@@ -21,37 +20,32 @@ public class AccessoryServiceImpl implements AccessoryService {
     }
 
     @Override
-    public AccessoryModel findById(UUID id){
-        try{
-            Optional<AccessoryModel> acessorioOptional = accessoryRepository.findById(id);
-            if (acessorioOptional.isPresent()){
-                return acessorioOptional.get();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return null;
+    public AccessoryModel findById(UUID id) {
+        return accessoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
     }
 
     @Override
-    public AccessoryModel save(AccessoryModel acessorio) {
-        try {
-            return accessoryRepository.save(acessorio);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public AccessoryModel save(AccessoryModel accessory) {
+        return accessoryRepository.save(accessory);
     }
 
     @Override
-    public void remove(UUID id){
-        if(!accessoryRepository.existsById(id)){
-            throw new IllegalArgumentException();
+    public void remove(UUID id) {
+        if (!accessoryRepository.existsById(id)) {
+            throw new IllegalArgumentException("Acessório não encontrado com o ID: " + id);
         }
+        accessoryRepository.deleteById(id);
+    }
 
-        try {
-            accessoryRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao remover acessório: " + e.getMessage());
-        }
+    @Override
+    public AccessoryModel update(UUID id, AccessoryModel accessory) {
+        AccessoryModel existingAccessory = accessoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+
+        existingAccessory.setName(accessory.getName());
+        existingAccessory.setDescription(accessory.getDescription());
+
+        return accessoryRepository.save(existingAccessory);
     }
 }

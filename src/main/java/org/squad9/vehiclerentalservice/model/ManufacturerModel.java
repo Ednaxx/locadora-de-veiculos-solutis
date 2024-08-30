@@ -1,5 +1,6 @@
 package org.squad9.vehiclerentalservice.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,7 @@ public class ManufacturerModel {
     private String name;
 
     @OneToMany(mappedBy = "manufacturer")
+    @JsonManagedReference("manufacturerReference")
     private List<CarModelModel> carModel;
 }
+

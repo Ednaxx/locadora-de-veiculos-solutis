@@ -4,9 +4,7 @@ public class CPFValidation {
     public static boolean isCPF(String CPF) {
         try {
             String cpf = CPF.replace(".", "").replace("-", "");
-            if (cpf.length() != 11) {
-                return false;
-            }
+            if (cpf.length() != 11) return false;
 
             int[] multiplicadores1 = {10, 9, 8, 7, 6, 5, 4, 3, 2};
             int[] multiplicadores2 = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
@@ -16,6 +14,7 @@ public class CPFValidation {
             for (int i = 0; i < 9; i++) {
                 soma += Integer.parseInt(cpf.substring(i, i + 1)) * multiplicadores1[i];
             }
+
             int resto = soma % 11;
             int digito1 = resto < 2 ? 0 : 11 - resto;
 
@@ -24,6 +23,7 @@ public class CPFValidation {
             for (int i = 0; i < 10; i++) {
                 soma += Integer.parseInt(cpf.substring(i, i + 1)) * multiplicadores2[i];
             }
+
             resto = soma % 11;
             int digito2 = resto < 2 ? 0 : 11 - resto;
 

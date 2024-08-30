@@ -38,14 +38,14 @@ public class ManufacturerServiceImpl implements ManufacturerService {
         try{
             Optional<ManufacturerModel> fabricanteOptional = manufacturerRepository.findById(id);
             if (fabricanteOptional.isPresent()){
-                ManufacturerModel fabricante = fabricanteOptional.get();
-                return fabricante;
+                return fabricanteOptional.get();
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
         return null;
     }
+
     @Override
     public void remove(UUID id){
         try {
@@ -54,4 +54,19 @@ public class ManufacturerServiceImpl implements ManufacturerService {
             throw new RuntimeException("Erro ao remover fabricante: " + e.getMessage());
         }
     }
+
+    @Override
+    public ManufacturerModel update(UUID id, ManufacturerModel manufacturer) {
+        try {
+            ManufacturerModel existingManufacturer = manufacturerRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + id));
+
+            existingManufacturer.setName(manufacturer.getName());
+
+            return manufacturerRepository.save(existingManufacturer);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar fabricante: " + e.getMessage());
+        }
+    }
+
 }

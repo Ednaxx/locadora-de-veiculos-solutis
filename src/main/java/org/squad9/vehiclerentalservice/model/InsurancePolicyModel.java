@@ -11,9 +11,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "apolices_seguro")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class InsurancePolicyModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,6 +32,6 @@ public class InsurancePolicyModel {
     private boolean theftProtection;
 
     @OneToOne(mappedBy = "insurancePolicy")
-    @JsonBackReference
-    private RentalModel rent;
+    @JsonBackReference("insurancePolicyReference")
+    private RentalModel rental;
 }

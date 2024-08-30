@@ -2,69 +2,58 @@ package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.squad9.vehiclerentalservice.model.CarModelModel;
 import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.repository.CarModelRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarModelService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class CarModelServiceImpl implements CarModelService {
-    private CarModelRepository carModelRepository;
-
-    @Override
-    public CarModelModel save(CarModelModel modeloCarro) {
-        try {
-            return carModelRepository.save(modeloCarro);
-        }catch (Exception e){
-            System.out.println("Não foi possível salvar modelo de car!");
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+    private final CarModelRepository carModelRepository;
 
     @Override
     public List<CarModelModel> findAll() {
-        try {
-            return carModelRepository.findAll();
-        }catch (Exception e){
-            System.out.println("Não foi possível encontrar registros de modelos de car!");
-        }
-        return null;
-    }
-
-    // TODO: Isso eh para estar no service de car
-    public List<CarModelModel> findByCategoria(@PathVariable Category category){
-        try{
-            return carModelRepository.findByCategory(category);
-        } catch (Exception e){
-            return null;
-        }
+        return carModelRepository.findAll();
     }
 
     @Override
     public CarModelModel findById(UUID id) {
-        try{
-            Optional<CarModelModel> modeloCarroOptional = carModelRepository.findById(id);
-            if (modeloCarroOptional.isPresent()){
-                return modeloCarroOptional.get();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return null;
+        return carModelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Modelo de carro não encontrado com o ID: " + id));
     }
 
     @Override
-    public void remove(UUID id){
-        try {
-            carModelRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao remover modelo de car: " + e.getMessage());
+    public List<CarModelModel> findByCategoria(Category category) {
+        return carModelRepository.findByCategory(category);
+    }
+
+    @Override
+    public CarModelModel save(CarModelModel modeloCarro) {
+        return carModelRepository.save(modeloCarro);
+    }
+
+    @Override
+    public void remove(UUID id) {
+        if (!carModelRepository.existsById(id)) {
+            throw new IllegalArgumentException("Modelo de carro não encontrado com o ID: " + id);
         }
+        carModelRepository.deleteById(id);
+    }
+
+    @Override
+    public CarModelModel update(UUID id, CarModelModel carModel) {
+        CarModelModel existingCarModel = carModelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Modelo de carro não encontrado com o ID: " + id));
+
+        existingCarModel.setDescription(carModel.getDescription());
+        existingCarModel.setCategory(carModel.getCategory());
+        existingCarModel.setCars(carModel.getCars());
+        existingCarModel.setManufacturer(carModel.getManufacturer());
+
+        return carModelRepository.save(existingCarModel);
     }
 }

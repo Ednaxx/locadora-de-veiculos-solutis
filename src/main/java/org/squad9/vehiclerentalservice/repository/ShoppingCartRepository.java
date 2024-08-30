@@ -4,8 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
 import org.squad9.vehiclerentalservice.model.DriverModel;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ShoppingCartRepository extends JpaRepository<ShoppingCartModel, UUID> {
-    ShoppingCartModel findByDriver(DriverModel motorista);
+    Optional<ShoppingCartModel> findByDriverEmail(String driverEmail);
 }

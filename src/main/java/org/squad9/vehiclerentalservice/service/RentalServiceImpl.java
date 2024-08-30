@@ -11,48 +11,88 @@ import org.squad9.vehiclerentalservice.service.interfaces.RentalService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class RentalServiceImpl implements RentalService {
 
     private RentalRepository rentalRepository;
-    private CarServiceImpl carroService;
+    private CarServiceImpl carService;
 
+    @Override
     public List<RentalModel> findAll() {
         return rentalRepository.findAll();
     }
 
-    public RentalModel save(RentalModel aluguel) {
-        try {
-            CarModel carro = aluguel.getCar();
-            carro.bloquearDatas(aluguel.getDeliveryDate(), aluguel.getReturnDate());
+    @Override
+    public RentalModel findById(UUID id) {
+        return rentalRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Aluguel não encontrado com o ID: " + id));
+    }
 
-            carroService.saveNewDates(carro);
-            return rentalRepository.save(aluguel);
+    @Override
+    public List<RentalModel> findByDriverEmail(String email) {
+        return rentalRepository.findByDriverEmail(email);
+    }
+
+
+    @Override
+    public RentalModel save(RentalModel rental) {
+        try {
+            rental.setOrderDate(LocalDate.now());
+
+            CarModel car = rental.getCar();
+
+            if (!car.isAvailableToRent(rental.getOrderDate(), rental.getReturnDate()))
+                throw new RuntimeException("Carro indisponível para aluguel nas datas especificadas.");
+
+            car.blockDates(rental.getDeliveryDate(), rental.getReturnDate());
+
+            carService.saveNewDates(car);
+            return rentalRepository.save(rental);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public boolean processPayment(@RequestParam String cardNumber, @RequestParam String expirationDate, @RequestParam String cvv) {
-        return verifyPayment(cardNumber, expirationDate, cvv);
+    @Override
+    public void delete(UUID id) {
+        try {
+            rentalRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao remover aluguel: " + e.getMessage());
+        }
     }
 
-    public boolean verifyPayment(String cardNumber, String expirationDate, String cvv){
+    @Override
+    public RentalModel update(UUID id, RentalModel rental) {
+        try {
+            RentalModel existingRental = rentalRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Aluguel não encontrado com o ID: " + id));
 
-        if (!cardNumber.matches("\\d{13,16}")){
-            System.out.println("fui eu: Cartão");
-            return false;
+            existingRental.setDeliveryDate(rental.getDeliveryDate());
+            existingRental.setReturnDate(rental.getReturnDate());
+            existingRental.setTotalValue(rental.getTotalValue());
+            existingRental.setInsurancePolicy(rental.getInsurancePolicy());
+            existingRental.setCar(rental.getCar());
+            existingRental.setDriver(rental.getDriver());
+
+            return rentalRepository.save(existingRental);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar aluguel: " + e.getMessage());
         }
-        if (!cvv.matches("\\d{3}")){
-            System.out.println("fui eu: cvv");
-            return false;
-        }
-        if (!isExpirationDateValid(expirationDate)){
-            System.out.println("fui eu: Data");
-            return false;
-        }
+    }
+
+    public boolean verifyPayment(Map<String, String> payload){
+        String cardNumber = payload.get("cardNumber");
+        String expirationDate = payload.get("expirationDate");
+        String cvv = payload.get("cvv");
+
+        if (!cardNumber.matches("\\d{13,16}")) return false;
+        if (!cvv.matches("\\d{3}")) return false;
+        if (!isExpirationDateValid(expirationDate)) return false;
 
         return true;
     }
@@ -66,17 +106,7 @@ public class RentalServiceImpl implements RentalService {
         int currentMonth = currentDate.getMonthValue();
         int currentYear = currentDate.getYear() % 100;
 
-        System.out.println(month + " / " + currentMonth);
-        System.out.println(year + " / " + currentYear);
-
         return ((year > currentYear) || (year == currentYear && month >= currentMonth));
     }
-
-    public List<RentalModel> findAlugueisMotorista(DriverModel motorista) {
-        try{
-            return rentalRepository.findByDriver(motorista);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
 }
+

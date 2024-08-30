@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AccessoryService {
-    AccessoryModel findById(UUID id);
-
-    AccessoryModel save(AccessoryModel acessorio);
     List<AccessoryModel> findAll();
+    AccessoryModel findById(UUID id);
+    AccessoryModel save(AccessoryModel accessory);
     void remove(UUID id);
+    AccessoryModel update(UUID id, AccessoryModel accessory);
 }

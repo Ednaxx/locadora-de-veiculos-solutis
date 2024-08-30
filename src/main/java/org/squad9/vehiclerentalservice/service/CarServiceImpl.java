@@ -2,31 +2,78 @@ package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.model.CarModel;
-import org.squad9.vehiclerentalservice.model.CarModelModel;
+import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarService;
+import org.squad9.vehiclerentalservice.service.util.DriverValidations;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class CarServiceImpl implements CarService {
-    private CarRepository carRepository;
+    private final CarRepository carRepository;
+
+    @Override
+    public List<CarModel> findAll() {
+        try {
+            return carRepository.findAll();
+        }
+        catch (Exception e){
+            throw new RuntimeException("Não foi possível encontrar registros de carros!");
+        }
+    }
+
+    @Override
+    public CarModel findById(UUID id) {
+        return carRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Carro não encontrado"));
+    }
+
+    public void saveNewDates(CarModel carro){
+        try{
+            carRepository.save(carro);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<CarModel> findAvailableOnDate(String startDate, String returnDate) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate parsedStartDate = LocalDate.parse(startDate, dateFormatter);
+        LocalDate parsedReturnDate = LocalDate.parse(returnDate, dateFormatter);
+
+        return carRepository.findAvailableOnDate(parsedStartDate, parsedReturnDate);
+    }
+
+    @Override
+    public List<CarModel> findByCarModel(UUID modelId) {
+        return carRepository.findByCarModelId(modelId);
+    }
+
+
+    @Override
+    public List<CarModel> findByCategory(Category category) {
+        return carRepository.findByCategory(category);
+    }
+
+    @Override
+    public List<CarModel> findByAcessorio(UUID accessoryId) {
+        return carRepository.findByAccessoriesId(accessoryId);
+    }
 
     @Override
     public CarModel save(CarModel carro) {
         try {
-            if(!isPlacaMercosulValida(carro.getLicensePlate()) && !isPlacaComumValida(carro.getLicensePlate()))
+            if(!DriverValidations.isPlacaMercosulValida(carro.getLicensePlate()) && !DriverValidations.isPlacaComumValida(carro.getLicensePlate()))
                 throw new IllegalArgumentException("Placa do car inválida!");
 
-            if(!isChassiValido(carro.getChassi()))
+            if(!DriverValidations.isChassiValido(carro.getChassi()))
                 throw new IllegalArgumentException("Chassi do car inválido!");
 
             if (carRepository.existsByLicensePlate(carro.getLicensePlate()))
@@ -42,75 +89,6 @@ public class CarServiceImpl implements CarService {
         }
     }
 
-    private boolean isChassiValido(String chassi) {
-        String chassiPadrao = "^[A-HJ-NPR-Z0-9]{17}$";
-
-        return chassi.toUpperCase().matches(chassiPadrao);
-    }
-
-    private boolean isPlacaComumValida(String placa) {
-        String placaPadrao = "^[A-Z]{3}-?\\d{4}$";
-        return placa.toUpperCase().matches(placaPadrao);
-    }
-
-    private boolean isPlacaMercosulValida(String placa) {
-        String placaPadrao = "^[A-Z]{3}\\d[A-Z]{2}\\d{2}$";
-        return placa.toUpperCase().matches(placaPadrao);
-    }
-
-    public void saveNewDates(CarModel carro){
-        try{
-            carRepository.save(carro);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    public List<CarModel> listarCarrosDisponiveis(LocalDate dataInicio, LocalDate dataDevolucao) {
-        List<CarModel> carrosDisponiveis = new ArrayList<>();
-        List<CarModel> todosCarros = carRepository.findAll();
-
-        for (CarModel carro : todosCarros) {
-            if (carro.isDisponivelParaAluguel(dataInicio, dataDevolucao)) {
-                carrosDisponiveis.add(carro);
-            }
-        }
-
-        return carrosDisponiveis;
-    }
-
-    @Override
-    public List<CarModel> findAll() {
-        try {
-            return carRepository.findAll();
-        }
-        catch (Exception e){
-            System.out.println("Não foi possível encontrar registros de carros!");
-        }
-        return null;
-    }
-
-    @Override
-    public CarModel findById(@PathVariable UUID id) {
-        try {
-            Optional<CarModel> carroOptional = carRepository.findById(id);
-            if (carroOptional.isPresent()) {
-                return carroOptional.get();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return null;
-    }
-
-    public List<CarModel> findByModeloCarro(CarModelModel modeloCarro){
-        return carRepository.findByCarModel(modeloCarro);
-    }
-
-    public List<CarModel> findByAcessorio(AccessoryModel acessorio) {
-        return carRepository.findByAccessoriesContaining(acessorio);
-    }
-
     @Override
     public void remove(UUID id){
         try {
@@ -119,4 +97,22 @@ public class CarServiceImpl implements CarService {
             throw new RuntimeException("Erro ao remover car: " + e.getMessage());
         }
     }
+
+    @Override
+    public CarModel update(UUID id, CarModel updatedCar) {
+        CarModel existingCar = findById(id);
+
+        existingCar.setLicensePlate(updatedCar.getLicensePlate());
+        existingCar.setChassi(updatedCar.getChassi());
+        existingCar.setColor(updatedCar.getColor());
+        existingCar.setDailyRate(updatedCar.getDailyRate());
+        existingCar.setUrlImage(updatedCar.getUrlImage());
+        existingCar.setCarModel(updatedCar.getCarModel());
+        existingCar.setAccessories(updatedCar.getAccessories());
+        existingCar.setOccupiedDates(updatedCar.getOccupiedDates());
+
+        return carRepository.save(existingCar);
+    }
+
+
 }

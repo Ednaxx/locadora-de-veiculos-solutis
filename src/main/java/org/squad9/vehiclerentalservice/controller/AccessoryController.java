@@ -17,24 +17,30 @@ public class AccessoryController {
     private final AccessoryServiceImpl accessoryService;
 
     @GetMapping
-    public ResponseEntity<List<AccessoryModel>> findAll(){
+    ResponseEntity<List<AccessoryModel>> findAll(){
         return ResponseEntity.ok(accessoryService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<AccessoryModel> findById(@PathVariable UUID id){
+    ResponseEntity<AccessoryModel> findById(@PathVariable UUID id){
         return ResponseEntity.ok(accessoryService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<AccessoryModel> create(@RequestBody AccessoryModel accessory) {
+    ResponseEntity<AccessoryModel> create(@RequestBody AccessoryModel accessory) {
         AccessoryModel newAccessory = accessoryService.save(accessory);
         return ResponseEntity.status(HttpStatus.CREATED).body(newAccessory);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    ResponseEntity<Void> delete(@PathVariable UUID id){
         accessoryService.remove(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<AccessoryModel> update(@PathVariable UUID id, @RequestBody AccessoryModel accessory){
+        AccessoryModel accessoryModel = accessoryService.update(id, accessory);
+        return ResponseEntity.ok(accessoryModel);
     }
 }
