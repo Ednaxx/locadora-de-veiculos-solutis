@@ -101,6 +101,6 @@ classDiagram
     Carro "0..*" -- "1" ModeloCarro : modelo
     Carro "0..*" -- "0..*" Acessorio : acessorioModels
     ModeloCarro "1" -- "0..*" Fabricante : fabricante
-    ModeloCarro "1" -- "1" Categoria : categoria
+    ModeloCarro "1" -- "1" Categoria : category
 
 ```
