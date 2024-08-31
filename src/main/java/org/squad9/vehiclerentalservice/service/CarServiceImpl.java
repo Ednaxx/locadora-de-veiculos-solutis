@@ -11,7 +11,7 @@ import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.repository.AccessoryRepository;
-import org.squad9.vehiclerentalservice.repository.CarModelRepository;
+import org.squad9.vehiclerentalservice.repository.CarTypeRepository;
 import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.repository.RentalRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarService;
@@ -26,7 +26,7 @@ import java.util.UUID;
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     private final AccessoryRepository accessoryRepository;
-    private final CarModelRepository carModelRepository;
+    private final CarTypeRepository carTypeRepository;
     private final RentalRepository rentalRepository;
     private final ModelMapper modelMapper;
 

@@ -43,12 +43,13 @@ public class CarModel {
             joinColumns = @JoinColumn(name = "carro_id"),
             inverseJoinColumns = @JoinColumn(name = "acessorio_id")
     )
+
     private List<AccessoryModel> accessories;
 
     @ManyToOne
     @JoinColumn(name = "modelo_id")
     @JsonBackReference("carModelReference")
-    private CarModelModel carModel;
+    private CarTypeModel carModel;
 
     @OneToMany(mappedBy = "car")
     @JsonManagedReference("carReference")

@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CarModelRequestDTO {
+public class CarTypeRequestDTO {
     @Size(max = 500) private String description;
     @NotBlank @Size(max = 18) private String category;
     @NotBlank private UUID manufacturerId;

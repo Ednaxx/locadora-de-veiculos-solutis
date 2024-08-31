@@ -25,6 +25,6 @@ public class ManufacturerModel {
 
     @OneToMany(mappedBy = "manufacturer")
     @JsonManagedReference("manufacturerReference")
-    private List<CarModelModel> carModel;
+    private List<CarTypeModel> carModel;
 }
 
