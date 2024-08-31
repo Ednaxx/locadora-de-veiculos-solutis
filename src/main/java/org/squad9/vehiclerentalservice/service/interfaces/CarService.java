@@ -2,8 +2,8 @@ package org.squad9.vehiclerentalservice.service.interfaces;
 
 import org.squad9.vehiclerentalservice.dto.request.CarRequestDTO;
 import org.squad9.vehiclerentalservice.dto.request.DateIntervalRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
-import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.util.Category;
 
 import java.util.List;
@@ -21,4 +21,8 @@ public interface CarService {
     CarResponseDTO save(CarRequestDTO request);
     void remove(UUID id);
     CarResponseDTO update(UUID id, CarRequestDTO request);
+
+    List<AccessoryResponseDTO> getCarAccessories(UUID carId);
+    List<AccessoryResponseDTO> addAccessory(UUID carId, UUID accessoryId);
+    List<AccessoryResponseDTO> removeAccessory(UUID carId, UUID accessoryId);
 }

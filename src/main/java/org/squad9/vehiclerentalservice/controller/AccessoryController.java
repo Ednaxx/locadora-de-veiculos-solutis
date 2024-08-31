@@ -1,12 +1,12 @@
 package org.squad9.vehiclerentalservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.dto.request.AccessoryRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
-import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.service.AccessoryServiceImpl;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class AccessoryController {
     }
 
     @PostMapping
-    ResponseEntity<AccessoryResponseDTO> create(@RequestBody AccessoryRequestDTO accessory) {
+    ResponseEntity<AccessoryResponseDTO> create(@RequestBody @Valid AccessoryRequestDTO accessory) {
         AccessoryResponseDTO response = accessoryService.save(accessory);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -41,7 +41,7 @@ public class AccessoryController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<AccessoryResponseDTO> update(@PathVariable UUID id, @RequestBody AccessoryRequestDTO accessory){
+    ResponseEntity<AccessoryResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid AccessoryRequestDTO accessory){
         AccessoryResponseDTO response = accessoryService.update(id, accessory);
         return ResponseEntity.ok(response);
     }

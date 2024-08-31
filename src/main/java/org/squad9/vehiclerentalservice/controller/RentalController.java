@@ -1,5 +1,6 @@
 package org.squad9.vehiclerentalservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,11 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.dto.request.PaymentRequestDTO;
 import org.squad9.vehiclerentalservice.dto.request.RentalRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.RentalResponseDTO;
-import org.squad9.vehiclerentalservice.model.RentalModel;
 import org.squad9.vehiclerentalservice.service.RentalServiceImpl;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -45,7 +44,7 @@ public class RentalController {
     }
 
     @PostMapping("/pagamento-cartao")
-    ResponseEntity<String> processPayment(@RequestBody PaymentRequestDTO request) {
+    ResponseEntity<String> processPayment(@RequestBody @Valid PaymentRequestDTO request) {
         return ResponseEntity.ok("redirect:/resumo-reserva");
     }
 
@@ -56,7 +55,7 @@ public class RentalController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<RentalResponseDTO> update(@PathVariable UUID id, @RequestBody RentalRequestDTO request) {
+    ResponseEntity<RentalResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid RentalRequestDTO request) {
         RentalResponseDTO response = rentalService.update(id, request);
         return ResponseEntity.ok(response);
     }

@@ -4,16 +4,13 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.ManufacturerRequestDTO;
-import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.ManufacturerResponseDTO;
-import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.model.ManufacturerModel;
 import org.squad9.vehiclerentalservice.repository.ManufacturerRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.ManufacturerService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

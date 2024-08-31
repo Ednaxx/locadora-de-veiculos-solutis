@@ -15,7 +15,6 @@ import org.squad9.vehiclerentalservice.service.util.DriverValidations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

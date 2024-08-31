@@ -2,7 +2,6 @@ package org.squad9.vehiclerentalservice.service.interfaces;
 
 import org.squad9.vehiclerentalservice.dto.request.ManufacturerRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.ManufacturerResponseDTO;
-import org.squad9.vehiclerentalservice.model.ManufacturerModel;
 
 import java.util.List;
 import java.util.UUID;

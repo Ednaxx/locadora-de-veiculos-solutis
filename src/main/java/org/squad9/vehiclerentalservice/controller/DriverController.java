@@ -1,5 +1,6 @@
 package org.squad9.vehiclerentalservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class DriverController {
     }
 
     @PostMapping
-    ResponseEntity<DriverResponseDTO> create(@RequestBody DriverRequestDTO request) {
+    ResponseEntity<DriverResponseDTO> create(@RequestBody @Valid DriverRequestDTO request) {
         DriverResponseDTO response = driverService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -49,7 +50,7 @@ public class DriverController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<DriverResponseDTO> update(@PathVariable UUID id, @RequestBody DriverRequestDTO request) {
+    ResponseEntity<DriverResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid DriverRequestDTO request) {
         DriverResponseDTO response = driverService.update(id, request);
         return ResponseEntity.ok(response);
     }

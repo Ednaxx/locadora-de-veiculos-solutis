@@ -5,9 +5,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.CarRequestDTO;
 import org.squad9.vehiclerentalservice.dto.request.DateIntervalRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
+import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.util.Category;
+import org.squad9.vehiclerentalservice.repository.AccessoryRepository;
 import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarService;
 import org.squad9.vehiclerentalservice.service.util.DriverValidations;
@@ -20,6 +23,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
+    private final AccessoryRepository accessoryRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -37,15 +41,6 @@ public class CarServiceImpl implements CarService {
                 .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + id));
 
         return modelMapper.map(car, CarResponseDTO.class);
-    }
-
-    // TODO: Check this later
-    public void saveNewDates(CarModel carro){
-        try{
-            carRepository.save(carro);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
 
     @Override
@@ -98,7 +93,7 @@ public class CarServiceImpl implements CarService {
         if (carRepository.existsByLicensePlate(carToSave.getLicensePlate()))
             throw new IllegalArgumentException("Placa do car já existente no sistema: " +carToSave.getLicensePlate());
 
-        if (carRepository.existsByChassi(carToSave.getChassis()))
+        if (carRepository.existsByChassis(carToSave.getChassis()))
             throw new IllegalArgumentException("Número de chassi já existente no sistema: " + carToSave.getLicensePlate());
 
         CarModel savedCar = carRepository.save(carToSave);
@@ -128,7 +123,7 @@ public class CarServiceImpl implements CarService {
         if (carRepository.existsByLicensePlate(carToUpdate.getLicensePlate()))
             throw new IllegalArgumentException("Placa do car já existente no sistema: " +carToUpdate.getLicensePlate());
 
-        if (carRepository.existsByChassi(carToUpdate.getChassis()))
+        if (carRepository.existsByChassis(carToUpdate.getChassis()))
             throw new IllegalArgumentException("Número de chassi já existente no sistema: " + carToUpdate.getLicensePlate());
 
 
@@ -138,5 +133,52 @@ public class CarServiceImpl implements CarService {
         return modelMapper.map(updatedCar, CarResponseDTO.class);
     }
 
+    @Override
+    public List<AccessoryResponseDTO> getCarAccessories(UUID id) {
+        CarModel car = carRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + id));
 
+        List<AccessoryModel> workouts = car.getAccessories();
+        List<AccessoryResponseDTO> response = new ArrayList<>();
+
+        workouts.forEach(
+                accessory -> response.add(modelMapper.map(accessory, AccessoryResponseDTO.class))
+        );
+
+        return response;
+    }
+
+    @Override
+    public List<AccessoryResponseDTO> addAccessory(UUID carId, UUID accessoryId) {
+        CarModel car = carRepository.findById(carId)
+                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + carId));
+
+        AccessoryModel accessory = accessoryRepository.findById(accessoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + accessoryId));
+
+        car.getAccessories().add(accessory);
+        carRepository.save(car);
+
+        List<AccessoryResponseDTO> response = new ArrayList<>();
+        car.getAccessories().forEach(acc -> response.add(modelMapper.map(acc, AccessoryResponseDTO.class)));
+        return response;
+    }
+
+    @Override
+    public List<AccessoryResponseDTO> removeAccessory(UUID carId, UUID accessoryId) {
+        CarModel car = carRepository.findById(carId)
+                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + carId));
+
+        AccessoryModel accessory = accessoryRepository.findById(accessoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + accessoryId));
+
+        if (car.getAccessories().remove(accessory))
+            throw new IllegalArgumentException("Acessório não encontrado no carro com o ID: " + carId);
+
+        carRepository.save(car);
+
+        List<AccessoryResponseDTO> response = new ArrayList<>();
+        car.getAccessories().forEach(acc -> response.add(modelMapper.map(acc, AccessoryResponseDTO.class)));
+        return response;
+    }
 }

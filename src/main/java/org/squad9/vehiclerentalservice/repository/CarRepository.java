@@ -3,9 +3,7 @@ package org.squad9.vehiclerentalservice.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.model.CarModel;
-import org.squad9.vehiclerentalservice.model.CarModelModel;
 import org.squad9.vehiclerentalservice.model.util.Category;
 
 import java.time.LocalDate;
@@ -14,7 +12,7 @@ import java.util.UUID;
 
 public interface CarRepository extends JpaRepository<CarModel, UUID> {
     boolean existsByLicensePlate(String placa);
-    boolean existsByChassi(String chassi);
+    boolean existsByChassis(String chassi);
     List<CarModel> findByCarModelId(UUID modeloCarroId);
     List<CarModel> findByAccessoriesId(UUID accessoryId);
 

@@ -1,5 +1,6 @@
 package org.squad9.vehiclerentalservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class CarModelController {
     }
 
     @PostMapping
-    ResponseEntity<CarModelResponseDTO> create(@RequestBody CarModelRequestDTO request){
+    ResponseEntity<CarModelResponseDTO> create(@RequestBody @Valid CarModelRequestDTO request){
         CarModelResponseDTO response = carModelService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -49,7 +50,7 @@ public class CarModelController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<CarModelResponseDTO> update(@PathVariable UUID id, @RequestBody CarModelRequestDTO request) {
+    ResponseEntity<CarModelResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid CarModelRequestDTO request) {
         CarModelResponseDTO response = carModelService.update(id, request);
         return ResponseEntity.ok(response);
     }

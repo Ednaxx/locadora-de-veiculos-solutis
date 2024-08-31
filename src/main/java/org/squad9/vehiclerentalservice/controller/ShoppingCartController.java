@@ -1,12 +1,9 @@
 package org.squad9.vehiclerentalservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
-import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
 import org.squad9.vehiclerentalservice.service.ShoppingCartServiceImpl;
 
 import java.util.List;

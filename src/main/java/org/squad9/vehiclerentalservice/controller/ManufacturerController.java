@@ -1,12 +1,12 @@
 package org.squad9.vehiclerentalservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.dto.request.ManufacturerRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.ManufacturerResponseDTO;
-import org.squad9.vehiclerentalservice.model.ManufacturerModel;
 import org.squad9.vehiclerentalservice.service.interfaces.ManufacturerService;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class ManufacturerController {
     }
 
     @PostMapping
-    ResponseEntity<ManufacturerResponseDTO> create(@RequestBody ManufacturerRequestDTO request){
+    ResponseEntity<ManufacturerResponseDTO> create(@RequestBody @Valid ManufacturerRequestDTO request){
         ManufacturerResponseDTO response = manufacturerService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -43,7 +43,7 @@ public class ManufacturerController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<ManufacturerResponseDTO> update(@PathVariable UUID id, @RequestBody ManufacturerRequestDTO request) {
+    ResponseEntity<ManufacturerResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid ManufacturerRequestDTO request) {
         ManufacturerResponseDTO response = manufacturerService.update(id, request);
         return ResponseEntity.ok(response);
     }
