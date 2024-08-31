@@ -3,6 +3,7 @@ package org.squad9.vehiclerentalservice.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
 import org.squad9.vehiclerentalservice.service.ShoppingCartServiceImpl;
 
@@ -31,5 +32,23 @@ public class ShoppingCartController {
     ResponseEntity<ShoppingCartResponseDTO> findByDriver(@PathVariable String email) {
         ShoppingCartResponseDTO shoppingCartModel = shoppingCartService.findByDriver(email);
         return ResponseEntity.ok(shoppingCartModel);
+    }
+
+    @GetMapping("/{id}/carros")
+    ResponseEntity<List<CarResponseDTO>> findShoppingCartsCars(@PathVariable UUID id){
+        List<CarResponseDTO> response = shoppingCartService.findShoppingCartsCars(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/carros/{idCarro}")
+    ResponseEntity<List<CarResponseDTO>> addCarToShoppingCart(@PathVariable UUID id, @PathVariable UUID idCarro){
+        List<CarResponseDTO> response = shoppingCartService.addCarToShoppingCart(id, idCarro);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}/carros/{idCarro}")
+    ResponseEntity<List<CarResponseDTO>> removeCarFromShoppingCart(@PathVariable UUID id, @PathVariable UUID idCarro){
+        List<CarResponseDTO> response = shoppingCartService.removeCarFromShoppingCart(id, idCarro);
+        return ResponseEntity.ok(response);
     }
 }

@@ -24,9 +24,6 @@ public class RentalModel {
     @Column(name = "data_pedido", nullable = false)
     private LocalDate orderDate;
 
-    @Column(name = "data_entrega", nullable = false)
-    private LocalDate deliveryDate;
-
     @Column(name = "data_devolucao", nullable = false)
     private LocalDate returnDate;
 

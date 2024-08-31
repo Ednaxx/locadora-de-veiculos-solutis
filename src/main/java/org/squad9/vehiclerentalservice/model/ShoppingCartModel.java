@@ -28,5 +28,5 @@ public class ShoppingCartModel {
             joinColumns = @JoinColumn(name = "carrinho_id"),
             inverseJoinColumns = @JoinColumn(name = "carro_id")
     )
-    private List<CarModel> carList;
+    private List<CarModel> cars;
 }

@@ -5,7 +5,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.RentalRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.RentalResponseDTO;
+import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.RentalModel;
+import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.repository.RentalRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.RentalService;
 
@@ -17,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
-    private final CarServiceImpl carService;
+    private final CarRepository carRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -49,6 +51,17 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public RentalResponseDTO save(RentalRequestDTO request) {
         RentalModel rentalToSave = modelMapper.map(request, RentalModel.class);
+
+        CarModel car = carRepository.findById(request.getCarId())
+                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + request.getCarId()));
+
+        if (car.isAvailableToRent(request.getOrderDate(), request.getReturnDate())) {
+            car.blockDates(request.getOrderDate(), request.getReturnDate());
+        } else {
+            throw new IllegalArgumentException("Carro não disponível para aluguel no período solicitado");
+        }
+
+        carRepository.save(car);
         RentalModel savedRental = rentalRepository.save(rentalToSave);
 
         return modelMapper.map(savedRental, RentalResponseDTO.class);

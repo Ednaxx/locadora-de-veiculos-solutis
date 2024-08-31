@@ -86,7 +86,7 @@ public class CarController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{id}/accessories/{accessoryId}")
+    @DeleteMapping("/{id}/accessories/{accessoryId}")
     ResponseEntity<List<AccessoryResponseDTO>> removeAccessory(@PathVariable UUID id, @PathVariable UUID accessoryId) {
         List<AccessoryResponseDTO> response = carService.addAccessory(id, accessoryId);
         return ResponseEntity.ok(response);
