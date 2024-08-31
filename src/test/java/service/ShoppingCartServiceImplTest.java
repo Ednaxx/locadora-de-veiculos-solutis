@@ -34,14 +34,11 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testFindAll_whenCarrinhoNotEmpty() {
-
         List<ShoppingCartModel> carrinhoList = new ArrayList<>();
         carrinhoList.add(new ShoppingCartModel());
         when(shoppingCartRepository.findAll()).thenReturn(carrinhoList);
 
-
         List<ShoppingCartModel> result = shoppingCartService.findAll();
-
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -50,12 +47,9 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testFindAll_whenCarrinhoIsEmpty() {
-
         when(shoppingCartRepository.findAll()).thenReturn(new ArrayList<>());
 
-
         List<ShoppingCartModel> result = shoppingCartService.findAll();
-
 
         assertNull(result);
         verify(shoppingCartRepository, times(1)).findAll();
@@ -63,13 +57,10 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testSave() {
-
         ShoppingCartModel carrinhoCompra = new ShoppingCartModel();
         when(shoppingCartRepository.save(carrinhoCompra)).thenReturn(carrinhoCompra);
 
-
         ShoppingCartModel result = shoppingCartService.save(carrinhoCompra);
-
 
         assertNotNull(result);
         verify(shoppingCartRepository, times(1)).save(carrinhoCompra);
@@ -77,16 +68,13 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testAddCarros() {
-
         ShoppingCartModel carrinhoCompra = new ShoppingCartModel();
         carrinhoCompra.setCarList(new ArrayList<>());
         CarModel carro = new CarModel();
 
         when(shoppingCartRepository.save(carrinhoCompra)).thenReturn(carrinhoCompra);
 
-
         ShoppingCartModel result = shoppingCartService.addCarros(carrinhoCompra, carro);
-
 
         assertNotNull(result);
         assertTrue(result.getCarList().contains(carro));
@@ -95,14 +83,11 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testFindByMotorista() {
-
         DriverModel motorista = new DriverModel();
         ShoppingCartModel carrinho = new ShoppingCartModel();
         when(shoppingCartRepository.findByDriver(motorista)).thenReturn(carrinho);
 
-
         ShoppingCartModel result = shoppingCartService.findByMotorista(motorista);
-
 
         assertNotNull(result);
         verify(shoppingCartRepository, times(1)).findByDriver(motorista);
@@ -110,14 +95,11 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testFindById_whenCarrinhoExists() {
-
         UUID carrinhoId = UUID.randomUUID();
         ShoppingCartModel carrinho = new ShoppingCartModel();
         when(shoppingCartRepository.findById(carrinhoId)).thenReturn(Optional.of(carrinho));
 
-
         ShoppingCartModel result = shoppingCartService.findById(carrinhoId);
-
 
         assertNotNull(result);
         verify(shoppingCartRepository, times(1)).findById(carrinhoId);
@@ -125,13 +107,10 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testFindById_whenCarrinhoDoesNotExist() {
-
         UUID carrinhoId = UUID.randomUUID();
         when(shoppingCartRepository.findById(carrinhoId)).thenReturn(Optional.empty());
 
-
         ShoppingCartModel result = shoppingCartService.findById(carrinhoId);
-
 
         assertNull(result);
         verify(shoppingCartRepository, times(1)).findById(carrinhoId);
