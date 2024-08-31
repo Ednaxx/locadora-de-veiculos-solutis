@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class DriverRequestDTO {
     @NotBlank @Size(max = 50) private String name;
-    @NotNull @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "pt-BR", timezone = "Brazil/East") LocalDate birthday;
+    @NotNull @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "pt-BR", timezone = "Brazil/East") LocalDate birthDate;
     @NotBlank @Email @Size(max = 30) private String email;
     @NotBlank @Size(min = 14, max = 14) private String CPF;
     @NotBlank @Size(min = 10, max = 10) private String CNH;

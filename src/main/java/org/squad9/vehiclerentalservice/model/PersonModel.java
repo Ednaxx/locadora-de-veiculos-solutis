@@ -1,6 +1,7 @@
 package org.squad9.vehiclerentalservice.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class PersonModel {
     @Column(name = "nome", nullable = false, length = 50)
     protected String name;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "data_nascimento", nullable = false)
     protected LocalDate birthDate;
 
