@@ -22,6 +22,6 @@ public class AccessoryModel {
     @Column(name = "nome", nullable = false)
     private String name;
 
-    @Column(name = "descricao", nullable = false)
+    @Column(name = "descricao", length = 500, nullable = false)
     private String description;
 }

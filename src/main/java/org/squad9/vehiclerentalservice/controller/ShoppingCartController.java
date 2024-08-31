@@ -3,7 +3,8 @@ package org.squad9.vehiclerentalservice.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
+import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
+import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
 import org.squad9.vehiclerentalservice.service.ShoppingCartServiceImpl;
 
 import java.util.List;
@@ -16,26 +17,38 @@ public class ShoppingCartController {
     private final ShoppingCartServiceImpl shoppingCartService;
 
     @GetMapping
-    ResponseEntity<List<ShoppingCartModel>> findAll(){
-        List<ShoppingCartModel> shoppingCarts = shoppingCartService.findAll();
-        return ResponseEntity.ok(shoppingCarts);
+    ResponseEntity<List<ShoppingCartResponseDTO>> findAll(){
+        List<ShoppingCartResponseDTO> response = shoppingCartService.findAll();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<ShoppingCartModel> findById(@PathVariable UUID id){
-        ShoppingCartModel shoppingCartModel = shoppingCartService.findById(id);
-        return ResponseEntity.ok(shoppingCartModel);
+    ResponseEntity<ShoppingCartResponseDTO> findById(@PathVariable UUID id){
+        ShoppingCartResponseDTO response = shoppingCartService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/motorista/{email}")
-    ResponseEntity<ShoppingCartModel> findByDriver(@PathVariable String email) {
-        ShoppingCartModel shoppingCartModel = shoppingCartService.findByDriver(email);
+    ResponseEntity<ShoppingCartResponseDTO> findByDriver(@PathVariable String email) {
+        ShoppingCartResponseDTO shoppingCartModel = shoppingCartService.findByDriver(email);
         return ResponseEntity.ok(shoppingCartModel);
     }
 
-    @PutMapping("/{id}")
-    ResponseEntity<ShoppingCartModel> update(@PathVariable UUID id, @RequestBody ShoppingCartModel shoppingCart) {
-        ShoppingCartModel shoppingCartModel = shoppingCartService.update(id, shoppingCart);
-        return ResponseEntity.ok(shoppingCartModel);
+    @GetMapping("/{id}/carros")
+    ResponseEntity<List<CarResponseDTO>> findShoppingCartsCars(@PathVariable UUID id){
+        List<CarResponseDTO> response = shoppingCartService.findShoppingCartsCars(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/carros/{idCarro}")
+    ResponseEntity<List<CarResponseDTO>> addCarToShoppingCart(@PathVariable UUID id, @PathVariable UUID idCarro){
+        List<CarResponseDTO> response = shoppingCartService.addCarToShoppingCart(id, idCarro);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}/carros/{idCarro}")
+    ResponseEntity<List<CarResponseDTO>> removeCarFromShoppingCart(@PathVariable UUID id, @PathVariable UUID idCarro){
+        List<CarResponseDTO> response = shoppingCartService.removeCarFromShoppingCart(id, idCarro);
+        return ResponseEntity.ok(response);
     }
 }

@@ -21,11 +21,11 @@ public class CarModelModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "descricao", nullable = false)
+    @Column(name = "descricao", length = 500, nullable = false)
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 22)
+    @Column(nullable = false, length = 18)
     private Category category;
 
     @OneToMany(mappedBy = "carModel", cascade = CascadeType.ALL, orphanRemoval = true)

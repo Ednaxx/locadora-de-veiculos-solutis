@@ -1,10 +1,12 @@
 package org.squad9.vehiclerentalservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.squad9.vehiclerentalservice.model.InsurancePolicyModel;
+import org.squad9.vehiclerentalservice.dto.request.InsurancePolicyRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.InsurancePolicyResponseDTO;
 import org.squad9.vehiclerentalservice.service.InsurancePolicyServiceImpl;
 
 import java.util.List;
@@ -17,20 +19,20 @@ public class InsurancePolicyController {
     private final InsurancePolicyServiceImpl insurancePolicyService;
 
     @GetMapping
-    ResponseEntity<List<InsurancePolicyModel>> findAll(){
+    ResponseEntity<List<InsurancePolicyResponseDTO>> findAll() {
         return ResponseEntity.ok(insurancePolicyService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    ResponseEntity<InsurancePolicyModel> findById(@PathVariable UUID id) {
-        InsurancePolicyModel insurancePolicy = insurancePolicyService.findById(id);
-        return ResponseEntity.ok(insurancePolicy);
+    ResponseEntity<InsurancePolicyResponseDTO> findById(@PathVariable UUID id) {
+        InsurancePolicyResponseDTO response = insurancePolicyService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    ResponseEntity<InsurancePolicyModel> create(@RequestBody InsurancePolicyModel insurancePolicy) {
-        InsurancePolicyModel newInsurancePolicy = insurancePolicyService.save(insurancePolicy);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newInsurancePolicy);
+    ResponseEntity<InsurancePolicyResponseDTO> create(@RequestBody @Valid InsurancePolicyRequestDTO request) {
+        InsurancePolicyResponseDTO response = insurancePolicyService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
@@ -40,8 +42,8 @@ public class InsurancePolicyController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<InsurancePolicyModel> update(@PathVariable UUID id, @RequestBody InsurancePolicyModel insurancePolicy) {
-        InsurancePolicyModel insurancePolicyModel = insurancePolicyService.update(id, insurancePolicy);
-        return ResponseEntity.ok(insurancePolicyModel);
+    ResponseEntity<InsurancePolicyResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid InsurancePolicyRequestDTO request) {
+        InsurancePolicyResponseDTO response = insurancePolicyService.update(id, request);
+        return ResponseEntity.ok(response);
     }
 }

@@ -26,7 +26,7 @@ public class CarModel {
     private String licensePlate;
 
     @Column(name = "chassi", nullable = false, unique = true, length = 20)
-    private String chassi;
+    private String chassis;
 
     @Column(name = "cor", nullable = false, length = 20)
     private String color;
@@ -34,8 +34,8 @@ public class CarModel {
     @Column(name = "valor_diaria", nullable = false)
     private BigDecimal dailyRate;
 
-    @Column
-    private String urlImage;
+    @Column(name = "url_imagem")
+    private String imageURL;
 
     @ManyToMany
     @JoinTable(

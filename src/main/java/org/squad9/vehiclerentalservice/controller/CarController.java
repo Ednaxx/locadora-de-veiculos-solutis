@@ -1,10 +1,14 @@
 package org.squad9.vehiclerentalservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.squad9.vehiclerentalservice.model.CarModel;
+import org.squad9.vehiclerentalservice.dto.request.CarRequestDTO;
+import org.squad9.vehiclerentalservice.dto.request.DateIntervalRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
+import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
 import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.service.CarServiceImpl;
 
@@ -18,44 +22,44 @@ public class CarController {
     private final CarServiceImpl carService;
 
     @GetMapping
-    ResponseEntity<List<CarModel>> findAll() {
+    ResponseEntity<List<CarResponseDTO>> findAll() {
         return ResponseEntity.ok(carService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    ResponseEntity<CarModel> findById(@PathVariable UUID id) {
-        CarModel car = carService.findById(id);
-        return ResponseEntity.ok(car);
+    ResponseEntity<CarResponseDTO> findById(@PathVariable UUID id) {
+        CarResponseDTO response = carService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/disponiveis")
-    ResponseEntity<List<CarModel>> findAvailableOnDate(@RequestParam String startDate, @RequestParam String returnDate) {
-        List<CarModel> availableCars = carService.findAvailableOnDate(startDate, returnDate);
-        return ResponseEntity.ok(availableCars);
+    ResponseEntity<List<CarResponseDTO>> findAvailableOnDate(@RequestBody DateIntervalRequestDTO request) {
+        List<CarResponseDTO> response = carService.findAvailableOnDate(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/categoria/{categoria}")
-    ResponseEntity<List<CarModel>> findByCategory(@PathVariable Category categoria) {
-        List<CarModel> cars = carService.findByCategory(categoria);
-        return ResponseEntity.ok(cars);
+    ResponseEntity<List<CarResponseDTO>> findByCategory(@PathVariable Category categoria) {
+        List<CarResponseDTO> response = carService.findByCategory(categoria);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/modelo/{modelo_id}")
-    ResponseEntity<List<CarModel>> findByCarModel(@PathVariable UUID modelo_id) {
-        List<CarModel> cars = carService.findByCarModel(modelo_id);
-        return ResponseEntity.ok(cars);
+    ResponseEntity<List<CarResponseDTO>> findByCarModel(@PathVariable UUID modelo_id) {
+        List<CarResponseDTO> response = carService.findByCarModel(modelo_id);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/acessorio/{acessorio_id}")
-    ResponseEntity<List<CarModel>> findByAccessories(@PathVariable UUID acessorio_id) {
-        List<CarModel> cars = carService.findByAcessorio(acessorio_id);
-        return ResponseEntity.ok(cars);
+    ResponseEntity<List<CarResponseDTO>> findByAccessories(@PathVariable UUID acessorio_id) {
+        List<CarResponseDTO> response = carService.findByAcessorio(acessorio_id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    ResponseEntity<CarModel> create(@RequestBody CarModel car) {
-        CarModel newCar = carService.save(car);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newCar);
+    ResponseEntity<CarResponseDTO> create(@RequestBody @Valid CarRequestDTO request) {
+        CarResponseDTO response = carService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
@@ -65,8 +69,26 @@ public class CarController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<CarModel> update(@PathVariable UUID id, @RequestBody CarModel car) {
-        CarModel carModel = carService.update(id, car);
-        return ResponseEntity.ok(carModel);
+    ResponseEntity<CarResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid CarRequestDTO request) {
+        CarResponseDTO response = carService.update(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/accessories")
+    ResponseEntity<List<AccessoryResponseDTO>> getCarAccessories(@PathVariable UUID id) {
+        List<AccessoryResponseDTO> response = carService.getCarAccessories(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/accessories/{accessoryId}")
+    ResponseEntity<List<AccessoryResponseDTO>> addAccessory(@PathVariable UUID id, @PathVariable UUID accessoryId) {
+        List<AccessoryResponseDTO> response = carService.addAccessory(id, accessoryId);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}/accessories/{accessoryId}")
+    ResponseEntity<List<AccessoryResponseDTO>> removeAccessory(@PathVariable UUID id, @PathVariable UUID accessoryId) {
+        List<AccessoryResponseDTO> response = carService.addAccessory(id, accessoryId);
+        return ResponseEntity.ok(response);
     }
 }

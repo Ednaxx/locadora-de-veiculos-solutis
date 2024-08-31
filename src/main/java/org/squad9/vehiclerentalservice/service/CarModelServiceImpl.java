@@ -1,12 +1,16 @@
 package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.squad9.vehiclerentalservice.dto.request.CarModelRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.CarModelResponseDTO;
 import org.squad9.vehiclerentalservice.model.CarModelModel;
 import org.squad9.vehiclerentalservice.model.util.Category;
 import org.squad9.vehiclerentalservice.repository.CarModelRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarModelService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,26 +18,40 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CarModelServiceImpl implements CarModelService {
     private final CarModelRepository carModelRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<CarModelModel> findAll() {
-        return carModelRepository.findAll();
+    public List<CarModelResponseDTO> findAll() {
+        List<CarModelModel> carModels = carModelRepository.findAll();
+        List<CarModelResponseDTO> response = new ArrayList<>();
+
+        carModels.forEach(carModel -> response.add(modelMapper.map(carModel, CarModelResponseDTO.class)));
+        return response;
     }
 
     @Override
-    public CarModelModel findById(UUID id) {
-        return carModelRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Modelo de carro não encontrado com o ID: " + id));
+    public CarModelResponseDTO findById(UUID id) {
+        CarModelModel carModel = carModelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+
+        return modelMapper.map(carModel, CarModelResponseDTO.class);
     }
 
     @Override
-    public List<CarModelModel> findByCategoria(Category category) {
-        return carModelRepository.findByCategory(category);
+    public List<CarModelResponseDTO> findByCategoria(Category category) {
+        List<CarModelModel> carModels = carModelRepository.findByCategory(category);
+        List<CarModelResponseDTO> response = new ArrayList<>();
+
+        carModels.forEach(carModel -> response.add(modelMapper.map(carModel, CarModelResponseDTO.class)));
+        return response;
     }
 
     @Override
-    public CarModelModel save(CarModelModel modeloCarro) {
-        return carModelRepository.save(modeloCarro);
+    public CarModelResponseDTO save(CarModelRequestDTO request) {
+        CarModelModel carModelToSave = modelMapper.map(request, CarModelModel.class);
+        CarModelModel savedCarModel = carModelRepository.save(carModelToSave);
+
+        return modelMapper.map(savedCarModel, CarModelResponseDTO.class);
     }
 
     @Override
@@ -45,15 +63,13 @@ public class CarModelServiceImpl implements CarModelService {
     }
 
     @Override
-    public CarModelModel update(UUID id, CarModelModel carModel) {
-        CarModelModel existingCarModel = carModelRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Modelo de carro não encontrado com o ID: " + id));
+    public CarModelResponseDTO update(UUID id, CarModelRequestDTO request) {
+        carModelRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
 
-        existingCarModel.setDescription(carModel.getDescription());
-        existingCarModel.setCategory(carModel.getCategory());
-        existingCarModel.setCars(carModel.getCars());
-        existingCarModel.setManufacturer(carModel.getManufacturer());
+        CarModelModel carModelToUpdate = modelMapper.map(request, CarModelModel.class);
+        carModelToUpdate.setId(id);
+        CarModelModel updatedCarModel = carModelRepository.save(carModelToUpdate);
 
-        return carModelRepository.save(existingCarModel);
+        return modelMapper.map(updatedCarModel, CarModelResponseDTO.class);
     }
 }
