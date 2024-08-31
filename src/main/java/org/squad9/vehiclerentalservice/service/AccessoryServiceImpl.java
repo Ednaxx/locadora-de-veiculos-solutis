@@ -21,10 +21,10 @@ public class AccessoryServiceImpl implements AccessoryService {
 
     @Override
     public List<AccessoryResponseDTO> findAll() {
-        List<AccessoryModel> accessoryModels = accessoryRepository.findAll();
+        List<AccessoryModel> accessories = accessoryRepository.findAll();
         List<AccessoryResponseDTO> response = new ArrayList<>();
 
-        accessoryModels.forEach(accessory -> response.add(modelMapper.map(accessory, AccessoryResponseDTO.class)));
+        accessories.forEach(accessory -> response.add(modelMapper.map(accessory, AccessoryResponseDTO.class)));
         return response;
     }
 
@@ -39,9 +39,9 @@ public class AccessoryServiceImpl implements AccessoryService {
     @Override
     public AccessoryResponseDTO save(AccessoryRequestDTO request) {
         AccessoryModel accessoryToSave = modelMapper.map(request, AccessoryModel.class);
-        AccessoryModel accessoryModel = accessoryRepository.save(accessoryToSave);
+        AccessoryModel savedAccessory = accessoryRepository.save(accessoryToSave);
 
-        return modelMapper.map(accessoryModel, AccessoryResponseDTO.class);
+        return modelMapper.map(savedAccessory, AccessoryResponseDTO.class);
     }
 
     @Override

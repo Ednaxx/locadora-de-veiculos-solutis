@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.squad9.vehiclerentalservice.dto.request.ManufacturerRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.ManufacturerResponseDTO;
 import org.squad9.vehiclerentalservice.model.ManufacturerModel;
 import org.squad9.vehiclerentalservice.service.interfaces.ManufacturerService;
 
@@ -17,21 +19,21 @@ public class ManufacturerController {
     private final ManufacturerService manufacturerService;
 
     @GetMapping
-    ResponseEntity<List<ManufacturerModel>> findAll(){
-        List<ManufacturerModel> manufacturers = manufacturerService.findAll();
-        return ResponseEntity.ok(manufacturers);
+    ResponseEntity<List<ManufacturerResponseDTO>> findAll(){
+        List<ManufacturerResponseDTO> response = manufacturerService.findAll();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/{id}")
-    ResponseEntity<ManufacturerModel> findById(@PathVariable UUID id) {
-        ManufacturerModel manufacturer = manufacturerService.findById(id);
-        return ResponseEntity.ok(manufacturer);
+    ResponseEntity<ManufacturerResponseDTO> findById(@PathVariable UUID id) {
+        ManufacturerResponseDTO response = manufacturerService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    ResponseEntity<ManufacturerModel> create(@RequestBody ManufacturerModel manufacturer){
-        ManufacturerModel newManufacturer = manufacturerService.save(manufacturer);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newManufacturer);
+    ResponseEntity<ManufacturerResponseDTO> create(@RequestBody ManufacturerRequestDTO request){
+        ManufacturerResponseDTO response = manufacturerService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
@@ -41,8 +43,8 @@ public class ManufacturerController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<ManufacturerModel> update(@PathVariable UUID id, @RequestBody ManufacturerModel manufacturer) {
-        ManufacturerModel manufacturerModel = manufacturerService.update(id, manufacturer);
-        return ResponseEntity.ok(manufacturerModel);
+    ResponseEntity<ManufacturerResponseDTO> update(@PathVariable UUID id, @RequestBody ManufacturerRequestDTO request) {
+        ManufacturerResponseDTO response = manufacturerService.update(id, request);
+        return ResponseEntity.ok(response);
     }
 }

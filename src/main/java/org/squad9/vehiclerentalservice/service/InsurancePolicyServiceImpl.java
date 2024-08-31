@@ -1,11 +1,17 @@
 package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.squad9.vehiclerentalservice.dto.request.InsurancePolicyRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
+import org.squad9.vehiclerentalservice.dto.response.InsurancePolicyResponseDTO;
+import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.model.InsurancePolicyModel;
 import org.squad9.vehiclerentalservice.repository.InsurancePolicyRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.InsurancePolicyService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,52 +19,51 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class InsurancePolicyServiceImpl implements InsurancePolicyService {
-    private InsurancePolicyRepository insurancePolicyRepository;
+    private final InsurancePolicyRepository insurancePolicyRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<InsurancePolicyModel> findAll() {
-        return insurancePolicyRepository.findAll();
+    public List<InsurancePolicyResponseDTO> findAll() {
+        List<InsurancePolicyModel> insurancePolicies = insurancePolicyRepository.findAll();
+        List<InsurancePolicyResponseDTO> response = new ArrayList<>();
+
+        insurancePolicies.forEach(insurancePolicy -> response.add(modelMapper.map(insurancePolicy, InsurancePolicyResponseDTO.class)));
+        return response;
     }
 
     @Override
-    public InsurancePolicyModel findById(UUID id) {
-        return insurancePolicyRepository.findById(id)
+    public InsurancePolicyResponseDTO findById(UUID id) {
+        InsurancePolicyModel insurancePolicy = insurancePolicyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id));
+
+        return modelMapper.map(insurancePolicy, InsurancePolicyResponseDTO.class);
     }
 
     @Override
-    public InsurancePolicyModel save(InsurancePolicyModel apoliceSeguro) {
-        try {
-            return insurancePolicyRepository.save(apoliceSeguro);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    public InsurancePolicyResponseDTO save(InsurancePolicyRequestDTO request) {
+        InsurancePolicyModel insurancePolicyToSave = modelMapper.map(request, InsurancePolicyModel.class);
+        InsurancePolicyModel savedInsurancePolicy = insurancePolicyRepository.save(insurancePolicyToSave);
+
+        return modelMapper.map(savedInsurancePolicy, InsurancePolicyResponseDTO.class);
     }
 
     @Override
     public void remove(UUID id) {
-        try {
-            insurancePolicyRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao remover apólice de seguro: " + e.getMessage());
+        if (!insurancePolicyRepository.existsById(id)) {
+            throw new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id);
         }
+        insurancePolicyRepository.deleteById(id);
     }
 
     @Override
-    public InsurancePolicyModel update(UUID id, InsurancePolicyModel insurancePolicy) {
-        try {
-            InsurancePolicyModel existingPolicy = insurancePolicyRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id));
+    public InsurancePolicyResponseDTO update(UUID id, InsurancePolicyRequestDTO request) {
+        insurancePolicyRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id));
 
-            existingPolicy.setFranchiseValue(insurancePolicy.getFranchiseValue());
-            existingPolicy.setThirdPartyProtection(insurancePolicy.isThirdPartyProtection());
-            existingPolicy.setNaturalCausesProtection(insurancePolicy.isNaturalCausesProtection());
-            existingPolicy.setTheftProtection(insurancePolicy.isTheftProtection());
+        InsurancePolicyModel insurancePolicyToUpdate = modelMapper.map(request, InsurancePolicyModel.class);
+        insurancePolicyToUpdate.setId(id);
+        InsurancePolicyModel updatedInsurancePolicy = insurancePolicyRepository.save(insurancePolicyToUpdate);
 
-            return insurancePolicyRepository.save(existingPolicy);
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao atualizar apólice de seguro: " + e.getMessage());
-        }
+        return modelMapper.map(updatedInsurancePolicy, InsurancePolicyResponseDTO.class);
     }
 
 }

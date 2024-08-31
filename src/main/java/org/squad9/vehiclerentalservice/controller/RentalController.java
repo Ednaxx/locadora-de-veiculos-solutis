@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.squad9.vehiclerentalservice.dto.request.PaymentRequestDTO;
+import org.squad9.vehiclerentalservice.dto.request.RentalRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.RentalResponseDTO;
 import org.squad9.vehiclerentalservice.model.RentalModel;
 import org.squad9.vehiclerentalservice.service.RentalServiceImpl;
 
@@ -18,33 +21,32 @@ public class RentalController {
     private final RentalServiceImpl rentalService;
 
     @GetMapping
-    ResponseEntity<List<RentalModel>> findAll() {
-        List<RentalModel> rentals = rentalService.findAll();
-        return ResponseEntity.ok(rentals);
+    ResponseEntity<List<RentalResponseDTO>> findAll() {
+        List<RentalResponseDTO> response = rentalService.findAll();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<RentalModel> findById(@PathVariable UUID id) {
-        RentalModel rentalModel = rentalService.findById(id);
-        return ResponseEntity.ok(rentalModel);
+    ResponseEntity<RentalResponseDTO> findById(@PathVariable UUID id) {
+        RentalResponseDTO response = rentalService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/motorista/{email}")
-    ResponseEntity<List<RentalModel>> findRentalsByDriver(@PathVariable String email) {
-        List<RentalModel> rentals = rentalService.findByDriverEmail(email);
-        return ResponseEntity.ok(rentals);
+    ResponseEntity<List<RentalResponseDTO>> findRentalsByDriver(@PathVariable String email) {
+        List<RentalResponseDTO> response = rentalService.findByDriverEmail(email);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    ResponseEntity<RentalModel> create(@RequestBody RentalModel rental) {
-        RentalModel newRental = rentalService.save(rental);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newRental);
+    ResponseEntity<RentalResponseDTO> create(@RequestBody RentalRequestDTO request) {
+        RentalResponseDTO response = rentalService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/pagamento-cartao")
-    ResponseEntity<String> processPayment(@RequestBody Map<String, String> payload) {
-        boolean paymentSuccessful = rentalService.verifyPayment(payload);
-        return paymentSuccessful ? ResponseEntity.ok("redirect:/resumo-reserva") : ResponseEntity.badRequest().body("redirect:/pagamento-falhou");
+    ResponseEntity<String> processPayment(@RequestBody PaymentRequestDTO request) {
+        return ResponseEntity.ok("redirect:/resumo-reserva");
     }
 
     @DeleteMapping("/{id}")
@@ -54,8 +56,8 @@ public class RentalController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<RentalModel> update(@PathVariable UUID id, @RequestBody RentalModel rental) {
-        RentalModel rentalModel = rentalService.update(id, rental);
-        return ResponseEntity.ok(rentalModel);
+    ResponseEntity<RentalResponseDTO> update(@PathVariable UUID id, @RequestBody RentalRequestDTO request) {
+        RentalResponseDTO response = rentalService.update(id, request);
+        return ResponseEntity.ok(response);
     }
 }
