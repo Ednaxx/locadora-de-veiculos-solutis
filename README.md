@@ -46,9 +46,11 @@ classDiagram
 
     %% Classes
     class Pessoa {
+        +id: Long
         +nome: String
-        +dataNascimento: Date
+        +dataNascimento: String
         +cpf: String
+        +email: String
     }
 
     class Motorista {
@@ -60,47 +62,57 @@ classDiagram
     }
 
     class ApoliceSeguro {
+        +id: Long
         +valorFranquia: BigDecimal
-        +protecaoTerceiro: Boolean
+        +protecaoTerceiros: Boolean
         +protecaoCausasNaturais: Boolean
         +protecaoRoubo: Boolean
     }
 
     class Aluguel {
-        +dataPedido: Calendar
-        +dataEntrega: Date
-        +dataDevolucao: Date
+        +id: Long
+        +dataPedido: LocalDate
+        +dataDevolucao: LocalDate
         +valorTotal: BigDecimal
     }
 
     class Carro {
-        +placa: String
+        +id: Long
         +chassi: String
         +cor: String
-        +diaria: BigDecimal
+        +valorDiaria: String
+        +datasOcupadas: List<LocalDate>
     }
 
     class ModeloCarro {
+        +id: Long
         +descricao: String
     }
 
     class Fabricante {
+        +id: Long
         +nome: String
     }
 
     class Acessorio {
+        +id: Long
         +descricao: String
+    }
+
+    class CarrinhoCompra {
+        +id: Long
     }
 
     %% Relationships
     Pessoa <|-- Motorista : é uma
     Pessoa <|-- Funcionario : é uma
     Motorista "1" -- "0..*" Aluguel : alugueis
-    Aluguel "1" -- "0..*" Carro : carro
     Aluguel "1" -- "1" ApoliceSeguro : apolice
-    Carro "0..*" -- "1" ModeloCarro : modelo
-    Carro "0..*" -- "0..*" Acessorio : acessorioModels
+    Aluguel "1" -- "0..*" Carro : carro
+    Motorista "1" -- "1" CarrinhoCompra : carrinhoCompra
+    CarrinhoCompra "1" -- "0..*" Carro : listaCarros
+    Carro "1" -- "0..*" Acessorio : acessorios
+    Carro "1" -- "1" ModeloCarro : modelo
     ModeloCarro "1" -- "0..*" Fabricante : fabricante
-    ModeloCarro "1" -- "1" Categoria : category
-
+    ModeloCarro "1" -- "1" Categoria : categoria
 ```
