@@ -69,9 +69,11 @@ public class DriverServiceImpl implements DriverService {
         }
     }
 
-    private boolean existCPF(String cpf){
-        return driverRepository.findByCpf(cpf) != null;
+    private boolean existCPF(String cpf) {
+        String formattedCpf = CPFValidation.formatCPF(cpf); //ALTERADO PRA FORMATAR ANTES DE INSERIR NO BANCO
+        return driverRepository.findByCpf(formattedCpf) != null;
     }
+
 
     private boolean existCNH(String numeroCNH){
         return driverRepository.findByCNH(numeroCNH) != null;

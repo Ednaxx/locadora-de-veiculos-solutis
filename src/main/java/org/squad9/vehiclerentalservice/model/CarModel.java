@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,7 +51,7 @@ public class CarModel {
     @ElementCollection
     @CollectionTable(name = "carro_datas_ocupadas", joinColumns = @JoinColumn(name = "carro_id"))
     @Column(name = "data_ocupada")
-    private List<LocalDate> occupiedDates;
+    private List<LocalDate> occupiedDates = new ArrayList<>();
 
     @Column(nullable = false)
     private String urlImage;
