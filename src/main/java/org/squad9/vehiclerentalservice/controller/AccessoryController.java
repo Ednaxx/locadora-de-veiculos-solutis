@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.dto.request.AccessoryRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
+import org.squad9.vehiclerentalservice.model.util.ApiResponse;
 import org.squad9.vehiclerentalservice.service.AccessoryServiceImpl;
 
 import java.util.List;
@@ -19,12 +20,12 @@ public class AccessoryController {
     private final AccessoryServiceImpl accessoryService;
 
     @GetMapping
-    ResponseEntity<List<AccessoryResponseDTO>> findAll(){
+    ResponseEntity<List<AccessoryResponseDTO>> findAll() {
         return ResponseEntity.ok(accessoryService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    ResponseEntity<AccessoryResponseDTO> findById(@PathVariable UUID id){
+    ResponseEntity<AccessoryResponseDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(accessoryService.findById(id));
     }
 
@@ -35,13 +36,14 @@ public class AccessoryController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> delete(@PathVariable UUID id){
+    ResponseEntity<ApiResponse> delete(@PathVariable UUID id) {
         accessoryService.remove(id);
-        return ResponseEntity.ok().build();
+        ApiResponse response = new ApiResponse("ID: " + id + " apagado com sucesso");
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<AccessoryResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid AccessoryRequestDTO accessory){
+    ResponseEntity<AccessoryResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid AccessoryRequestDTO accessory) {
         AccessoryResponseDTO response = accessoryService.update(id, accessory);
         return ResponseEntity.ok(response);
     }
