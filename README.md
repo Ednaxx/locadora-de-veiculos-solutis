@@ -56,96 +56,98 @@ desenvolvido como parte do processo seletivo para o programa Solutis Dev Trail 2
 
 ```mermaid
 classDiagram
-    %% Enumerations
-    class Sexo {
-        <<enumeration>>
-        +MASCULINO
-        +FEMININO
-    }
 
-    class Categoria {
-        <<enumeration>>
-        +HATCH_COMPACTO
-        +HATCH_MEDIO
-        +SEDAN_COMPACTO
-        +SEDAN_MEDIO
-        +SEDAN_GRANDE
-        +MINIVAN
-        +ESPORTIVO
-        +UTILITARIO_COMERCIAL
-    }
+   class Car {
+      +UUID id
+      +String licensePlate
+      +String chassis
+      +String color
+      +BigDecimal dailyRate
+      +String imageURL
+      +List~LocalDate~ occupiedDates
+      +boolean isAvailableToRent(LocalDate, LocalDate)
+      +void blockDates(LocalDate, LocalDate)
+   }
 
-    %% Classes
-    class Pessoa {
-        +id: Long
-        +nome: String
-        +dataNascimento: String
-        +cpf: String
-        +email: String
-    }
+   class CarType {
+      +UUID id
+      +String description
+      +Category category
+   }
 
-    class Motorista {
-        +numeroCNH: String
-    }
+   class Accessory {
+      +UUID id
+      +String name
+      +String description
+   }
 
-    class Funcionario {
-        +matricula: String
-    }
+   class Rental {
+      +UUID id
+      +LocalDate orderDate
+      +LocalDate returnDate
+      +BigDecimal totalValue
+   }
 
-    class ApoliceSeguro {
-        +id: Long
-        +valorFranquia: BigDecimal
-        +protecaoTerceiros: Boolean
-        +protecaoCausasNaturais: Boolean
-        +protecaoRoubo: Boolean
-    }
+   class InsurancePolicy {
+      +UUID id
+      +BigDecimal franchiseValue
+      +boolean thirdPartyProtection
+      +boolean naturalCausesProtection
+      +boolean theftProtection
+   }
 
-    class Aluguel {
-        +id: Long
-        +dataPedido: LocalDate
-        +dataDevolucao: LocalDate
-        +valorTotal: BigDecimal
-    }
+   class Manufacturer {
+      +UUID id
+      +String name
+   }
 
-    class Carro {
-        +id: Long
-        +chassi: String
-        +cor: String
-        +valorDiaria: String
-        +datasOcupadas: List<LocalDate>
-    }
+   class Person {
+      +UUID id
+      +String name
+      +LocalDate birthDate
+      +String CPF
+      +Gender gender
+      +String email
+   }
 
-    class ModeloCarro {
-        +id: Long
-        +descricao: String
-    }
+   class Driver {
+      +String CNH
+   }
 
-    class Fabricante {
-        +id: Long
-        +nome: String
-    }
+   class ShoppingCart {
+      +UUID id
+   }
 
-    class Acessorio {
-        +id: Long
-        +descricao: String
-    }
+   Car --> CarType : 1..* - 1
+   Car --> Rental : 1 - 0..*
+   Car --> Accessory : 0..* - 0..*
+   CarType --> Manufacturer : 1..* - 1
+   Rental --> InsurancePolicy : 1 - 1
+   Rental --> Car : 0..* - 1
+   Rental --> Driver : 1 - 1
+   Driver --|> Person
+   Driver --> ShoppingCart : 1 - 1
+   ShoppingCart --> Car : 0..* - 0..*
+   CarType -- Category : 1 - 1
+   Person -- Gender : 1 - 1
 
-    class CarrinhoCompra {
-        +id: Long
-    }
+   class Category {
+      <<enumeration>>
+      COMPACT_HATCH
+      MEDIUM_HATCH
+      COMPACT_SEDAN
+      MEDIUM_SEDAN
+      LARGE_SEDAN
+      MINIVAN
+      SPORTS_CAR
+      COMMERCIAL_UTILITY
+   }
 
-    %% Relationships
-    Pessoa <|-- Motorista : é uma
-    Pessoa <|-- Funcionario : é uma
-    Motorista "1" -- "0..*" Aluguel : alugueis
-    Aluguel "1" -- "1" ApoliceSeguro : apolice
-    Aluguel "1" -- "0..*" Carro : carro
-    Motorista "1" -- "1" CarrinhoCompra : carrinhoCompra
-    CarrinhoCompra "1" -- "0..*" Carro : listaCarros
-    Carro "1" -- "0..*" Acessorio : acessorios
-    Carro "1" -- "1" ModeloCarro : modelo
-    ModeloCarro "1" -- "0..*" Fabricante : fabricante
-    ModeloCarro "1" -- "1" Categoria : categoria
+   class Gender {
+      <<enumeration>>
+      MASCULINO
+      FEMININO
+   }
 ```
 ## Desenvolvimento
 
