@@ -10,6 +10,7 @@ import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
 import org.squad9.vehiclerentalservice.repository.DriverRepository;
 import org.squad9.vehiclerentalservice.repository.ShoppingCartRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.DriverService;
+import org.squad9.vehiclerentalservice.service.util.CNHValidation;
 import org.squad9.vehiclerentalservice.service.util.CPFValidation;
 import org.squad9.vehiclerentalservice.service.util.DriverValidations;
 
@@ -35,16 +36,14 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public DriverResponseDTO findByEmail(String email) {
-        DriverModel driver = driverRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o email: " + email));
+        DriverModel driver = driverRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o email: " + email));
 
         return modelMapper.map(driver, DriverResponseDTO.class);
     }
 
     @Override
     public DriverResponseDTO findById(UUID id) {
-        DriverModel driver = driverRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
+        DriverModel driver = driverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
 
         return modelMapper.map(driver, DriverResponseDTO.class);
     }
@@ -90,8 +89,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public DriverResponseDTO update(UUID id, DriverRequestDTO request) {
-        DriverModel existingDriver = driverRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
+        DriverModel existingDriver = driverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
 
         ShoppingCartModel existingCart = existingDriver.getShoppingCart();
 
@@ -105,11 +103,15 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private boolean existCPF(String cpf) {
-        return driverRepository.findByCPF(cpf) != null;
+        String formattedCpf = CPFValidation.formatCPF(cpf);
+        return driverRepository.findByCPF(formattedCpf) != null;
     }
 
-    private boolean existCNH(String numeroCNH) {
-        return driverRepository.findByCNH(numeroCNH) != null;
+
+    private boolean existCNH(String cnhValue) {
+        String formattedCNH = CNHValidation.formatCNH(cnhValue);
+
+        return driverRepository.findByCNH(cnhValue) != null;
     }
 
     private boolean existEmail(String email) {

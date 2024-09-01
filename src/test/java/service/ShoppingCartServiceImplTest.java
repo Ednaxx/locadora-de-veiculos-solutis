@@ -5,9 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.modelmapper.ModelMapper;
+import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
+import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.DriverModel;
 import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
+import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.repository.ShoppingCartRepository;
 import org.squad9.vehiclerentalservice.service.ShoppingCartServiceImpl;
 
@@ -24,24 +28,38 @@ class ShoppingCartServiceImplTest {
     @Mock
     private ShoppingCartRepository shoppingCartRepository;
 
+    @Mock
+    private CarRepository carRepository;
+    @Mock
+    private ModelMapper modelMapper;
+
     @InjectMocks
     private ShoppingCartServiceImpl shoppingCartService;
+
+    private ShoppingCartModel shoppingCartModel;
+    private ShoppingCartResponseDTO shoppingCartResponseDTO;
+    private CarModel carModel;
+    private CarResponseDTO carResponseDTO;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        // Initialize the models and DTOs
+        shoppingCartModel = new ShoppingCartModel();
+        shoppingCartResponseDTO = new ShoppingCartResponseDTO();
+        carModel = new CarModel();
+        carResponseDTO = new CarResponseDTO();
     }
 
     @Test
     void testFindAll_whenCarrinhoNotEmpty() {
-
         List<ShoppingCartModel> carrinhoList = new ArrayList<>();
-        carrinhoList.add(new ShoppingCartModel());
+        carrinhoList.add(shoppingCartModel);
         when(shoppingCartRepository.findAll()).thenReturn(carrinhoList);
+        when(modelMapper.map(shoppingCartModel, ShoppingCartResponseDTO.class)).thenReturn(shoppingCartResponseDTO);
 
-
-        List<ShoppingCartModel> result = shoppingCartService.findAll();
-
+        List<ShoppingCartResponseDTO> result = shoppingCartService.findAll();
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -50,74 +68,55 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testFindAll_whenCarrinhoIsEmpty() {
-
         when(shoppingCartRepository.findAll()).thenReturn(new ArrayList<>());
 
+        List<ShoppingCartResponseDTO> result = shoppingCartService.findAll();
 
-        List<ShoppingCartModel> result = shoppingCartService.findAll();
-
-
-        assertNull(result);
+        assertNotNull(result);  // Changed from assertNull to assertNotNull
+        assertTrue(result.isEmpty());
         verify(shoppingCartRepository, times(1)).findAll();
     }
 
     @Test
-    void testSave() {
-
-        ShoppingCartModel carrinhoCompra = new ShoppingCartModel();
-        when(shoppingCartRepository.save(carrinhoCompra)).thenReturn(carrinhoCompra);
-
-
-        ShoppingCartModel result = shoppingCartService.save(carrinhoCompra);
-
-
-        assertNotNull(result);
-        verify(shoppingCartRepository, times(1)).save(carrinhoCompra);
-    }
-
-    @Test
     void testAddCarros() {
+        shoppingCartModel.setCars(new ArrayList<>());
 
-        ShoppingCartModel carrinhoCompra = new ShoppingCartModel();
-        carrinhoCompra.setCarList(new ArrayList<>());
-        CarModel carro = new CarModel();
+        carModel.setId(UUID.randomUUID());
 
-        when(shoppingCartRepository.save(carrinhoCompra)).thenReturn(carrinhoCompra);
+        when(shoppingCartRepository.findById(shoppingCartModel.getId())).thenReturn(Optional.of(shoppingCartModel));
+        when(carRepository.findById(carModel.getId())).thenReturn(Optional.of(carModel));
+        when(shoppingCartRepository.save(any(ShoppingCartModel.class))).thenReturn(shoppingCartModel);
+        when(modelMapper.map(carModel, CarResponseDTO.class)).thenReturn(carResponseDTO);
 
-
-        ShoppingCartModel result = shoppingCartService.addCarros(carrinhoCompra, carro);
-
+        List<CarResponseDTO> result = shoppingCartService.addCarToShoppingCart(shoppingCartModel.getId(), carModel.getId());
 
         assertNotNull(result);
-        assertTrue(result.getCarList().contains(carro));
-        verify(shoppingCartRepository, times(1)).save(carrinhoCompra);
+        verify(shoppingCartRepository, times(1)).save(shoppingCartModel);
+        verify(carRepository, times(1)).findById(carModel.getId());
     }
 
     @Test
     void testFindByMotorista() {
-
         DriverModel motorista = new DriverModel();
-        ShoppingCartModel carrinho = new ShoppingCartModel();
-        when(shoppingCartRepository.findByDriver(motorista)).thenReturn(carrinho);
+        motorista.setEmail("test@test.com");
 
+        when(shoppingCartRepository.findByDriverEmail(motorista.getEmail())).thenReturn(Optional.of(shoppingCartModel));
+        when(modelMapper.map(shoppingCartModel, ShoppingCartResponseDTO.class)).thenReturn(shoppingCartResponseDTO);
 
-        ShoppingCartModel result = shoppingCartService.findByMotorista(motorista);
-
+        ShoppingCartResponseDTO result = shoppingCartService.findByDriverEmail(motorista.getEmail());
 
         assertNotNull(result);
-        verify(shoppingCartRepository, times(1)).findByDriver(motorista);
+        verify(shoppingCartRepository, times(1)).findByDriverEmail(motorista.getEmail());
     }
 
     @Test
     void testFindById_whenCarrinhoExists() {
-
         UUID carrinhoId = UUID.randomUUID();
-        ShoppingCartModel carrinho = new ShoppingCartModel();
-        when(shoppingCartRepository.findById(carrinhoId)).thenReturn(Optional.of(carrinho));
 
+        when(shoppingCartRepository.findById(carrinhoId)).thenReturn(Optional.of(shoppingCartModel));
+        when(modelMapper.map(shoppingCartModel, ShoppingCartResponseDTO.class)).thenReturn(shoppingCartResponseDTO);
 
-        ShoppingCartModel result = shoppingCartService.findById(carrinhoId);
-
+        ShoppingCartResponseDTO result = shoppingCartService.findById(carrinhoId);
 
         assertNotNull(result);
         verify(shoppingCartRepository, times(1)).findById(carrinhoId);
@@ -125,15 +124,14 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testFindById_whenCarrinhoDoesNotExist() {
-
         UUID carrinhoId = UUID.randomUUID();
         when(shoppingCartRepository.findById(carrinhoId)).thenReturn(Optional.empty());
 
+        // Expecting the IllegalArgumentException to be thrown
+        assertThrows(IllegalArgumentException.class, () -> {
+            shoppingCartService.findById(carrinhoId);
+        });
 
-        ShoppingCartModel result = shoppingCartService.findById(carrinhoId);
-
-
-        assertNull(result);
         verify(shoppingCartRepository, times(1)).findById(carrinhoId);
     }
 }
