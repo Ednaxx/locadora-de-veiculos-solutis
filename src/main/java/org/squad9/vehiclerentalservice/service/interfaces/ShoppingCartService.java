@@ -18,4 +18,6 @@ public interface ShoppingCartService {
     List<CarResponseDTO> addCarToShoppingCart(UUID id, UUID idCarro);
 
     List<CarResponseDTO> removeCarFromShoppingCart(UUID id, UUID idCarro);
+    void remove(UUID id);
+
 }

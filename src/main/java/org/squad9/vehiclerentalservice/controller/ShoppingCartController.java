@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
+import org.squad9.vehiclerentalservice.model.util.ApiResponse;
 import org.squad9.vehiclerentalservice.service.ShoppingCartServiceImpl;
 
 import java.util.List;
@@ -49,6 +50,13 @@ public class ShoppingCartController {
     @DeleteMapping("/{id}/carros/{idCarro}")
     ResponseEntity<List<CarResponseDTO>> removeCarFromShoppingCart(@PathVariable UUID id, @PathVariable UUID idCarro){
         List<CarResponseDTO> response = shoppingCartService.removeCarFromShoppingCart(id, idCarro);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<ApiResponse> removeShoppingCart(@PathVariable UUID id){
+        shoppingCartService.remove(id);
+        ApiResponse response = new ApiResponse("Carrinho com o ID: " + id + " apagado com sucesso");
         return ResponseEntity.ok(response);
     }
 }

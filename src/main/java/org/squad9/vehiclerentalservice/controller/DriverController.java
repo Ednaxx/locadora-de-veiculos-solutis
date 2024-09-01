@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.dto.request.DriverRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.DriverResponseDTO;
+import org.squad9.vehiclerentalservice.model.util.ApiResponse;
 import org.squad9.vehiclerentalservice.service.DriverServiceImpl;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class DriverController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/{email}")
+    @GetMapping(value = "/email/{email}")
     ResponseEntity<DriverResponseDTO> findByEmail(@PathVariable String email) {
         DriverResponseDTO response = driverService.findByEmail(email);
         return ResponseEntity.ok(response);
@@ -44,9 +45,11 @@ public class DriverController {
 
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> delete(@PathVariable UUID id) {
+    ResponseEntity<ApiResponse> delete(@PathVariable UUID id) {
+
         driverService.remove(id);
-        return ResponseEntity.ok().build();
+        ApiResponse response = new ApiResponse("ID: " + id + " apagado com sucesso");
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")

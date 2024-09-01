@@ -21,6 +21,9 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     public ManufacturerResponseDTO save(ManufacturerRequestDTO request) {
+        if (manufacturerRepository.existsByName(request.getName())) {
+            throw new IllegalArgumentException("O Fornecedor com o nome: " + request.getName() + " já existe.");
+        }
         ManufacturerModel manufacturerToSave = modelMapper.map(request, ManufacturerModel.class);
         ManufacturerModel savedManufacturer = manufacturerRepository.save(manufacturerToSave);
 
@@ -38,7 +41,8 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     public ManufacturerResponseDTO findById(UUID id) {
-        ManufacturerModel manufacturer = manufacturerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + id));
+        ManufacturerModel manufacturer = manufacturerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + id));
 
         return modelMapper.map(manufacturer, ManufacturerResponseDTO.class);
     }

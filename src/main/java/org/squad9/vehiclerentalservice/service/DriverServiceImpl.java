@@ -92,12 +92,14 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public DriverResponseDTO update(UUID id, DriverRequestDTO request) {
-        driverRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
+        DriverModel existingDriver = driverRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
 
-        DriverModel driverToSave = modelMapper.map(request, DriverModel.class);
-        driverToSave.setId(id);
-        DriverModel updatedDriver = driverRepository.save(driverToSave);
+        ShoppingCartModel existingCart = existingDriver.getShoppingCart();
 
+        modelMapper.map(request, existingDriver);
+        existingDriver.setShoppingCart(existingCart);
+        DriverModel updatedDriver = driverRepository.save(existingDriver);
         return modelMapper.map(updatedDriver, DriverResponseDTO.class);
     }
 

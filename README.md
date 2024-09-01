@@ -21,7 +21,7 @@ desenvolvido como parte do processo seletivo para o programa Solutis Dev Trail 2
 
 1. Faça o clone o repositório:
    ```bash
-   git clone https://github.com/Ednaxx/desafio-livraria-solutis
+   git clone https://github.com/Ednaxx/locadora-de-veiculos-solutis.git
    ```
 2. Navegue até o diretório do projeto:
    ```bash
@@ -147,3 +147,23 @@ classDiagram
     ModeloCarro "1" -- "0..*" Fabricante : fabricante
     ModeloCarro "1" -- "1" Categoria : categoria
 ```
+## Desenvolvimento
+
+Este projeto foi desenvolvido em colaboração por uma equipe de 7 pessoas.
+Cada membro contribuiu com a implementação e validação das soluções propostas para os exercícios.
+
+### Membros da Equipe
+
+- **Alexandre Morais** - https://github.com/Ednaxx
+
+- **Bruno Ricardo Machado** - https://github.com/brunorm86
+
+- **Gabriel Sena** - https://github.com/Gabriel-SBS
+
+- **José Nathan** - https://github.com/josenathan0
+
+- **Junior Aquino** - https://github.com/GitAquino
+
+- **Larissa Sena** - https://github.com/larissacsena
+
+- **Vinícius Almada** - https://github.com/AlmadaAlmada
