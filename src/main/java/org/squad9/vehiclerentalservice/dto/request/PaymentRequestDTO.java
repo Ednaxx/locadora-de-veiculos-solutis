@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PaymentRequestDTO {
     @NotNull private long cardNumber;
-    @NotNull @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", locale = "pt-BR", timezone = "Brazil/East")
+    @NotNull @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "pt-BR", timezone = "Brazil/East")
     private LocalDate expirationDate;
     @NotNull @Min(3) @Max(4) private int CVV;
 }
