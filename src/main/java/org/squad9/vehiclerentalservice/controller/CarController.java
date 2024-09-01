@@ -46,13 +46,13 @@ public class CarController {
 
     @GetMapping(value = "/modelo/{modelo_id}")
     ResponseEntity<List<CarResponseDTO>> findByCarModel(@PathVariable UUID modelo_id) {
-        List<CarResponseDTO> response = carService.findByCarModel(modelo_id);
+        List<CarResponseDTO> response = carService.findByCarModelId(modelo_id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/acessorio/{acessorio_id}")
     ResponseEntity<List<CarResponseDTO>> findByAccessories(@PathVariable UUID acessorio_id) {
-        List<CarResponseDTO> response = carService.findByAcessorio(acessorio_id);
+        List<CarResponseDTO> response = carService.findByAccessoryId(acessorio_id);
         return ResponseEntity.ok(response);
     }
 

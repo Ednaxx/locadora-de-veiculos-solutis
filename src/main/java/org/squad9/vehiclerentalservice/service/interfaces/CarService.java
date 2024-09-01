@@ -18,9 +18,9 @@ public interface CarService {
 
     List<CarResponseDTO> findByCategory(Category category);
 
-    List<CarResponseDTO> findByCarModel(UUID model_id);
+    List<CarResponseDTO> findByCarModelId(UUID model_id);
 
-    List<CarResponseDTO> findByAcessorio(UUID accessorio_id);
+    List<CarResponseDTO> findByAccessoryId(UUID accessorio_id);
 
     CarResponseDTO save(CarRequestDTO request);
 

@@ -33,7 +33,7 @@ public class CarTypeController {
 
     @GetMapping(value = "/categoria/{categoria}")
     ResponseEntity<List<CarTypeResponseDTO>> findByCategory(@PathVariable Category categoria){
-        List<CarTypeResponseDTO> response = carModelService.findByCategoria(categoria);
+        List<CarTypeResponseDTO> response = carModelService.findByCategory(categoria);
         return ResponseEntity.ok(response);
     }
 

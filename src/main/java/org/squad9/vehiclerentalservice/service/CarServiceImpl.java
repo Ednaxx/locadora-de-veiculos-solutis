@@ -52,7 +52,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarResponseDTO> findByCarModel(UUID modelId) {
+    public List<CarResponseDTO> findByCarModelId(UUID modelId) {
         List<CarModel> cars = carRepository.findByCarModelId(modelId);
         List<CarResponseDTO> response = new ArrayList<>();
 
@@ -71,7 +71,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarResponseDTO> findByAcessorio(UUID accessoryId) {
+    public List<CarResponseDTO> findByAccessoryId(UUID accessoryId) {
         List<CarModel> cars = carRepository.findByAccessoriesId(accessoryId);
         List<CarResponseDTO> response = new ArrayList<>();
 

@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
-import org.squad9.vehiclerentalservice.model.util.ApiResponse;
 import org.squad9.vehiclerentalservice.service.ShoppingCartServiceImpl;
 
 import java.util.List;
@@ -30,8 +29,8 @@ public class ShoppingCartController {
     }
 
     @GetMapping("/motorista/{email}")
-    ResponseEntity<ShoppingCartResponseDTO> findByDriver(@PathVariable String email) {
-        ShoppingCartResponseDTO shoppingCartModel = shoppingCartService.findByDriver(email);
+    ResponseEntity<ShoppingCartResponseDTO> findByDriverEmail(@PathVariable String email) {
+        ShoppingCartResponseDTO shoppingCartModel = shoppingCartService.findByDriverEmail(email);
         return ResponseEntity.ok(shoppingCartModel);
     }
 
