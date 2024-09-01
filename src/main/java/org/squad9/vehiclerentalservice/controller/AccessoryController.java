@@ -28,7 +28,6 @@ public class AccessoryController {
     ResponseEntity<AccessoryResponseDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(accessoryService.findById(id));
     }
-// TODO: try-catch para tratar o o envio de name e description null
     @PostMapping
     ResponseEntity<AccessoryResponseDTO> create(@RequestBody @Valid AccessoryRequestDTO accessory) {
         AccessoryResponseDTO response = accessoryService.save(accessory);
