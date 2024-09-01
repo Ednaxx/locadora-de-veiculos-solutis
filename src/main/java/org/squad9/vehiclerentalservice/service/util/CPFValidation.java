@@ -1,45 +1,39 @@
 package org.squad9.vehiclerentalservice.service.util;
 
 public class CPFValidation {
-    public static boolean isCPF(String CPF) {
+    public static boolean isCPF(String cpf) {
         try {
-            String cpf = CPF.replace(".", "").replace("-", "");
-            if (cpf.length() != 11) {
+            String cleanedCpf = cpf.replace(".", "").replace("-", "");
+            if (cleanedCpf.length() != 11) {
                 return false;
             }
 
-            int[] multiplicadores1 = {10, 9, 8, 7, 6, 5, 4, 3, 2};
-            int[] multiplicadores2 = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
+            int[] firstMultipliers = {10, 9, 8, 7, 6, 5, 4, 3, 2};
+            int[] secondMultipliers = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
 
-            // Calcula o primeiro dígito verificador
-            int soma = 0;
+            int sum = 0;
             for (int i = 0; i < 9; i++) {
-                soma += Integer.parseInt(cpf.substring(i, i + 1)) * multiplicadores1[i];
+                sum += Integer.parseInt(cleanedCpf.substring(i, i + 1)) * firstMultipliers[i];
             }
-            int resto = soma % 11;
-            int digito1 = resto < 2 ? 0 : 11 - resto;
+            int remainder = sum % 11;
+            int firstDigit = remainder < 2 ? 0 : 11 - remainder;
 
-            // Calcula o segundo dígito verificador
-            soma = 0;
+            sum = 0;
             for (int i = 0; i < 10; i++) {
-                soma += Integer.parseInt(cpf.substring(i, i + 1)) * multiplicadores2[i];
+                sum += Integer.parseInt(cleanedCpf.substring(i, i + 1)) * secondMultipliers[i];
             }
-            resto = soma % 11;
-            int digito2 = resto < 2 ? 0 : 11 - resto;
+            remainder = sum % 11;
+            int secondDigit = remainder < 2 ? 0 : 11 - remainder;
 
-            // Compara os dígitos calculados com os dígitos reais
-            return digito1 == Integer.parseInt(cpf.substring(9, 10)) && digito2 == Integer.parseInt(cpf.substring(10));
+            return firstDigit == Integer.parseInt(cleanedCpf.substring(9, 10)) && secondDigit == Integer.parseInt(cleanedCpf.substring(10));
         } catch (NumberFormatException e) {
             return false;
         }
     }
 
-    public static String formatCPF(String CPF) {
-        String cpf = CPF.replaceAll("[^0-9]", "");
+    public static String formatCPF(String cpf) {
+        String cleanedCpf = cpf.replaceAll("[^0-9]", "");
 
-        return(cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." +
-                cpf.substring(6, 9) + "-" + cpf.substring(9, 11));
+        return (cleanedCpf.substring(0, 3) + "." + cleanedCpf.substring(3, 6) + "." + cleanedCpf.substring(6, 9) + "-" + cleanedCpf.substring(9, 11));
     }
-
-
 }

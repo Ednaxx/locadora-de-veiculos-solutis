@@ -1,106 +1,170 @@
 # Desafio locadora de veículos
 
-## Sobre o projeto
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.3-green)
+![Build](https://img.shields.io/badge/Build-Passing-brightgreen)
+
+### Sobre o projeto
 
 Este repositório contém a resolução do Desafio da Locadora de Veículos,
-desenvolvido como parte do processo seletivo para o programa Solutis Dev Trail 2024.
+desenvolvido como parte do processo seletivo para o programa Solutis Dev Trail 2024, pela equipe 9.
 
-## Pré requisitos
+### Pré requisitos
 
 - Java JDK 21;
 - Apache Maven;
 - PostgreSQL;
+- Docker (Opcional)
 
-## Como executar o projeto
+### Instalação do Projeto
 
-- Configure o banco de dados local. Pode-se usar um container no docker: 
-```docker run --name postgres-db -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=vehicle-rental -d postgres```;
-- Na pasta do código fonte, instale as dependências do Maven: ```mvn install```;
-- Configure suas variáveis de ambiente com as credenciais do seu banco de dados
-(a assinatura das variáveis está disponível em /src/main/resources/application.yml);
-- Execute a aplicação: ```mvn spring-boot:run```;
-- A API ficará disponível em http://localhost:8080.
+1. Faça o clone o repositório:
+   ```bash
+   git clone https://github.com/Ednaxx/locadora-de-veiculos-solutis.git
+   ```
+2. Navegue até o diretório do projeto:
+   ```bash
+   cd locadora-de-veiculos-solutis
+   ```
+3. Execute no terminal para instalação das dependências do projeto:
+   ```bash
+   mvn install
+   ```
+4. Com o Docker aberto, execute no terminal, para rodar localmente o banco de dados Postgres:
+   ```bash
+   docker-compose up --build
+   ```
+   ou
+   ```bash
+   docker run --name postgres-db -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=vehicle-rental -d postgres
+      ```
+   
+5. Configure suas variáveis de ambiente com as credenciais do seu banco de dados
+(a assinatura das variáveis está disponível em `/src/main/resources/application.yml`);
+
+
+6. Execute a aplicação:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+7. Utilize a APi com a seguinte url: http://localhost:8080 
+   ou via o Swagger da aplicação: [Swager Locadora de Veículos](http://localhost:8080/swagger-ui/index.html#/)
 
 ## Diagrama de entidades
 
 ```mermaid
 classDiagram
-    %% Enumerations
-    class Sexo {
-        <<enumeration>>
-        +MASCULINO
-        +FEMININO
-    }
 
-    class Categoria {
-        <<enumeration>>
-        +HATCH_COMPACTO
-        +HATCH_MEDIO
-        +SEDAN_COMPACTO
-        +SEDAN_MEDIO
-        +SEDAN_GRANDE
-        +MINIVAN
-        +ESPORTIVO
-        +UTILITARIO_COMERCIAL
-    }
+   class Car {
+      +UUID id
+      +String licensePlate
+      +String chassis
+      +String color
+      +BigDecimal dailyRate
+      +String imageURL
+      +List~LocalDate~ occupiedDates
+      +boolean isAvailableToRent(LocalDate, LocalDate)
+      +void blockDates(LocalDate, LocalDate)
+   }
 
-    %% Classes
-    class Pessoa {
-        +nome: String
-        +dataNascimento: Date
-        +cpf: String
-    }
+   class CarType {
+      +UUID id
+      +String description
+      +Category category
+   }
 
-    class Motorista {
-        +numeroCNH: String
-    }
+   class Accessory {
+      +UUID id
+      +String name
+      +String description
+   }
 
-    class Funcionario {
-        +matricula: String
-    }
+   class Rental {
+      +UUID id
+      +LocalDate orderDate
+      +LocalDate returnDate
+      +BigDecimal totalValue
+   }
 
-    class ApoliceSeguro {
-        +valorFranquia: BigDecimal
-        +protecaoTerceiro: Boolean
-        +protecaoCausasNaturais: Boolean
-        +protecaoRoubo: Boolean
-    }
+   class InsurancePolicy {
+      +UUID id
+      +BigDecimal franchiseValue
+      +boolean thirdPartyProtection
+      +boolean naturalCausesProtection
+      +boolean theftProtection
+   }
 
-    class Aluguel {
-        +dataPedido: Calendar
-        +dataEntrega: Date
-        +dataDevolucao: Date
-        +valorTotal: BigDecimal
-    }
+   class Manufacturer {
+      +UUID id
+      +String name
+   }
 
-    class Carro {
-        +placa: String
-        +chassi: String
-        +cor: String
-        +diaria: BigDecimal
-    }
+   class Person {
+      +UUID id
+      +String name
+      +LocalDate birthDate
+      +String CPF
+      +Gender gender
+      +String email
+   }
 
-    class ModeloCarro {
-        +descricao: String
-    }
+   class Driver {
+      +String CNH
+   }
 
-    class Fabricante {
-        +nome: String
-    }
+   class ShoppingCart {
+      +UUID id
+   }
 
-    class Acessorio {
-        +descricao: String
-    }
+   Car --> CarType : 1..* - 1
+   Car --> Rental : 1 - 0..*
+   Car --> Accessory : 0..* - 0..*
+   CarType --> Manufacturer : 1..* - 1
+   Rental --> InsurancePolicy : 1 - 1
+   Rental --> Car : 0..* - 1
+   Rental --> Driver : 1 - 1
+   Driver --|> Person
+   Driver --> ShoppingCart : 1 - 1
+   ShoppingCart --> Car : 0..* - 0..*
+   CarType -- Category : 1 - 1
+   Person -- Gender : 1 - 1
 
-    %% Relationships
-    Pessoa <|-- Motorista : é uma
-    Pessoa <|-- Funcionario : é uma
-    Motorista "1" -- "0..*" Aluguel : alugueis
-    Aluguel "1" -- "0..*" Carro : carro
-    Aluguel "1" -- "1" ApoliceSeguro : apolice
-    Carro "0..*" -- "1" ModeloCarro : modelo
-    Carro "0..*" -- "0..*" Acessorio : acessorioModels
-    ModeloCarro "1" -- "0..*" Fabricante : fabricante
-    ModeloCarro "1" -- "1" Categoria : categoria
+   class Category {
+      <<enumeration>>
+      COMPACT_HATCH
+      MEDIUM_HATCH
+      COMPACT_SEDAN
+      MEDIUM_SEDAN
+      LARGE_SEDAN
+      MINIVAN
+      SPORTS_CAR
+      COMMERCIAL_UTILITY
+   }
 
+   class Gender {
+      <<enumeration>>
+      MASCULINO
+      FEMININO
+   }
 ```
+## Desenvolvimento
+
+Este projeto foi desenvolvido em colaboração por uma equipe de 7 pessoas.
+Cada membro contribuiu com a implementação e validação das soluções propostas para os exercícios.
+
+### Membros da Equipe
+
+- **Alexandre Morais** - https://github.com/Ednaxx
+
+- **Bruno Ricardo Machado** - https://github.com/brunorm86
+
+- **Gabriel Sena** - https://github.com/Gabriel-SBS
+
+- **José Nathan** - https://github.com/josenathan0
+
+- **Junior Aquino** - https://github.com/GitAquino
+
+- **Larissa Sena** - https://github.com/larissacsena
+
+- **Vinícius Almada** - https://github.com/AlmadaAlmada
