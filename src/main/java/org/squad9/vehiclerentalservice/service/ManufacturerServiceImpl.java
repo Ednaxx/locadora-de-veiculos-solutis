@@ -57,10 +57,13 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     public ManufacturerResponseDTO update(UUID id, ManufacturerRequestDTO request) {
-        manufacturerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+        ManufacturerModel oldManufacturer = manufacturerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + id));
 
         ManufacturerModel manufacturerToUpdate = modelMapper.map(request, ManufacturerModel.class);
         manufacturerToUpdate.setId(id);
+        manufacturerToUpdate.setCarTypes(oldManufacturer.getCarTypes());
+
         ManufacturerModel updatedManufacturer = manufacturerRepository.save(manufacturerToUpdate);
 
         return modelMapper.map(updatedManufacturer, ManufacturerResponseDTO.class);

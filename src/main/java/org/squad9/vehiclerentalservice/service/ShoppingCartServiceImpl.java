@@ -82,12 +82,5 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         shoppingCart.getCars().forEach(c -> response.add(modelMapper.map(c, CarResponseDTO.class)));
         return response;
     }
-
-    @Override
-    public void remove(UUID id) {
-        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Carrinho não encontrado com o ID: " + id));
-        shoppingCartRepository.delete(shoppingCart);
-    }
 }
 

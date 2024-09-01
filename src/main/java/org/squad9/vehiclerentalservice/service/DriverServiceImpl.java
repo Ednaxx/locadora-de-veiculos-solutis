@@ -78,14 +78,12 @@ public class DriverServiceImpl implements DriverService {
             throw new IllegalArgumentException("Email já existente no sistema!");
         }
 
-        DriverModel savedDriver = driverRepository.save(driverToSave);
-
         ShoppingCartModel shoppingCart = new ShoppingCartModel();
-        shoppingCart.setDriver(savedDriver);
-        shoppingCart = shoppingCartRepository.save(shoppingCart);
+        shoppingCart.setDriver(driverToSave);
+        driverToSave.setShoppingCart(shoppingCart);
 
-        savedDriver.setShoppingCart(shoppingCart);
-        driverRepository.save(savedDriver);
+        DriverModel savedDriver = driverRepository.save(driverToSave);
+        shoppingCartRepository.save(shoppingCart);
 
         return modelMapper.map(savedDriver, DriverResponseDTO.class);
     }
@@ -99,7 +97,10 @@ public class DriverServiceImpl implements DriverService {
 
         modelMapper.map(request, existingDriver);
         existingDriver.setShoppingCart(existingCart);
+
         DriverModel updatedDriver = driverRepository.save(existingDriver);
+        shoppingCartRepository.save(existingCart);
+
         return modelMapper.map(updatedDriver, DriverResponseDTO.class);
     }
 

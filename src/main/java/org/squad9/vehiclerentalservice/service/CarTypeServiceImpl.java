@@ -7,7 +7,9 @@ import org.squad9.vehiclerentalservice.dto.request.CarTypeRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarTypeResponseDTO;
 import org.squad9.vehiclerentalservice.model.CarTypeModel;
 import org.squad9.vehiclerentalservice.enums.Category;
+import org.squad9.vehiclerentalservice.model.ManufacturerModel;
 import org.squad9.vehiclerentalservice.repository.CarTypeRepository;
+import org.squad9.vehiclerentalservice.repository.ManufacturerRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarTypeService;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CarTypeServiceImpl implements CarTypeService {
     private final CarTypeRepository carTypeRepository;
+    private final ManufacturerRepository manufacturerRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -48,8 +51,13 @@ public class CarTypeServiceImpl implements CarTypeService {
 
     @Override
     public CarTypeResponseDTO save(CarTypeRequestDTO request) {
-        CarTypeModel carModelToSave = modelMapper.map(request, CarTypeModel.class);
-        CarTypeModel savedCarModel = carTypeRepository.save(carModelToSave);
+        CarTypeModel carTypeToSave = modelMapper.map(request, CarTypeModel.class);
+
+        ManufacturerModel manufacturer = manufacturerRepository.findById(request.getManufacturerId())
+                .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + request.getManufacturerId()));
+
+        carTypeToSave.setManufacturer(manufacturer);
+        CarTypeModel savedCarModel = carTypeRepository.save(carTypeToSave);
 
         return modelMapper.map(savedCarModel, CarTypeResponseDTO.class);
     }
@@ -66,8 +74,12 @@ public class CarTypeServiceImpl implements CarTypeService {
     public CarTypeResponseDTO update(UUID id, CarTypeRequestDTO request) {
         carTypeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Modelo de carro não encontrado com o ID: " + id));
 
+        ManufacturerModel manufacturer = manufacturerRepository.findById(request.getManufacturerId())
+                .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + request.getManufacturerId()));
+
         CarTypeModel carTypeToUpdate = modelMapper.map(request, CarTypeModel.class);
         carTypeToUpdate.setId(id);
+        carTypeToUpdate.setManufacturer(manufacturer);
         CarTypeModel updatedCarModel = carTypeRepository.save(carTypeToUpdate);
 
         return modelMapper.map(updatedCarModel, CarTypeResponseDTO.class);
