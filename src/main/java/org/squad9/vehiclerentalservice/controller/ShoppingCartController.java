@@ -52,11 +52,4 @@ public class ShoppingCartController {
         List<CarResponseDTO> response = shoppingCartService.removeCarFromShoppingCart(id, idCarro);
         return ResponseEntity.ok(response);
     }
-
-    @DeleteMapping("/{id}")
-    ResponseEntity<ApiResponse> removeShoppingCart(@PathVariable UUID id){
-        shoppingCartService.remove(id);
-        ApiResponse response = new ApiResponse("Carrinho com o ID: " + id + " apagado com sucesso");
-        return ResponseEntity.ok(response);
-    }
 }

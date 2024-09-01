@@ -6,8 +6,12 @@ import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.RentalRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.RentalResponseDTO;
 import org.squad9.vehiclerentalservice.model.CarModel;
+import org.squad9.vehiclerentalservice.model.DriverModel;
+import org.squad9.vehiclerentalservice.model.InsurancePolicyModel;
 import org.squad9.vehiclerentalservice.model.RentalModel;
 import org.squad9.vehiclerentalservice.repository.CarRepository;
+import org.squad9.vehiclerentalservice.repository.DriverRepository;
+import org.squad9.vehiclerentalservice.repository.InsurancePolicyRepository;
 import org.squad9.vehiclerentalservice.repository.RentalRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.RentalService;
 
@@ -20,6 +24,8 @@ import java.util.UUID;
 public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
+    private final DriverRepository driverRepository;
+    private final InsurancePolicyRepository insurancePolicyRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -51,15 +57,34 @@ public class RentalServiceImpl implements RentalService {
     public RentalResponseDTO save(RentalRequestDTO request) {
         RentalModel rentalToSave = modelMapper.map(request, RentalModel.class);
 
-        CarModel car = carRepository.findById(request.getCarId()).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + request.getCarId()));
+        CarModel car = carRepository.findById(request.getCarId())
+                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + request.getCarId()));
+
+        DriverModel driver = driverRepository.findById(request.getDriverId())
+                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + request.getDriverId()));
+
+        InsurancePolicyModel insurancePolicy = insurancePolicyRepository.findById(request.getInsurancePolicyId())
+                .orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + request.getInsurancePolicyId()));
 
         if (car.isAvailableToRent(request.getOrderDate(), request.getReturnDate())) {
             car.blockDates(request.getOrderDate(), request.getReturnDate());
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("Carro não disponível para aluguel no período solicitado");
         }
 
+        rentalToSave.setCar(car);
+        rentalToSave.setDriver(driver);
+        rentalToSave.setInsurancePolicy(insurancePolicy);
+
+        car.getRents().add(rentalToSave);
+        driver.getRents().add(rentalToSave);
+        insurancePolicy.setRental(rentalToSave);
+
         carRepository.save(car);
+        driverRepository.save(driver);
+        insurancePolicyRepository.save(insurancePolicy);
+
         RentalModel savedRental = rentalRepository.save(rentalToSave);
 
         return modelMapper.map(savedRental, RentalResponseDTO.class);

@@ -109,7 +109,8 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarResponseDTO update(UUID id, CarRequestDTO request) {
-        carRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+        CarModel oldCar = carRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
 
         CarModel carToUpdate = modelMapper.map(request, CarModel.class);
 
@@ -127,6 +128,7 @@ public class CarServiceImpl implements CarService {
 
 
         carToUpdate.setId(id);
+        carToUpdate.setAccessories(oldCar.getAccessories());
         CarModel updatedCar = carRepository.save(carToUpdate);
 
         return modelMapper.map(updatedCar, CarResponseDTO.class);
