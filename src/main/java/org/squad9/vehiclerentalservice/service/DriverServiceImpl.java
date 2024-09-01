@@ -2,9 +2,11 @@ package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.DriverRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.DriverResponseDTO;
+import org.squad9.vehiclerentalservice.exception.RestException;
 import org.squad9.vehiclerentalservice.model.DriverModel;
 import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
 import org.squad9.vehiclerentalservice.repository.DriverRepository;
@@ -36,7 +38,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverResponseDTO findByEmail(String email) {
         DriverModel driver = driverRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o email: " + email));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Motorista não encontrado com o email: " + email));
 
         return modelMapper.map(driver, DriverResponseDTO.class);
     }
@@ -44,7 +46,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverResponseDTO findById(UUID id) {
         DriverModel driver = driverRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Motorista não encontrado com o ID: " + id));
 
         return modelMapper.map(driver, DriverResponseDTO.class);
     }
@@ -52,7 +54,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void remove(UUID id) {
         if (!driverRepository.existsById(id)) {
-            throw new IllegalArgumentException("Motorista não encontrado com o ID: " + id);
+            throw new RestException(HttpStatus.NOT_FOUND, "Motorista não encontrado com o ID: " + id);
         }
         driverRepository.deleteById(id);
     }
@@ -62,20 +64,20 @@ public class DriverServiceImpl implements DriverService {
         DriverModel driverToSave = modelMapper.map(request, DriverModel.class);
 
         if (!CPFValidation.isCPF(driverToSave.getCPF())) {
-            throw new IllegalArgumentException("CPF inválido");
+            throw new RestException(HttpStatus.BAD_REQUEST, "CPF inválido");
         }
         if (!DriverValidations.isCNHValid(driverToSave.getCNH())) {
-            throw new IllegalArgumentException("CNH inválida");
+            throw new RestException(HttpStatus.BAD_REQUEST, "CNH inválida");
         }
 
         if (existCPF(driverToSave.getCPF())) {
-            throw new IllegalArgumentException("CPF já existente no sistema!");
+            throw new RestException(HttpStatus.CONFLICT, "CPF já existente no sistema!");
         }
         if (existCNH(driverToSave.getCNH())) {
-            throw new IllegalArgumentException("CNH já existente no sistema!");
+            throw new RestException(HttpStatus.CONFLICT, "CNH já existente no sistema!");
         }
         if (existEmail(driverToSave.getEmail())) {
-            throw new IllegalArgumentException("Email já existente no sistema!");
+            throw new RestException(HttpStatus.CONFLICT, "Email já existente no sistema!");
         }
 
         ShoppingCartModel shoppingCart = new ShoppingCartModel();
@@ -91,7 +93,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverResponseDTO update(UUID id, DriverRequestDTO request) {
         DriverModel existingDriver = driverRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + id));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Motorista não encontrado com o ID: " + id));
 
         ShoppingCartModel existingCart = existingDriver.getShoppingCart();
 

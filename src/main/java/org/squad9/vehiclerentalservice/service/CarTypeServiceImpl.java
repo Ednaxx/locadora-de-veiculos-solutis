@@ -2,9 +2,11 @@ package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.CarTypeRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarTypeResponseDTO;
+import org.squad9.vehiclerentalservice.exception.RestException;
 import org.squad9.vehiclerentalservice.model.CarTypeModel;
 import org.squad9.vehiclerentalservice.enums.Category;
 import org.squad9.vehiclerentalservice.model.ManufacturerModel;
@@ -35,7 +37,7 @@ public class CarTypeServiceImpl implements CarTypeService {
     @Override
     public CarTypeResponseDTO findById(UUID id) {
         CarTypeModel carModel = carTypeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Acessório não encontrado com o ID: " + id));
 
         return modelMapper.map(carModel, CarTypeResponseDTO.class);
     }
@@ -54,7 +56,7 @@ public class CarTypeServiceImpl implements CarTypeService {
         CarTypeModel carTypeToSave = modelMapper.map(request, CarTypeModel.class);
 
         ManufacturerModel manufacturer = manufacturerRepository.findById(request.getManufacturerId())
-                .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + request.getManufacturerId()));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Fabricante não encontrado com o ID: " + request.getManufacturerId()));
 
         carTypeToSave.setManufacturer(manufacturer);
         CarTypeModel savedCarModel = carTypeRepository.save(carTypeToSave);
@@ -65,17 +67,18 @@ public class CarTypeServiceImpl implements CarTypeService {
     @Override
     public void remove(UUID id) {
         if (!carTypeRepository.existsById(id)) {
-            throw new IllegalArgumentException("Modelo de carro não encontrado com o ID: " + id);
+            throw new RestException(HttpStatus.NOT_FOUND, "Modelo de carro não encontrado com o ID: " + id);
         }
         carTypeRepository.deleteById(id);
     }
 
     @Override
     public CarTypeResponseDTO update(UUID id, CarTypeRequestDTO request) {
-        carTypeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Modelo de carro não encontrado com o ID: " + id));
+        carTypeRepository.findById(id)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Modelo de carro não encontrado com o ID: " + id));
 
         ManufacturerModel manufacturer = manufacturerRepository.findById(request.getManufacturerId())
-                .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + request.getManufacturerId()));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Fabricante não encontrado com o ID: " + request.getManufacturerId()));
 
         CarTypeModel carTypeToUpdate = modelMapper.map(request, CarTypeModel.class);
         carTypeToUpdate.setId(id);

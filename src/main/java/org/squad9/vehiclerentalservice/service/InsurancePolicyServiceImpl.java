@@ -2,9 +2,11 @@ package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.InsurancePolicyRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.InsurancePolicyResponseDTO;
+import org.squad9.vehiclerentalservice.exception.RestException;
 import org.squad9.vehiclerentalservice.model.InsurancePolicyModel;
 import org.squad9.vehiclerentalservice.repository.InsurancePolicyRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.InsurancePolicyService;
@@ -30,7 +32,8 @@ public class InsurancePolicyServiceImpl implements InsurancePolicyService {
 
     @Override
     public InsurancePolicyResponseDTO findById(UUID id) {
-        InsurancePolicyModel insurancePolicy = insurancePolicyRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id));
+        InsurancePolicyModel insurancePolicy = insurancePolicyRepository
+                .findById(id).orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Apólice de seguro não encontrada com o ID: " + id));
 
         return modelMapper.map(insurancePolicy, InsurancePolicyResponseDTO.class);
     }
@@ -46,14 +49,15 @@ public class InsurancePolicyServiceImpl implements InsurancePolicyService {
     @Override
     public void remove(UUID id) {
         if (!insurancePolicyRepository.existsById(id)) {
-            throw new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id);
+            throw new RestException(HttpStatus.NOT_FOUND, "Apólice de seguro não encontrada com o ID: " + id);
         }
         insurancePolicyRepository.deleteById(id);
     }
 
     @Override
     public InsurancePolicyResponseDTO update(UUID id, InsurancePolicyRequestDTO request) {
-        insurancePolicyRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id));
+        insurancePolicyRepository.findById(id)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Apólice de seguro não encontrada com o ID: " + id));
 
         InsurancePolicyModel insurancePolicyToUpdate = modelMapper.map(request, InsurancePolicyModel.class);
         insurancePolicyToUpdate.setId(id);

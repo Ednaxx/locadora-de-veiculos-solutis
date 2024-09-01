@@ -2,9 +2,11 @@ package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
+import org.squad9.vehiclerentalservice.exception.RestException;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
 import org.squad9.vehiclerentalservice.repository.CarRepository;
@@ -33,20 +35,23 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartResponseDTO findById(UUID id) {
-        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carrinho não encontrado com o ID: " + id));
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carrinho não encontrado com o ID: " + id));
 
         return modelMapper.map(shoppingCart, ShoppingCartResponseDTO.class);
     }
 
     @Override
     public ShoppingCartResponseDTO findByDriver(String email) {
-        ShoppingCartModel shoppingCart = shoppingCartRepository.findByDriverEmail(email).orElseThrow(() -> new IllegalArgumentException("Carrinho de compras não encontrado para o motorista com o email: " + email));
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findByDriverEmail(email)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carrinho de compras não encontrado para o motorista com o email: " + email));
         return modelMapper.map(shoppingCart, ShoppingCartResponseDTO.class);
     }
 
     @Override
     public List<CarResponseDTO> findShoppingCartsCars(UUID id) {
-        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carrinho não encontrado com o ID: " + id));
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carrinho não encontrado com o ID: " + id));
 
         List<CarModel> cars = shoppingCart.getCars();
         List<CarResponseDTO> response = new ArrayList<>();
@@ -57,9 +62,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public List<CarResponseDTO> addCarToShoppingCart(UUID id, UUID idCarro) {
-        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carrinho não encontrado com o ID: " + id));
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carrinho não encontrado com o ID: " + id));
 
-        CarModel car = carRepository.findById(idCarro).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + idCarro));
+        CarModel car = carRepository.findById(idCarro)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carro não encontrado com o ID: " + idCarro));
 
         shoppingCart.getCars().add(car);
         shoppingCartRepository.save(shoppingCart);
@@ -71,9 +78,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public List<CarResponseDTO> removeCarFromShoppingCart(UUID id, UUID idCarro) {
-        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carrinho não encontrado com o ID: " + id));
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carrinho não encontrado com o ID: " + id));
 
-        CarModel car = carRepository.findById(idCarro).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + idCarro));
+        CarModel car = carRepository.findById(idCarro)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carro não encontrado com o ID: " + idCarro));
 
         shoppingCart.getCars().remove(car);
         shoppingCartRepository.save(shoppingCart);

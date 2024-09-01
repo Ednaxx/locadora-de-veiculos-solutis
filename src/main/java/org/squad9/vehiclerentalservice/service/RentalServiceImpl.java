@@ -2,9 +2,11 @@ package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.RentalRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.RentalResponseDTO;
+import org.squad9.vehiclerentalservice.exception.RestException;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.DriverModel;
 import org.squad9.vehiclerentalservice.model.InsurancePolicyModel;
@@ -39,7 +41,8 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public RentalResponseDTO findById(UUID id) {
-        RentalModel rental = rentalRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Aluguel não encontrado com o ID: " + id));
+        RentalModel rental = rentalRepository.findById(id)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Aluguel não encontrado com o ID: " + id));
 
         return modelMapper.map(rental, RentalResponseDTO.class);
     }
@@ -58,19 +61,19 @@ public class RentalServiceImpl implements RentalService {
         RentalModel rentalToSave = modelMapper.map(request, RentalModel.class);
 
         CarModel car = carRepository.findById(request.getCarId())
-                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + request.getCarId()));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carro não encontrado com o ID: " + request.getCarId()));
 
         DriverModel driver = driverRepository.findById(request.getDriverId())
-                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + request.getDriverId()));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Motorista não encontrado com o ID: " + request.getDriverId()));
 
         InsurancePolicyModel insurancePolicy = insurancePolicyRepository.findById(request.getInsurancePolicyId())
-                .orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + request.getInsurancePolicyId()));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Apólice de seguro não encontrada com o ID: " + request.getInsurancePolicyId()));
 
         if (car.isAvailableToRent(request.getOrderDate(), request.getReturnDate())) {
             car.blockDates(request.getOrderDate(), request.getReturnDate());
         }
         else {
-            throw new IllegalArgumentException("Carro não disponível para aluguel no período solicitado");
+            throw new RestException(HttpStatus.FORBIDDEN, "Carro não disponível para aluguel no período solicitado");
         }
 
         rentalToSave.setCar(car);
@@ -93,14 +96,14 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public void delete(UUID id) {
         if (!rentalRepository.existsById(id)) {
-            throw new IllegalArgumentException("Aluguel não encontrado com o ID: " + id);
+            throw new RestException(HttpStatus.NOT_FOUND, "Aluguel não encontrado com o ID: " + id);
         }
         rentalRepository.deleteById(id);
     }
 
     @Override
     public RentalResponseDTO update(UUID id, RentalRequestDTO request) {
-        rentalRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+        rentalRepository.findById(id).orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Acessório não encontrado com o ID: " + id));
 
         RentalModel rentalToUpdate = modelMapper.map(request, RentalModel.class);
         rentalToUpdate.setId(id);

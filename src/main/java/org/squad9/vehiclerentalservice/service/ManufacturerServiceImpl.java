@@ -2,9 +2,11 @@ package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.ManufacturerRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.ManufacturerResponseDTO;
+import org.squad9.vehiclerentalservice.exception.RestException;
 import org.squad9.vehiclerentalservice.model.ManufacturerModel;
 import org.squad9.vehiclerentalservice.repository.ManufacturerRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.ManufacturerService;
@@ -22,7 +24,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     @Override
     public ManufacturerResponseDTO save(ManufacturerRequestDTO request) {
         if (manufacturerRepository.existsByName(request.getName())) {
-            throw new IllegalArgumentException("O Fornecedor com o nome: " + request.getName() + " já existe.");
+            throw new RestException(HttpStatus.CONFLICT, "O Fornecedor com o nome: " + request.getName() + " já existe.");
         }
         ManufacturerModel manufacturerToSave = modelMapper.map(request, ManufacturerModel.class);
         ManufacturerModel savedManufacturer = manufacturerRepository.save(manufacturerToSave);
@@ -42,7 +44,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     @Override
     public ManufacturerResponseDTO findById(UUID id) {
         ManufacturerModel manufacturer = manufacturerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + id));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Fabricante não encontrado com o ID: " + id));
 
         return modelMapper.map(manufacturer, ManufacturerResponseDTO.class);
     }
@@ -50,7 +52,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     @Override
     public void remove(UUID id) {
         if (!manufacturerRepository.existsById(id)) {
-            throw new IllegalArgumentException("Fabricante não encontrado com o ID: " + id);
+            throw new RestException(HttpStatus.NOT_FOUND, "Fabricante não encontrado com o ID: " + id);
         }
         manufacturerRepository.deleteById(id);
     }
@@ -58,7 +60,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     @Override
     public ManufacturerResponseDTO update(UUID id, ManufacturerRequestDTO request) {
         ManufacturerModel oldManufacturer = manufacturerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + id));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Fabricante não encontrado com o ID: " + id));
 
         ManufacturerModel manufacturerToUpdate = modelMapper.map(request, ManufacturerModel.class);
         manufacturerToUpdate.setId(id);

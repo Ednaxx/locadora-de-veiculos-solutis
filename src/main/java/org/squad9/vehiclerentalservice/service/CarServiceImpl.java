@@ -2,12 +2,14 @@ package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.CarRequestDTO;
 import org.squad9.vehiclerentalservice.dto.request.DateIntervalRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
 import org.squad9.vehiclerentalservice.enums.Category;
+import org.squad9.vehiclerentalservice.exception.RestException;
 import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.repository.AccessoryRepository;
@@ -37,7 +39,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarResponseDTO findById(UUID id) {
-        CarModel car = carRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + id));
+        CarModel car = carRepository.findById(id).orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carro não encontrado com o ID: " + id));
 
         return modelMapper.map(car, CarResponseDTO.class);
     }
@@ -84,16 +86,16 @@ public class CarServiceImpl implements CarService {
         CarModel carToSave = modelMapper.map(request, CarModel.class);
 
         if (!DriverValidations.isMercosurLicensePlateValid(carToSave.getLicensePlate()) && !DriverValidations.isStandardLicensePlateValid(carToSave.getLicensePlate()))
-            throw new IllegalArgumentException("Placa do car inválida: " + carToSave.getLicensePlate());
+            throw new RestException(HttpStatus.BAD_REQUEST, "Placa do car inválida: " + carToSave.getLicensePlate());
 
         if (!DriverValidations.isChassisValid(carToSave.getChassis()))
-            throw new IllegalArgumentException("Chassi do car inválido: " + carToSave.getChassis());
+            throw new RestException(HttpStatus.BAD_REQUEST, "Chassi do car inválido: " + carToSave.getChassis());
 
         if (carRepository.existsByLicensePlate(carToSave.getLicensePlate()))
-            throw new IllegalArgumentException("Placa do car já existente no sistema: " + carToSave.getLicensePlate());
+            throw new RestException(HttpStatus.CONFLICT, "Placa do car já existente no sistema: " + carToSave.getLicensePlate());
 
         if (carRepository.existsByChassis(carToSave.getChassis()))
-            throw new IllegalArgumentException("Número de chassi já existente no sistema: " + carToSave.getLicensePlate());
+            throw new RestException(HttpStatus.CONFLICT, "Número de chassi já existente no sistema: " + carToSave.getLicensePlate());
 
         CarModel savedCar = carRepository.save(carToSave);
         return modelMapper.map(savedCar, CarResponseDTO.class);
@@ -102,7 +104,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public void remove(UUID id) {
         if (!carRepository.existsById(id)) {
-            throw new IllegalArgumentException("Carro não encontrado com o ID: " + id);
+            throw new RestException(HttpStatus.NOT_FOUND, "Carro não encontrado com o ID: " + id);
         }
         carRepository.deleteById(id);
     }
@@ -110,21 +112,21 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarResponseDTO update(UUID id, CarRequestDTO request) {
         CarModel oldCar = carRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Acessório não encontrado com o ID: " + id));
 
         CarModel carToUpdate = modelMapper.map(request, CarModel.class);
 
         if (!DriverValidations.isMercosurLicensePlateValid(carToUpdate.getLicensePlate()) && !DriverValidations.isStandardLicensePlateValid(carToUpdate.getLicensePlate()))
-            throw new IllegalArgumentException("Placa do car inválida: " + carToUpdate.getLicensePlate());
+            throw new RestException(HttpStatus.BAD_REQUEST, "Placa do car inválida: " + carToUpdate.getLicensePlate());
 
         if (!DriverValidations.isChassisValid(carToUpdate.getChassis()))
-            throw new IllegalArgumentException("Chassi do car inválido: " + carToUpdate.getChassis());
+            throw new RestException(HttpStatus.BAD_REQUEST, "Chassi do car inválido: " + carToUpdate.getChassis());
 
         if (carRepository.existsByLicensePlate(carToUpdate.getLicensePlate()))
-            throw new IllegalArgumentException("Placa do car já existente no sistema: " + carToUpdate.getLicensePlate());
+            throw new RestException(HttpStatus.CONFLICT, "Placa do car já existente no sistema: " + carToUpdate.getLicensePlate());
 
         if (carRepository.existsByChassis(carToUpdate.getChassis()))
-            throw new IllegalArgumentException("Número de chassi já existente no sistema: " + carToUpdate.getLicensePlate());
+            throw new RestException(HttpStatus.CONFLICT, "Número de chassi já existente no sistema: " + carToUpdate.getLicensePlate());
 
 
         carToUpdate.setId(id);
@@ -136,7 +138,8 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<AccessoryResponseDTO> getCarAccessories(UUID id) {
-        CarModel car = carRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + id));
+        CarModel car = carRepository.findById(id)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carro não encontrado com o ID: " + id));
 
         List<AccessoryModel> workouts = car.getAccessories();
         List<AccessoryResponseDTO> response = new ArrayList<>();
@@ -148,9 +151,11 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<AccessoryResponseDTO> addAccessory(UUID carId, UUID accessoryId) {
-        CarModel car = carRepository.findById(carId).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + carId));
+        CarModel car = carRepository.findById(carId)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carro não encontrado com o ID: " + carId));
 
-        AccessoryModel accessory = accessoryRepository.findById(accessoryId).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + accessoryId));
+        AccessoryModel accessory = accessoryRepository.findById(accessoryId)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Acessório não encontrado com o ID: " + accessoryId));
 
         car.getAccessories().add(accessory);
         carRepository.save(car);
@@ -162,12 +167,14 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<AccessoryResponseDTO> removeAccessory(UUID carId, UUID accessoryId) {
-        CarModel car = carRepository.findById(carId).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + carId));
+        CarModel car = carRepository.findById(carId)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carro não encontrado com o ID: " + carId));
 
-        AccessoryModel accessory = accessoryRepository.findById(accessoryId).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + accessoryId));
+        AccessoryModel accessory = accessoryRepository.findById(accessoryId)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Acessório não encontrado com o ID: " + accessoryId));
 
         if (car.getAccessories().remove(accessory))
-            throw new IllegalArgumentException("Acessório não encontrado no carro com o ID: " + carId);
+            throw new RestException(HttpStatus.NOT_FOUND, "Acessório não encontrado no carro com o ID: " + carId);
 
         carRepository.save(car);
 
