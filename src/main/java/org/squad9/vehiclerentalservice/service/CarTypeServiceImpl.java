@@ -64,11 +64,11 @@ public class CarTypeServiceImpl implements CarTypeService {
 
     @Override
     public CarTypeResponseDTO update(UUID id, CarTypeRequestDTO request) {
-        carTypeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+        carTypeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Modelo de carro não encontrado com o ID: " + id));
 
-        CarTypeModel carModelToUpdate = modelMapper.map(request, CarTypeModel.class);
-        carModelToUpdate.setId(id);
-        CarTypeModel updatedCarModel = carTypeRepository.save(carModelToUpdate);
+        CarTypeModel carTypeToUpdate = modelMapper.map(request, CarTypeModel.class);
+        carTypeToUpdate.setId(id);
+        CarTypeModel updatedCarModel = carTypeRepository.save(carTypeToUpdate);
 
         return modelMapper.map(updatedCarModel, CarTypeResponseDTO.class);
     }
