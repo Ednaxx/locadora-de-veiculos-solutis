@@ -116,3 +116,23 @@ classDiagram
     ModeloCarro "1" -- "0..*" Fabricante : fabricante
     ModeloCarro "1" -- "1" Categoria : categoria
 ```
+## Desenvolvimento
+
+Este projeto foi desenvolvido em colaboração por uma equipe de 7 pessoas.
+Cada membro contribuiu com a implementação e validação das soluções propostas para os exercícios.
+
+### Membros da Equipe
+
+- **Alexandre Morais** - https://github.com/Ednaxx
+
+- **Bruno Ricardo Machado** - https://github.com/brunorm86
+
+- **Gabriel Sena** - https://github.com/Gabriel-SBS
+
+- **José Nathan** - https://github.com/josenathan0
+
+- **Junior Aquino** - https://github.com/GitAquino
+
+- **Larissa Sena** - https://github.com/larissacsena
+
+- **Vinícius Almada** - https://github.com/AlmadaAlmada
