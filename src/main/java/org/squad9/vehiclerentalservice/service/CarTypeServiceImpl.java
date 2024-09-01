@@ -43,7 +43,7 @@ public class CarTypeServiceImpl implements CarTypeService {
     }
 
     @Override
-    public List<CarTypeResponseDTO> findByCategoria(Category category) {
+    public List<CarTypeResponseDTO> findByCategory(Category category) {
         List<CarTypeModel> carModels = carTypeRepository.findByCategory(category);
         List<CarTypeResponseDTO> response = new ArrayList<>();
 

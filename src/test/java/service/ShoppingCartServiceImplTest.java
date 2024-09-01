@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
+import org.squad9.vehiclerentalservice.exception.RestException;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.DriverModel;
 import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
@@ -128,7 +129,7 @@ class ShoppingCartServiceImplTest {
         when(shoppingCartRepository.findById(carrinhoId)).thenReturn(Optional.empty());
 
         // Expecting the IllegalArgumentException to be thrown
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(RestException.class, () -> {
             shoppingCartService.findById(carrinhoId);
         });
 

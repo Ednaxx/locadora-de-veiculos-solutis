@@ -1,9 +1,11 @@
 package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.PaymentRequestDTO;
 import org.squad9.vehiclerentalservice.enums.PaymentMethods;
+import org.squad9.vehiclerentalservice.exception.RestException;
 import org.squad9.vehiclerentalservice.repository.RentalRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.PaymentService;
 
@@ -17,7 +19,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void processPayment(UUID rentalId, PaymentMethods paymentMethod, PaymentRequestDTO request) {
-       rentalRepository.findById(rentalId).orElseThrow(() -> new IllegalArgumentException("Aluguel não encontrado com o ID: " + rentalId));
+       rentalRepository.findById(rentalId).orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Aluguel não encontrado com o ID: " + rentalId));
 
         processPaymentData(rentalId, request);
     }
