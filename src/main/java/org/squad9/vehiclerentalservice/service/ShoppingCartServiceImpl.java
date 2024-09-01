@@ -39,7 +39,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCartResponseDTO findByDriver(String email) {
+    public ShoppingCartResponseDTO findByDriverEmail(String email) {
         ShoppingCartModel shoppingCart = shoppingCartRepository.findByDriverEmail(email).orElseThrow(() -> new IllegalArgumentException("Carrinho de compras não encontrado para o motorista com o email: " + email));
         return modelMapper.map(shoppingCart, ShoppingCartResponseDTO.class);
     }

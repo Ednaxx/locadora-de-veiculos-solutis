@@ -1,6 +1,5 @@
 # Desafio locadora de veículos
 
-![License](https://img.shields.io/github/license/Ednaxx/locadora-de-veiculos-solutis)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.3-green)
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)

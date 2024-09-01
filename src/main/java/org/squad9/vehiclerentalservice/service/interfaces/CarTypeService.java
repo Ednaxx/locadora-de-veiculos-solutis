@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface CarTypeService {
     List<CarTypeResponseDTO> findAll();
     CarTypeResponseDTO findById(UUID id);
-    List<CarTypeResponseDTO> findByCategoria(Category category);
+    List<CarTypeResponseDTO> findByCategory(Category category);
     CarTypeResponseDTO save(CarTypeRequestDTO request);
     void remove(UUID id);
     CarTypeResponseDTO update(UUID id, CarTypeRequestDTO request);

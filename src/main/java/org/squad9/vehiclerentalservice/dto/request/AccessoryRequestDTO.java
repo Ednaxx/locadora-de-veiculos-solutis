@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccessoryRequestDTO {
+
     @NotBlank private String name;
     @Size(max = 500) private String description;
 }

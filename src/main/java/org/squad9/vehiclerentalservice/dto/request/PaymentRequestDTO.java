@@ -1,8 +1,6 @@
 package org.squad9.vehiclerentalservice.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +24,7 @@ public class PaymentRequestDTO {
     @NotNull
     private long cardNumber;
 
-    @NotNull
+    @NotNull 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "pt-BR", timezone = "Brazil/East")
     private LocalDate expirationDate;
 

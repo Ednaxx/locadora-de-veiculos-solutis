@@ -1,13 +1,16 @@
 package org.squad9.vehiclerentalservice;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class VehicleRentalServiceApplicationTests {
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+public class VehicleRentalServiceApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
     }
-
 }

@@ -18,7 +18,7 @@ public class PaymentController {
 
     @PostMapping("/confirmar")
     public ResponseEntity<String> confirmPayment(@RequestBody @Valid PaymentRequestDTO request) {
-        paymentService.processPayment(request.getRentalId(), request.getPaymentMethod());
+        paymentService.processPayment(request.getRentalId(), request.getPaymentMethod(), request);
         return ResponseEntity.status(HttpStatus.OK).body("Pagamento confirmado com sucesso.");
     }
 
