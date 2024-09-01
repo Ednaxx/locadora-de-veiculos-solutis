@@ -1,111 +1,86 @@
 package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
+import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
+import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
 import org.squad9.vehiclerentalservice.model.CarModel;
-import org.squad9.vehiclerentalservice.model.DriverModel;
+import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
+import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.repository.ShoppingCartRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.ShoppingCartService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
-    private ShoppingCartRepository shoppingCartRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
+    private final CarRepository carRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public List<ShoppingCartModel> findAll() {
-        List<ShoppingCartModel> carrinho = shoppingCartRepository.findAll();
-        if (carrinho.isEmpty()) return null;
+    public List<ShoppingCartResponseDTO> findAll() {
+        List<ShoppingCartModel> shoppingCarts = shoppingCartRepository.findAll();
+        List<ShoppingCartResponseDTO> response = new ArrayList<>();
 
-        return carrinho;
-    }
-
-    @Override
-    public ShoppingCartModel save(ShoppingCartModel carrinhoCompra) {
-        try{
-            return shoppingCartRepository.save(carrinhoCompra);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    public ShoppingCartModel addCarros(ShoppingCartModel carrinhoCompra, CarModel carro) {
-        try{
-            List<CarModel> listaCarros = carrinhoCompra.getCarList();
-            listaCarros.add(carro);
-            carrinhoCompra.setCarList(listaCarros);
-
-            return shoppingCartRepository.save(carrinhoCompra);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    public ShoppingCartModel findByMotorista(DriverModel motorista) {
-        try{
-            return shoppingCartRepository.findByDriver(motorista);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        shoppingCarts.forEach(shoppingCart -> response.add(modelMapper.map(shoppingCart, ShoppingCartResponseDTO.class)));
+        return response;
     }
 
     @Override
-    public ShoppingCartModel findById(UUID carrinhoId) {
-        try{
-            Optional<ShoppingCartModel> carrinhoOptional = shoppingCartRepository.findById(carrinhoId);
-            if (carrinhoOptional.isPresent()){
-                return carrinhoOptional.get();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return null;
-    }
+    public ShoppingCartResponseDTO findById(UUID id) {
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carrinho não encontrado com o ID: " + id));
 
-    public CarModel findByCarroId(ShoppingCartModel carrinhoCompra, CarModel carro){
-        UUID carroId = carro.getId();
-
-        List<CarModel> listaCarros = carrinhoCompra.getCarList();
-        for (CarModel carroCarrinho : listaCarros) {
-            if (carroCarrinho.getId().equals(carroId)) {
-                return carroCarrinho;
-            }
-        }
-
-        throw new NoSuchElementException("Carro não encontrado no carrinho");
+        return modelMapper.map(shoppingCart, ShoppingCartResponseDTO.class);
     }
 
     @Override
-    public void removerCarro(ShoppingCartModel carrinhoCompra, CarModel carro) {
-        List<CarModel> listaCarros = carrinhoCompra.getCarList();
-        Iterator<CarModel> iterator = listaCarros.iterator();
-
-        while (iterator.hasNext()) {
-            CarModel carroCarrinho = iterator.next();
-            if (carroCarrinho.getId().equals(carro.getId())) {
-                iterator.remove();
-                break;
-            }
-        }
-
-        save(carrinhoCompra);
+    public ShoppingCartResponseDTO findByDriver(String email) {
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findByDriverEmail(email).orElseThrow(() -> new IllegalArgumentException("Carrinho de compras não encontrado para o motorista com o email: " + email));
+        return modelMapper.map(shoppingCart, ShoppingCartResponseDTO.class);
     }
 
-    public List<CarModel> getCarrosByCarrinhoId(UUID carrinhoId) {
-        ShoppingCartModel carrinho = shoppingCartRepository.findById(carrinhoId)
-                .orElse(null);
+    @Override
+    public List<CarResponseDTO> findShoppingCartsCars(UUID id) {
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carrinho não encontrado com o ID: " + id));
 
-        if (carrinho == null) {
-            return Collections.emptyList();
-        }
+        List<CarModel> cars = shoppingCart.getCars();
+        List<CarResponseDTO> response = new ArrayList<>();
 
-        return carrinho.getCarList();
+        cars.forEach(car -> response.add(modelMapper.map(car, CarResponseDTO.class)));
+        return response;
     }
 
-    public void removeCarro(ShoppingCartModel carrinhoCompra, CarModel carro) {
-        // TODO: implement this
+    @Override
+    public List<CarResponseDTO> addCarToShoppingCart(UUID id, UUID idCarro) {
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carrinho não encontrado com o ID: " + id));
+
+        CarModel car = carRepository.findById(idCarro).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + idCarro));
+
+        shoppingCart.getCars().add(car);
+        shoppingCartRepository.save(shoppingCart);
+
+        List<CarResponseDTO> response = new ArrayList<>();
+        shoppingCart.getCars().forEach(c -> response.add(modelMapper.map(c, CarResponseDTO.class)));
+        return response;
+    }
+
+    @Override
+    public List<CarResponseDTO> removeCarFromShoppingCart(UUID id, UUID idCarro) {
+        ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Carrinho não encontrado com o ID: " + id));
+
+        CarModel car = carRepository.findById(idCarro).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + idCarro));
+
+        shoppingCart.getCars().remove(car);
+        shoppingCartRepository.save(shoppingCart);
+
+        List<CarResponseDTO> response = new ArrayList<>();
+        shoppingCart.getCars().forEach(c -> response.add(modelMapper.map(c, CarResponseDTO.class)));
+        return response;
     }
 }
+

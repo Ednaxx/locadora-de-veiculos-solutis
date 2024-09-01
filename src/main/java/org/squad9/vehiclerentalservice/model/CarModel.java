@@ -1,5 +1,7 @@
 package org.squad9.vehiclerentalservice.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +26,7 @@ public class CarModel {
     private String licensePlate;
 
     @Column(name = "chassi", nullable = false, unique = true, length = 20)
-    private String chassi;
+    private String chassis;
 
     @Column(name = "cor", nullable = false, length = 20)
     private String color;
@@ -32,41 +34,43 @@ public class CarModel {
     @Column(name = "valor_diaria", nullable = false)
     private BigDecimal dailyRate;
 
+    @Column(name = "url_imagem")
+    private String imageURL;
+
     @ManyToMany
     @JoinTable(
-            name = "carro_acessorio",
+            name = "carro_acessorios",
             joinColumns = @JoinColumn(name = "carro_id"),
             inverseJoinColumns = @JoinColumn(name = "acessorio_id")
     )
+
     private List<AccessoryModel> accessories;
 
     @ManyToOne
     @JoinColumn(name = "modelo_id")
-    private CarModelModel carModel;
+    @JsonBackReference("carModelReference")
+    private CarTypeModel carModel;
 
-    @OneToMany
-    private List<RentalModel> rent;
+    @OneToMany(mappedBy = "car")
+    @JsonManagedReference("carReference")
+    private List<RentalModel> rents;
 
     @ElementCollection
     @CollectionTable(name = "carro_datas_ocupadas", joinColumns = @JoinColumn(name = "carro_id"))
     @Column(name = "data_ocupada")
     private List<LocalDate> occupiedDates;
 
-    @Column(nullable = false)
-    private String urlImage;
-
-    public boolean isDisponivelParaAluguel(LocalDate dataInicio, LocalDate dataDevolucao) {
-        for (LocalDate data : occupiedDates) {
-            if (!data.isBefore(dataInicio) && !data.isAfter(dataDevolucao)) return false;
-        }
+    public boolean isAvailableToRent(LocalDate startingDate, LocalDate returnDate) {
+        for (LocalDate data : occupiedDates)
+            if (!data.isBefore(startingDate) && !data.isAfter(returnDate)) return false;
 
         return true;
     }
 
-    public void bloquearDatas(LocalDate dataInicio, LocalDate dataDevolucao) {
-        LocalDate data = dataInicio;
+    public void blockDates(LocalDate startingDate, LocalDate returnDate) {
+        LocalDate data = startingDate;
 
-        while (!data.isAfter(dataDevolucao)) {
+        while (!data.isAfter(returnDate)) {
             occupiedDates.add(data);
             data = data.plusDays(1);
         }

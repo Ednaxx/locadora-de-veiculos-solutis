@@ -1,58 +1,62 @@
 package org.squad9.vehiclerentalservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.squad9.vehiclerentalservice.model.RentalModel;
-import org.squad9.vehiclerentalservice.model.DriverModel;
+import org.squad9.vehiclerentalservice.dto.request.PaymentRequestDTO;
+import org.squad9.vehiclerentalservice.dto.request.RentalRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.RentalResponseDTO;
 import org.squad9.vehiclerentalservice.service.RentalServiceImpl;
-import org.squad9.vehiclerentalservice.service.DriverServiceImpl;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/alugueis")
 @RequiredArgsConstructor
 public class RentalController {
-
     private final RentalServiceImpl rentalService;
-    private final DriverServiceImpl driverService;
-
-    @GetMapping(value = "/{email}")
-    public ResponseEntity<List<RentalModel>> findRentalsByDriver(@PathVariable String email){
-        DriverModel motorista = driverService.findByEmail(email);
-        List<RentalModel> rental = rentalService.findAlugueisMotorista(motorista);
-
-        return ResponseEntity.ok(rental);
-    }
 
     @GetMapping
-    public ResponseEntity<List<RentalModel>> findAll() {
-        List<RentalModel> rentals = rentalService.findAll();
-        return ResponseEntity.ok(rentals);
+    ResponseEntity<List<RentalResponseDTO>> findAll() {
+        List<RentalResponseDTO> response = rentalService.findAll();
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/pagamento-cartao")
-    public ResponseEntity<String> processPayment(@RequestBody Map<String, String> payload) {
-        String cardNumber = (payload.get("cardNumber"));
-        String expirationDate = payload.get("expirationDate");
-        String cvv = payload.get("cvv");
+    @GetMapping("/{id}")
+    ResponseEntity<RentalResponseDTO> findById(@PathVariable UUID id) {
+        RentalResponseDTO response = rentalService.findById(id);
+        return ResponseEntity.ok(response);
+    }
 
-        boolean paymentSuccessful = rentalService.verifyPayment(cardNumber, expirationDate, cvv);
-
-        return ResponseEntity.ok(paymentSuccessful ? "redirect:/resumo-reserva" : "redirect:/pagamento-falhou");
+    @GetMapping("/motorista/{email}")
+    ResponseEntity<List<RentalResponseDTO>> findRentalsByDriver(@PathVariable String email) {
+        List<RentalResponseDTO> response = rentalService.findByDriverEmail(email);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<RentalModel> create(@RequestBody RentalModel rental) {
-        LocalDate orderDate = LocalDate.now();
-        rental.setOrderDate(orderDate);
-        System.out.println(rental.getOrderDate());
+    ResponseEntity<RentalResponseDTO> create(@RequestBody RentalRequestDTO request) {
+        RentalResponseDTO response = rentalService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
-        RentalModel newRental = rentalService.save(rental);
-        return ResponseEntity.ok(newRental);
+    @PostMapping("/pagamento-cartao")
+    ResponseEntity<String> processPayment(@RequestBody @Valid PaymentRequestDTO request) {
+        return ResponseEntity.ok("redirect:/resumo-reserva");
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> delete(@PathVariable UUID id){
+        rentalService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<RentalResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid RentalRequestDTO request) {
+        RentalResponseDTO response = rentalService.update(id, request);
+        return ResponseEntity.ok(response);
     }
 }

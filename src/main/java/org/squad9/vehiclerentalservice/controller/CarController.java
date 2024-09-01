@@ -1,18 +1,17 @@
 package org.squad9.vehiclerentalservice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.squad9.vehiclerentalservice.model.AccessoryModel;
-import org.squad9.vehiclerentalservice.model.CarModel;
-import org.squad9.vehiclerentalservice.model.CarModelModel;
-import org.squad9.vehiclerentalservice.model.util.Category;
+import org.squad9.vehiclerentalservice.dto.request.CarRequestDTO;
+import org.squad9.vehiclerentalservice.dto.request.DateIntervalRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
+import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
+import org.squad9.vehiclerentalservice.enums.Category;
 import org.squad9.vehiclerentalservice.service.CarServiceImpl;
-import org.squad9.vehiclerentalservice.service.CarModelServiceImpl;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,62 +20,75 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CarController {
     private final CarServiceImpl carService;
-    private final CarModelServiceImpl carModelService;
 
     @GetMapping
-    public ResponseEntity<List<CarModel>> findAll() {
+    ResponseEntity<List<CarResponseDTO>> findAll() {
         return ResponseEntity.ok(carService.findAll());
     }
 
-    @GetMapping(value = "/disponiveis")
-    public ResponseEntity<List<CarModel>> findAllAvailableCars(@RequestParam String startDate, @RequestParam String returnDate) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate parsedStartDate = LocalDate.parse(startDate, dateFormatter);
-        LocalDate parsedReturnDate = LocalDate.parse(returnDate, dateFormatter);
-
-        List<CarModel> availableCars = carService.listarCarrosDisponiveis(parsedStartDate, parsedReturnDate);
-
-        return ResponseEntity.ok(availableCars);
-    }
     @GetMapping(value = "/{id}")
-    public ResponseEntity<CarModel> findById(@PathVariable UUID id) {
-        CarModel car = carService.findById(id);
-        return ResponseEntity.ok(car);
+    ResponseEntity<CarResponseDTO> findById(@PathVariable UUID id) {
+        CarResponseDTO response = carService.findById(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(value = "/disponiveis")
+    ResponseEntity<List<CarResponseDTO>> findAvailableOnDate(@RequestBody DateIntervalRequestDTO request) {
+        List<CarResponseDTO> response = carService.findAvailableOnDate(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/categoria/{categoria}")
-    public ResponseEntity<List<CarModel>> findByCategory(@PathVariable Category categoria) {
-        // TODO: isso eh para estar no service de car o loop ali eh para estar dentro do metodo, n aqui no controller
-        List<CarModelModel> carModels = carModelService.findByCategoria(categoria);
-        List<CarModel> cars = new ArrayList<>();
-
-        for (CarModelModel carModel : carModels)
-            cars.addAll(carService.findByModeloCarro(carModel));
-
-        return ResponseEntity.ok(cars);
+    ResponseEntity<List<CarResponseDTO>> findByCategory(@PathVariable Category categoria) {
+        List<CarResponseDTO> response = carService.findByCategory(categoria);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/modelo/{modelo}")
-    public ResponseEntity<List<CarModel>> findByCarModel(@PathVariable CarModelModel modelo) {
-        List<CarModel> cars = carService.findByModeloCarro(modelo);
-        return ResponseEntity.ok(cars);
+    @GetMapping(value = "/modelo/{modelo_id}")
+    ResponseEntity<List<CarResponseDTO>> findByCarModel(@PathVariable UUID modelo_id) {
+        List<CarResponseDTO> response = carService.findByCarModel(modelo_id);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/acessorio/{acessorio}")
-    public ResponseEntity<List<CarModel>> findByAccessories(@PathVariable AccessoryModel acessorio) {
-        List<CarModel> cars = carService.findByAcessorio(acessorio);
-        return ResponseEntity.ok(cars);
+    @GetMapping(value = "/acessorio/{acessorio_id}")
+    ResponseEntity<List<CarResponseDTO>> findByAccessories(@PathVariable UUID acessorio_id) {
+        List<CarResponseDTO> response = carService.findByAcessorio(acessorio_id);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<CarModel> create(@RequestBody CarModel car) {
-        CarModel newCar = carService.save(car);
-        return ResponseEntity.ok(newCar);
+    ResponseEntity<CarResponseDTO> create(@RequestBody @Valid CarRequestDTO request) {
+        CarResponseDTO response = carService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    ResponseEntity<Void> delete(@PathVariable UUID id){
         carService.remove(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<CarResponseDTO> update(@PathVariable UUID id, @RequestBody @Valid CarRequestDTO request) {
+        CarResponseDTO response = carService.update(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/accessories")
+    ResponseEntity<List<AccessoryResponseDTO>> getCarAccessories(@PathVariable UUID id) {
+        List<AccessoryResponseDTO> response = carService.getCarAccessories(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/accessories/{accessoryId}")
+    ResponseEntity<List<AccessoryResponseDTO>> addAccessory(@PathVariable UUID id, @PathVariable UUID accessoryId) {
+        List<AccessoryResponseDTO> response = carService.addAccessory(id, accessoryId);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}/accessories/{accessoryId}")
+    ResponseEntity<List<AccessoryResponseDTO>> removeAccessory(@PathVariable UUID id, @PathVariable UUID accessoryId) {
+        List<AccessoryResponseDTO> response = carService.addAccessory(id, accessoryId);
+        return ResponseEntity.ok(response);
     }
 }

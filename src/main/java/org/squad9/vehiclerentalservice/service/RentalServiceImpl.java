@@ -1,82 +1,112 @@
 package org.squad9.vehiclerentalservice.service;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.squad9.vehiclerentalservice.model.RentalModel;
+import org.squad9.vehiclerentalservice.dto.request.RentalRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.RentalResponseDTO;
 import org.squad9.vehiclerentalservice.model.CarModel;
 import org.squad9.vehiclerentalservice.model.DriverModel;
+import org.squad9.vehiclerentalservice.model.InsurancePolicyModel;
+import org.squad9.vehiclerentalservice.model.RentalModel;
+import org.squad9.vehiclerentalservice.repository.CarRepository;
+import org.squad9.vehiclerentalservice.repository.DriverRepository;
+import org.squad9.vehiclerentalservice.repository.InsurancePolicyRepository;
 import org.squad9.vehiclerentalservice.repository.RentalRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.RentalService;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class RentalServiceImpl implements RentalService {
+    private final RentalRepository rentalRepository;
+    private final CarRepository carRepository;
+    private final DriverRepository driverRepository;
+    private final InsurancePolicyRepository insurancePolicyRepository;
+    private final ModelMapper modelMapper;
 
-    private RentalRepository rentalRepository;
-    private CarServiceImpl carroService;
+    @Override
+    public List<RentalResponseDTO> findAll() {
+        List<RentalModel> rentals = rentalRepository.findAll();
+        List<RentalResponseDTO> response = new ArrayList<>();
 
-    public List<RentalModel> findAll() {
-        return rentalRepository.findAll();
+        rentals.forEach(rental -> response.add(modelMapper.map(rental, RentalResponseDTO.class)));
+        return response;
     }
 
-    public RentalModel save(RentalModel aluguel) {
-        try {
-            CarModel carro = aluguel.getCar();
-            carro.bloquearDatas(aluguel.getDeliveryDate(), aluguel.getReturnDate());
+    @Override
+    public RentalResponseDTO findById(UUID id) {
+        RentalModel rental = rentalRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Aluguel não encontrado com o ID: " + id));
 
-            carroService.saveNewDates(carro);
-            return rentalRepository.save(aluguel);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return modelMapper.map(rental, RentalResponseDTO.class);
     }
 
-    public boolean processPayment(@RequestParam String cardNumber, @RequestParam String expirationDate, @RequestParam String cvv) {
-        return verifyPayment(cardNumber, expirationDate, cvv);
+    @Override
+    public List<RentalResponseDTO> findByDriverEmail(String email) {
+        List<RentalModel> rentals = rentalRepository.findByDriverEmail(email);
+        List<RentalResponseDTO> response = new ArrayList<>();
+
+        rentals.forEach(rental -> response.add(modelMapper.map(rental, RentalResponseDTO.class)));
+        return response;
     }
 
-    public boolean verifyPayment(String cardNumber, String expirationDate, String cvv){
+    @Override
+    public RentalResponseDTO save(RentalRequestDTO request) {
+        RentalModel rentalToSave = modelMapper.map(request, RentalModel.class);
 
-        if (!cardNumber.matches("\\d{13,16}")){
-            System.out.println("fui eu: Cartão");
-            return false;
+        CarModel car = carRepository.findById(request.getCarId())
+                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + request.getCarId()));
+
+        DriverModel driver = driverRepository.findById(request.getDriverId())
+                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado com o ID: " + request.getDriverId()));
+
+        InsurancePolicyModel insurancePolicy = insurancePolicyRepository.findById(request.getInsurancePolicyId())
+                .orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + request.getInsurancePolicyId()));
+
+        if (car.isAvailableToRent(request.getOrderDate(), request.getReturnDate())) {
+            car.blockDates(request.getOrderDate(), request.getReturnDate());
         }
-        if (!cvv.matches("\\d{3}")){
-            System.out.println("fui eu: cvv");
-            return false;
-        }
-        if (!isExpirationDateValid(expirationDate)){
-            System.out.println("fui eu: Data");
-            return false;
+        else {
+            throw new IllegalArgumentException("Carro não disponível para aluguel no período solicitado");
         }
 
-        return true;
+        rentalToSave.setCar(car);
+        rentalToSave.setDriver(driver);
+        rentalToSave.setInsurancePolicy(insurancePolicy);
+
+        car.getRents().add(rentalToSave);
+        driver.getRents().add(rentalToSave);
+        insurancePolicy.setRental(rentalToSave);
+
+        carRepository.save(car);
+        driverRepository.save(driver);
+        insurancePolicyRepository.save(insurancePolicy);
+
+        RentalModel savedRental = rentalRepository.save(rentalToSave);
+
+        return modelMapper.map(savedRental, RentalResponseDTO.class);
     }
 
-    private boolean isExpirationDateValid(String expirationDate){
-        String[] parts = expirationDate.split("/");
-        int month = Integer.parseInt(parts[0]);
-        int year = Integer.parseInt(parts[1]);
-
-        LocalDate currentDate = LocalDate.now();
-        int currentMonth = currentDate.getMonthValue();
-        int currentYear = currentDate.getYear() % 100;
-
-        System.out.println(month + " / " + currentMonth);
-        System.out.println(year + " / " + currentYear);
-
-        return ((year > currentYear) || (year == currentYear && month >= currentMonth));
+    @Override
+    public void delete(UUID id) {
+        if (!rentalRepository.existsById(id)) {
+            throw new IllegalArgumentException("Aluguel não encontrado com o ID: " + id);
+        }
+        rentalRepository.deleteById(id);
     }
 
-    public List<RentalModel> findAlugueisMotorista(DriverModel motorista) {
-        try{
-            return rentalRepository.findByDriver(motorista);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+    @Override
+    public RentalResponseDTO update(UUID id, RentalRequestDTO request) {
+        rentalRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Acessório não encontrado com o ID: " + id));
+
+        RentalModel rentalToUpdate = modelMapper.map(request, RentalModel.class);
+        rentalToUpdate.setId(id);
+        RentalModel updatedRental = rentalRepository.save(rentalToUpdate);
+
+        return modelMapper.map(updatedRental, RentalResponseDTO.class);
     }
 }
+

@@ -6,4 +6,5 @@ import org.squad9.vehiclerentalservice.model.ManufacturerModel;
 import java.util.UUID;
 
 public interface ManufacturerRepository extends JpaRepository<ManufacturerModel, UUID> {
+    boolean existsByName(String name);
 }

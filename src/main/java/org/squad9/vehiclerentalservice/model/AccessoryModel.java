@@ -1,7 +1,5 @@
 package org.squad9.vehiclerentalservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +17,9 @@ public class AccessoryModel {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "descricao", nullable = false)
+    @Column(name = "nome", nullable = false)
+    private String name;
+
+    @Column(name = "descricao", length = 500, nullable = false)
     private String description;
 }

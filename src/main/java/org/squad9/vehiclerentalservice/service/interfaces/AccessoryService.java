@@ -1,14 +1,19 @@
 package org.squad9.vehiclerentalservice.service.interfaces;
 
-import org.squad9.vehiclerentalservice.model.AccessoryModel;
+import org.squad9.vehiclerentalservice.dto.request.AccessoryRequestDTO;
+import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface AccessoryService {
-    AccessoryModel findById(UUID id);
+    List<AccessoryResponseDTO> findAll();
 
-    AccessoryModel save(AccessoryModel acessorio);
-    List<AccessoryModel> findAll();
+    AccessoryResponseDTO findById(UUID id);
+
+    AccessoryResponseDTO save(AccessoryRequestDTO request);
+
     void remove(UUID id);
+
+    AccessoryResponseDTO update(UUID id, AccessoryRequestDTO request);
 }
