@@ -1,31 +1,39 @@
 package org.squad9.vehiclerentalservice.service.util;
 
 public class CPFValidation {
+    public static boolean isCPF(String cpf) {
+        try {
+            String cleanedCpf = cpf.replace(".", "").replace("-", "");
+            if (cleanedCpf.length() != 11) {
+                return false;
+            }
 
-    public static boolean isCPF(String CPF) {
-        String cleanedCPF = cleanCPF(CPF);
-        if (cleanedCPF.length() != 11) return false;
+            int[] firstMultipliers = {10, 9, 8, 7, 6, 5, 4, 3, 2};
+            int[] secondMultipliers = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
 
-        int firstCheckDigit = calculateCheckDigit(cleanedCPF, new int[]{10, 9, 8, 7, 6, 5, 4, 3, 2}, 9);
-        int secondCheckDigit = calculateCheckDigit(cleanedCPF, new int[]{11, 10, 9, 8, 7, 6, 5, 4, 3, 2}, 10);
+            int sum = 0;
+            for (int i = 0; i < 9; i++) {
+                sum += Integer.parseInt(cleanedCpf.substring(i, i + 1)) * firstMultipliers[i];
+            }
+            int remainder = sum % 11;
+            int firstDigit = remainder < 2 ? 0 : 11 - remainder;
 
-        return firstCheckDigit == getDigitFromCPF(cleanedCPF, 9) && secondCheckDigit == getDigitFromCPF(cleanedCPF, 10);
-    }
+            sum = 0;
+            for (int i = 0; i < 10; i++) {
+                sum += Integer.parseInt(cleanedCpf.substring(i, i + 1)) * secondMultipliers[i];
+            }
+            remainder = sum % 11;
+            int secondDigit = remainder < 2 ? 0 : 11 - remainder;
 
-    private static String cleanCPF(String CPF) {
-        return CPF.replace(".", "").replace("-", "");
-    }
-
-    private static int calculateCheckDigit(String cpf, int[] multipliers, int length) {
-        int sum = 0;
-        for (int i = 0; i < length; i++) {
-            sum += Integer.parseInt(cpf.substring(i, i + 1)) * multipliers[i];
+            return firstDigit == Integer.parseInt(cleanedCpf.substring(9, 10)) && secondDigit == Integer.parseInt(cleanedCpf.substring(10));
+        } catch (NumberFormatException e) {
+            return false;
         }
-        int remainder = sum % 11;
-        return remainder < 2 ? 0 : 11 - remainder;
     }
 
-    private static int getDigitFromCPF(String cpf, int position) {
-        return Integer.parseInt(cpf.substring(position, position + 1));
+    public static String formatCPF(String cpf) {
+        String cleanedCpf = cpf.replaceAll("[^0-9]", "");
+
+        return (cleanedCpf.substring(0, 3) + "." + cleanedCpf.substring(3, 6) + "." + cleanedCpf.substring(6, 9) + "-" + cleanedCpf.substring(9, 11));
     }
 }

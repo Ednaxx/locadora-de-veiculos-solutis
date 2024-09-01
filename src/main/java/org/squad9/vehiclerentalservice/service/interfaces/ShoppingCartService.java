@@ -11,7 +11,7 @@ public interface ShoppingCartService {
 
     ShoppingCartResponseDTO findById(UUID id);
 
-    ShoppingCartResponseDTO findByDriver(String email);
+    ShoppingCartResponseDTO findByDriverEmail(String email);
 
     List<CarResponseDTO> findShoppingCartsCars(UUID id);
 

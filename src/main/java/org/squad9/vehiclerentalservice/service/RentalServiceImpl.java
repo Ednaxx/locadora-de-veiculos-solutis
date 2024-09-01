@@ -69,7 +69,7 @@ public class RentalServiceImpl implements RentalService {
         InsurancePolicyModel insurancePolicy = insurancePolicyRepository.findById(request.getInsurancePolicyId())
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Apólice de seguro não encontrada com o ID: " + request.getInsurancePolicyId()));
 
-        if (car.isAvailableToRent(request.getOrderDate(), request.getReturnDate())) {
+        if (car.isAvailableForRent(request.getOrderDate(), request.getReturnDate())) {
             car.blockDates(request.getOrderDate(), request.getReturnDate());
         }
         else {
