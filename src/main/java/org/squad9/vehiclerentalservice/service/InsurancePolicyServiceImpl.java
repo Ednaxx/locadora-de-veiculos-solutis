@@ -30,8 +30,7 @@ public class InsurancePolicyServiceImpl implements InsurancePolicyService {
 
     @Override
     public InsurancePolicyResponseDTO findById(UUID id) {
-        InsurancePolicyModel insurancePolicy = insurancePolicyRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id));
+        InsurancePolicyModel insurancePolicy = insurancePolicyRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Apólice de seguro não encontrada com o ID: " + id));
 
         return modelMapper.map(insurancePolicy, InsurancePolicyResponseDTO.class);
     }

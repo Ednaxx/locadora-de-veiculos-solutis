@@ -33,8 +33,7 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public RentalResponseDTO findById(UUID id) {
-        RentalModel rental = rentalRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Aluguel não encontrado com o ID: " + id));
+        RentalModel rental = rentalRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Aluguel não encontrado com o ID: " + id));
 
         return modelMapper.map(rental, RentalResponseDTO.class);
     }
@@ -52,8 +51,7 @@ public class RentalServiceImpl implements RentalService {
     public RentalResponseDTO save(RentalRequestDTO request) {
         RentalModel rentalToSave = modelMapper.map(request, RentalModel.class);
 
-        CarModel car = carRepository.findById(request.getCarId())
-                .orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + request.getCarId()));
+        CarModel car = carRepository.findById(request.getCarId()).orElseThrow(() -> new IllegalArgumentException("Carro não encontrado com o ID: " + request.getCarId()));
 
         if (car.isAvailableToRent(request.getOrderDate(), request.getReturnDate())) {
             car.blockDates(request.getOrderDate(), request.getReturnDate());

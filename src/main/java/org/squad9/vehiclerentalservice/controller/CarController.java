@@ -9,7 +9,7 @@ import org.squad9.vehiclerentalservice.dto.request.CarRequestDTO;
 import org.squad9.vehiclerentalservice.dto.request.DateIntervalRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
-import org.squad9.vehiclerentalservice.model.util.Category;
+import org.squad9.vehiclerentalservice.enums.Category;
 import org.squad9.vehiclerentalservice.service.CarServiceImpl;
 
 import java.util.List;

@@ -5,4 +5,5 @@ import org.squad9.vehiclerentalservice.model.AccessoryModel;
 
 import java.util.UUID;
 
-public interface AccessoryRepository extends JpaRepository<AccessoryModel, UUID> {}
+public interface AccessoryRepository extends JpaRepository<AccessoryModel, UUID> {
+}

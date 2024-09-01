@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.squad9.vehiclerentalservice.dto.request.CarTypeRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarTypeResponseDTO;
 import org.squad9.vehiclerentalservice.model.CarTypeModel;
-import org.squad9.vehiclerentalservice.model.util.Category;
+import org.squad9.vehiclerentalservice.enums.Category;
 import org.squad9.vehiclerentalservice.repository.CarTypeRepository;
 import org.squad9.vehiclerentalservice.service.interfaces.CarTypeService;
 

@@ -23,10 +23,6 @@ public class ShoppingCartModel {
     private DriverModel driver;
 
     @ManyToMany
-    @JoinTable(
-            name = "carrinho_compra_carro",
-            joinColumns = @JoinColumn(name = "carrinho_id"),
-            inverseJoinColumns = @JoinColumn(name = "carro_id")
-    )
+    @JoinTable(name = "carrinho_compra_carro", joinColumns = @JoinColumn(name = "carrinho_id"), inverseJoinColumns = @JoinColumn(name = "carro_id"))
     private List<CarModel> cars;
 }

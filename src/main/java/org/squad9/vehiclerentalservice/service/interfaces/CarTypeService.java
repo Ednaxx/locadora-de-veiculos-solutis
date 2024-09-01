@@ -2,7 +2,7 @@ package org.squad9.vehiclerentalservice.service.interfaces;
 
 import org.squad9.vehiclerentalservice.dto.request.CarTypeRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarTypeResponseDTO;
-import org.squad9.vehiclerentalservice.model.util.Category;
+import org.squad9.vehiclerentalservice.enums.Category;
 
 import java.util.List;
 import java.util.UUID;

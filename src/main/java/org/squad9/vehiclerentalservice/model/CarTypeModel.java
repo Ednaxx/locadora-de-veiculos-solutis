@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.squad9.vehiclerentalservice.model.util.Category;
+import org.squad9.vehiclerentalservice.enums.Category;
 
 import java.util.List;
 import java.util.UUID;

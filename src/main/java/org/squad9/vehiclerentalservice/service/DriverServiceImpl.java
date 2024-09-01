@@ -64,7 +64,7 @@ public class DriverServiceImpl implements DriverService {
         if (!CPFValidation.isCPF(driverToSave.getCPF())) {
             throw new IllegalArgumentException("CPF inválido");
         }
-        if (!DriverValidations.isCNH(driverToSave.getCNH())) {
+        if (!DriverValidations.isCNHValid(driverToSave.getCNH())) {
             throw new IllegalArgumentException("CNH inválida");
         }
 
