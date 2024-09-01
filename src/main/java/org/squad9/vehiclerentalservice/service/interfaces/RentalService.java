@@ -8,9 +8,14 @@ import java.util.UUID;
 
 public interface RentalService {
     List<RentalResponseDTO> findAll();
+
     RentalResponseDTO findById(UUID id);
+
     List<RentalResponseDTO> findByDriverEmail(String email);
+
     RentalResponseDTO save(RentalRequestDTO request);
+
     void delete(UUID id);
+
     RentalResponseDTO update(UUID id, RentalRequestDTO request);
 }

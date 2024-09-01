@@ -1,7 +1,8 @@
 package org.squad9.vehiclerentalservice.service.util;
 
 public class DriverValidations {
-    public static boolean isCNH(String CNH) {
+
+    public static boolean isCNHValid(String CNH) {
         try {
             if (CNH.length() != 10) return false;
             Long.parseLong(CNH);
@@ -11,19 +12,18 @@ public class DriverValidations {
         }
     }
 
-    public static boolean isChassiValido(String chassi) {
-        String chassiPadrao = "^[A-HJ-NPR-Z0-9]{17}$";
-
-        return chassi.toUpperCase().matches(chassiPadrao);
+    public static boolean isChassisValid(String chassis) {
+        String chassisPattern = "^[A-HJ-NPR-Z0-9]{17}$";
+        return chassis.toUpperCase().matches(chassisPattern);
     }
 
-    public static boolean isPlacaComumValida(String placa) {
-        String placaPadrao = "^[A-Z]{3}-?\\d{4}$";
-        return placa.toUpperCase().matches(placaPadrao);
+    public static boolean isStandardLicensePlateValid(String licensePlate) {
+        String licensePlatePattern = "^[A-Z]{3}-?\\d{4}$";
+        return licensePlate.toUpperCase().matches(licensePlatePattern);
     }
 
-    public static boolean isPlacaMercosulValida(String placa) {
-        String placaPadrao = "^[A-Z]{3}\\d[A-Z]{2}\\d{2}$";
-        return placa.toUpperCase().matches(placaPadrao);
+    public static boolean isMercosurLicensePlateValid(String licensePlate) {
+        String licensePlatePattern = "^[A-Z]{3}\\d[A-Z]{2}\\d{2}$";
+        return licensePlate.toUpperCase().matches(licensePlatePattern);
     }
 }

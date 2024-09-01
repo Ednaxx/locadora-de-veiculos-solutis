@@ -1,4 +1,4 @@
-package org.squad9.vehiclerentalservice.model.util;
+package org.squad9.vehiclerentalservice.enums;
 
 public enum Category {
     COMPACT_HATCH,

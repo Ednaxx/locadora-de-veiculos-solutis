@@ -8,9 +8,14 @@ import java.util.UUID;
 
 public interface DriverService {
     List<DriverResponseDTO> findAll();
+
     DriverResponseDTO findByEmail(String email);
+
     DriverResponseDTO findById(UUID id);
+
     DriverResponseDTO save(DriverRequestDTO request);
-    void remove (UUID id);
+
+    void remove(UUID id);
+
     DriverResponseDTO update(UUID id, DriverRequestDTO request);
 }

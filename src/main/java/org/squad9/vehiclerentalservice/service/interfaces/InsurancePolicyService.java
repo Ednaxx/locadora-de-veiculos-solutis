@@ -8,8 +8,12 @@ import java.util.UUID;
 
 public interface InsurancePolicyService {
     List<InsurancePolicyResponseDTO> findAll();
+
     InsurancePolicyResponseDTO findById(UUID id);
+
     InsurancePolicyResponseDTO save(InsurancePolicyRequestDTO request);
+
     void remove(UUID id);
+
     InsurancePolicyResponseDTO update(UUID id, InsurancePolicyRequestDTO request);
 }

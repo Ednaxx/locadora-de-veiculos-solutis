@@ -16,10 +16,11 @@ public class SwaggerConfig {
                 .info(new Info().title("Locadora de Veículos - Solutis Cars")
                         .description("Documentação da API Locadora de Veículos, desenvolvida pela equipe 9 para o desafio Solutis")
                         .version("v1.0.0")
-                        .license(new License().name("Apache 2.0").url("http://springdoc.org")))
-                .externalDocs(new ExternalDocumentation()
-                        .description("SpringShop Wiki Documentation")
-                        .url("https://springshop.wiki.github.org/docs"));
+                        .license(new License()
+                                .name("MIT")
+                                .url("https://github.com/Ednaxx/locadora-de-veiculos-solutis/blob/development/LICENSE")
+                        )
+                );
     }
 }
 

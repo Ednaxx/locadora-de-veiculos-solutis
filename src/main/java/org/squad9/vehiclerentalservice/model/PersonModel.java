@@ -5,8 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.squad9.vehiclerentalservice.model.util.Gender;
-
+import org.squad9.vehiclerentalservice.enums.Gender;
 
 import java.time.LocalDate;
 import java.util.UUID;

@@ -8,8 +8,12 @@ import java.util.UUID;
 
 public interface AccessoryService {
     List<AccessoryResponseDTO> findAll();
+
     AccessoryResponseDTO findById(UUID id);
+
     AccessoryResponseDTO save(AccessoryRequestDTO request);
+
     void remove(UUID id);
+
     AccessoryResponseDTO update(UUID id, AccessoryRequestDTO request);
 }

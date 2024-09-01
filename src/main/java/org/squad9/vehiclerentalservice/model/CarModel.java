@@ -38,11 +38,7 @@ public class CarModel {
     private String imageURL;
 
     @ManyToMany
-    @JoinTable(
-            name = "carro_acessorios",
-            joinColumns = @JoinColumn(name = "carro_id"),
-            inverseJoinColumns = @JoinColumn(name = "acessorio_id")
-    )
+    @JoinTable(name = "carro_acessorios", joinColumns = @JoinColumn(name = "carro_id"), inverseJoinColumns = @JoinColumn(name = "acessorio_id"))
     private List<AccessoryModel> accessories;
 
     @ManyToOne

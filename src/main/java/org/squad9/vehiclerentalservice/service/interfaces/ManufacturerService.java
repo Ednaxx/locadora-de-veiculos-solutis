@@ -8,8 +8,12 @@ import java.util.UUID;
 
 public interface ManufacturerService {
     List<ManufacturerResponseDTO> findAll();
+
     ManufacturerResponseDTO findById(UUID id);
+
     ManufacturerResponseDTO save(ManufacturerRequestDTO request);
+
     void remove(UUID id);
+
     ManufacturerResponseDTO update(UUID id, ManufacturerRequestDTO request);
 }

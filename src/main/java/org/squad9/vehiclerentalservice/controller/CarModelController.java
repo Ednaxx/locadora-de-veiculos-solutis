@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.squad9.vehiclerentalservice.dto.request.CarModelRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarModelResponseDTO;
-import org.squad9.vehiclerentalservice.model.util.Category;
+import org.squad9.vehiclerentalservice.enums.Category;
 import org.squad9.vehiclerentalservice.service.CarModelServiceImpl;
 
 import java.util.List;

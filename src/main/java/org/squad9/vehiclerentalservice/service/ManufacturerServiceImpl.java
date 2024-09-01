@@ -37,15 +37,14 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     }
 
     @Override
-    public ManufacturerResponseDTO findById(UUID id){
-        ManufacturerModel manufacturer = manufacturerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + id));
+    public ManufacturerResponseDTO findById(UUID id) {
+        ManufacturerModel manufacturer = manufacturerRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Fabricante não encontrado com o ID: " + id));
 
         return modelMapper.map(manufacturer, ManufacturerResponseDTO.class);
     }
 
     @Override
-    public void remove(UUID id){
+    public void remove(UUID id) {
         if (!manufacturerRepository.existsById(id)) {
             throw new IllegalArgumentException("Fabricante não encontrado com o ID: " + id);
         }

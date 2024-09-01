@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public interface DriverRepository extends JpaRepository<DriverModel, UUID> {
     Optional<DriverModel> findByEmail(String email);
+
     DriverModel findByCPF(String CPF);
+
     DriverModel findByCNH(String CNH);
 }
