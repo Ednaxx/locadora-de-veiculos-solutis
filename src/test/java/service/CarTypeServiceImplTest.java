@@ -56,7 +56,6 @@ public class CarTypeServiceImplTest {
         manufacturerModel = new ManufacturerModel();
         manufacturerModel.setId(UUID.randomUUID());
 
-        // Simulate setting the manufacturer ID in the DTO if applicable
         carTypeRequestDTO.setManufacturerId(manufacturerModel.getId());
     }
 
