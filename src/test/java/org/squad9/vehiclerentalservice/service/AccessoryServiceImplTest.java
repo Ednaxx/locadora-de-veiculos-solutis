@@ -1,4 +1,4 @@
-package service;
+package org.squad9.vehiclerentalservice.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,6 @@ import org.squad9.vehiclerentalservice.dto.request.AccessoryRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
 import org.squad9.vehiclerentalservice.model.AccessoryModel;
 import org.squad9.vehiclerentalservice.repository.AccessoryRepository;
-import org.squad9.vehiclerentalservice.service.AccessoryServiceImpl;
 
 import java.util.Collections;
 import java.util.List;

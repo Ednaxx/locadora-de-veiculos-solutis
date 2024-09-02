@@ -1,4 +1,4 @@
-package controller;
+package org.squad9.vehiclerentalservice.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,6 @@ import org.squad9.vehiclerentalservice.dto.request.CarTypeRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.CarTypeResponseDTO;
 import org.squad9.vehiclerentalservice.enums.Category;
 import org.squad9.vehiclerentalservice.service.CarTypeServiceImpl;
-import org.squad9.vehiclerentalservice.controller.CarTypeController;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

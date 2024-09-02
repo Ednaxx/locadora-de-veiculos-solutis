@@ -1,4 +1,4 @@
-package controller;
+package org.squad9.vehiclerentalservice.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.squad9.vehiclerentalservice.dto.response.CarResponseDTO;
 import org.squad9.vehiclerentalservice.dto.response.ShoppingCartResponseDTO;
 import org.squad9.vehiclerentalservice.service.ShoppingCartServiceImpl;
-import org.squad9.vehiclerentalservice.controller.ShoppingCartController;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

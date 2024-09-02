@@ -1,4 +1,4 @@
-package service;
+package org.squad9.vehiclerentalservice.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.squad9.vehiclerentalservice.model.DriverModel;
 import org.squad9.vehiclerentalservice.model.ShoppingCartModel;
 import org.squad9.vehiclerentalservice.repository.CarRepository;
 import org.squad9.vehiclerentalservice.repository.ShoppingCartRepository;
-import org.squad9.vehiclerentalservice.service.ShoppingCartServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;

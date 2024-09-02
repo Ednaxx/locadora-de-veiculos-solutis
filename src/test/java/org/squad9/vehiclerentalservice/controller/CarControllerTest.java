@@ -1,4 +1,4 @@
-package controller;
+package org.squad9.vehiclerentalservice.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.squad9.vehiclerentalservice.controller.CarController;
 import org.squad9.vehiclerentalservice.dto.request.CarRequestDTO;
 import org.squad9.vehiclerentalservice.dto.request.DateIntervalRequestDTO;
 import org.squad9.vehiclerentalservice.dto.response.AccessoryResponseDTO;
