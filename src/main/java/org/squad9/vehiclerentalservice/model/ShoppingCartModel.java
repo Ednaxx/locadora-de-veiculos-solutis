@@ -22,7 +22,7 @@ public class ShoppingCartModel {
     @JoinColumn(name = "motorista_id")
     private DriverModel driver;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "carrinho_compra_carro", joinColumns = @JoinColumn(name = "carrinho_id"), inverseJoinColumns = @JoinColumn(name = "carro_id"))
     private List<CarModel> cars;
 }
