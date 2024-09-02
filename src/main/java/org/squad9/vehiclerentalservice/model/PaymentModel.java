@@ -20,7 +20,7 @@ public class PaymentModel {
     private RentalModel rental;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "metodo_de_pagamento", nullable = false)
     private PaymentMethods paymentMethod;
 
     @Column(nullable = false)
