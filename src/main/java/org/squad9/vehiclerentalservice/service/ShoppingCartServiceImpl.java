@@ -1,5 +1,6 @@
 package org.squad9.vehiclerentalservice.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public List<CarResponseDTO> addCarToShoppingCart(UUID id, UUID idCarro) {
         ShoppingCartModel shoppingCart = shoppingCartRepository.findById(id)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Carrinho não encontrado com o ID: " + id));
